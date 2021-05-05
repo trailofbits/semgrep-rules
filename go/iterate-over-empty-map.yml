@@ -1,0 +1,36 @@
+rules:
+- id: iterate-over-empty-collection
+  patterns:
+    - pattern: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $C[$X] = $V
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $C[$X]++
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $C[$X]--
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $CODEC.Unmarshal($C)
+        ...
+        for $K := range $C { ... }
+
+  message: |
+    Iteration over a possibly empty map `$C`. This is likely a bug or redundant code.
+  languages: [go]
+  severity: ERROR

@@ -1,0 +1,9 @@
+rules:
+  - id: questionable-assignment
+    patterns:
+      - pattern-either:
+        - pattern: ..., $X . $Y, ..., err = ...
+        - pattern: ..., $X . $Y, ..., err := ...
+    message: Should `$X` be modified when an error could be returned?
+    languages: [go]
+    severity: WARNING

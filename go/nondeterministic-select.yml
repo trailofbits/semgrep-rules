@@ -1,0 +1,33 @@
+rules:
+- id: nondeterministic-select
+  patterns:
+    - pattern: |
+          $TICKER := time.NewTicker(...)
+          ...
+          for {
+            ...
+            select {
+              case <- $DONECHAN: return
+              case <- $TICKER.C: ...
+            }
+          }
+    - pattern-not: |
+        $TICKER := time.NewTicker(...)
+        ...
+        for {
+          select {
+            case <-$DONECHAN: return
+            default:
+          }
+          ...
+          select {
+            case <- $DONECHAN: return
+            case <- $TICKER.C: ...
+          }
+        }
+  message: |
+    Logic executed as a result of ticker `$TICKER` may execute more times than desired.
+    When both `$TICKER` and `$DONECHAN` are written to at the same time, the scheduler randomly picks a
+    case to execute. As a result, the `$TICKER.C` may excute one more time than expected.
+  severity: WARNING
+  languages: [go]

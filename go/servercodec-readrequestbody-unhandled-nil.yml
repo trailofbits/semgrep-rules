@@ -1,0 +1,19 @@
+rules:
+  - id: servercodec-readrequestbody-unhandled-nil
+    patterns:
+      - pattern: |
+          func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error {
+            ...
+          }
+      - pattern-not: |
+          func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error {
+            ...
+            if $ARG == nil { ... }
+            ...
+          }
+    message: |
+      Does the `func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error` func handle `nil` argument as the `ServerCodec` interface wants?
+      An incorrect implementation could lead to denial of service. See details 
+      here: https://github.com/golang/go/blob/go1.15.2/src/net/rpc/server.go#L643-L658
+    languages: [go]
+    severity: WARNING
