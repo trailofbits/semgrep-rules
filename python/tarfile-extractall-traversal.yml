@@ -1,0 +1,18 @@
+rules:
+- id: tarfile-extractall-traversal
+  patterns:
+    - pattern: |
+        with tarfile.open($PATH) as $TAR:
+            ...
+            $TAR.extractall($DESTPATH)
+    - pattern: |
+        tarfile.open($PATH).extractall($DESTTPATH)
+    - pattern: |
+        $TAR = tarfile.open($PATH)
+        ...
+        $TAR.extractall($DESTTPATH)
+  message: |
+    Possible path traversal through `tarfile.open($PATH).extractall()` if the source tar is controlled by an attacker.
+    See https://docs.python.org/3/library/tarfile.html#tarfile.TarFile.extractall for more details. 
+  languages: [python]
+  severity: ERROR
