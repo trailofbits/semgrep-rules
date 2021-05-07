@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # semgrep-rules
-Semgrep queries developed by Trail of Bits.
-=======
+
 # Trail of Bits public Semgrep rules
 
 This repository contains Semgrep rules developed by Trail of Bits and made available to the public. They are part of our ongoing development efforts and are used in our security audits, vulnerability reseach, and internal projects. They will evolve over time as we identify new techniques.
@@ -58,4 +56,3 @@ Rule ID | Language | What it Finds
 [waitgroup-add-called-inside-goroutine](go/waitgroup-add-called-inside-goroutine.yml) | Go | Calls to `sync.WaitGroup.Add` inside of anonymous goroutines
 [waitgroup-wait-inside-loop](go/waitgroup-wait-inside-loop.yml) | Go | Calls to `sync.WaitGroup.Wait` inside a loop
 [tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
->>>>>>> init-branch
