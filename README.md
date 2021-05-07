@@ -1,5 +1,3 @@
-# semgrep-rules
-
 # Trail of Bits public Semgrep rules
 
 This repository contains Semgrep rules developed by Trail of Bits and made available to the public. They are part of our ongoing development efforts and are used in our security audits, vulnerability reseach, and internal projects. They will evolve over time as we identify new techniques.
