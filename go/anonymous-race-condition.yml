@@ -67,6 +67,6 @@ rules:
           ...
         }
   message: |
-    Possible race condition due to memory aliasing or variable `$X`
+    Possible race condition due to memory aliasing of variable `$X`
   severity: ERROR
   languages: [go]
