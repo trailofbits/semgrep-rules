@@ -4,13 +4,19 @@ This repository contains Semgrep rules developed by Trail of Bits and made avail
 
 ## Using Semgrep
 
-To run individual rules from your terminal, navigate to the root folder of your project and run the following:
+The easiest way to run the rules is to run them from the [Semgrep registry](https://semgrep.dev/p/trailofbits). To do so, navigate to the root folder of your project and run the following:
+
+```shell
+$ semgrep --config "p/trailofbits"
+```
+
+Alternatively, you can clone this repository, navigate to the root folder of your project, and run individual rules using the command below :
 
 ```shell
 $ semgrep --config /path/to/semgrep-rules/semgreprule.yml
 ```
 
-To run all rules:
+To run all rules from the cloned repository:
 
 ```shell
 $ semgrep --config /path/to/semgrep-rules/ .
