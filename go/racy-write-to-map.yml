@@ -1,5 +1,5 @@
 rules:
-- id: racy-add-to-map
+- id: racy-write-to-map
   languages:
     - go
   patterns:
