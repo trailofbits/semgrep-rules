@@ -1,0 +1,35 @@
+rules:
+- id: racy-append-to-slice
+  languages:
+    - go
+  patterns:
+    - pattern: |
+          $SLICE = append($SLICE, $ITEM)
+    - pattern-either:
+      - pattern-inside: |
+          var $SLICE []$TYPE
+          ...
+          for ... {
+            ...
+            go func(...) {
+              ...
+              $SLICE = append($SLICE, $ITEM)
+              ...
+            }(...)
+            ...
+          }
+      - pattern-inside: |
+          $SLICE := make([]$TYPE, ...)
+          ...
+          for ... {
+            ...
+            go func(...) {
+              ...
+              $SLICE = append($SLICE, $ITEM)
+              ...
+            }(...)
+            ...
+          }
+  message: |
+    Appending $SLICE from multiple goroutines is not concurrency safe.
+  severity: ERROR
