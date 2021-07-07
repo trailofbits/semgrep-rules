@@ -1,0 +1,20 @@
+rules:
+- id: unchecked-type-assertion
+  patterns:
+    - pattern-either:
+      - patterns:
+          - pattern: |
+              $FOO, $A := <... $X.($TYPE) ...>
+          - metavariable-regex:
+              metavariable: $A
+              regex: ^_$
+      - patterns:
+          - pattern: |
+              $FOO := <... $X.($TYPE) ...>
+          - metavariable-regex:
+              metavariable: $FOO
+              regex: ^[^,]*$
+  message: |
+    Unchecked type assertion.
+  severity: ERROR
+  languages: [go]
