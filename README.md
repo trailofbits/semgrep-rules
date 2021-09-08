@@ -52,12 +52,15 @@ Rule ID | Language | What it Finds
 [iterate-over-empty-collection](go/iterate-over-empty-collection.yml) | Go | Iterations over empty collection
 [nil-check-after-call](go/nil-check-after-call.yml) | Go | Possible nil dereferences
 [questionable-assignment](go/questionable-assignment.yml) | Go | Possible unintentional assignment when an error occurs
-[nondeterministic-select](go/nondeterministic-select.yml) | Go | Nondeterministic `select` logic. 
+[nondeterministic-select](go/nondeterministic-select.yml) | Go | Nondeterministic `select` logic.
 [servercodec-readrequestbody-unhandled-nil](go/servercodec-readrequestbody-unhandled-nil.yml) | Go | Possible incorrect `ServerCodec` interface implementation
-[sleep-used-for-synchronizations](go/sleep-used-for-synchronizations.yml) | Go | Uses `time.Sleep` for goroutine synchronizations
+[sleep-used-for-synchronizations](go/sleep-used-for-synchronizations.yml) | Go | Uses `time.Sleep` for goroutine synchronization
 [string-to-int-signedness-cast](go/string-to-int-signedness-cast.yml) | Go | Integer underflows
 [sync-mutex-value-copied](go/sync-mutex-value-copied.yml) | Go | Copying of `sync.Mutex` via value receivers
 [waitgroup-add-called-inside-goroutine](go/waitgroup-add-called-inside-goroutine.yml) | Go | Calls to `sync.WaitGroup.Add` inside of anonymous goroutines
 [waitgroup-wait-inside-loop](go/waitgroup-wait-inside-loop.yml) | Go | Calls to `sync.WaitGroup.Wait` inside a loop
-[tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
+[racy-append-to-slice](go/racy-append-to-slice.yml) | Go | Concurrent calls to `append` from multiple goroutines
+[racy-write-to-map](go/racy-write-to-map.yml) | Go | Concurrent writes to the same map in multiple goroutines
 [unchecked-type-assertion](go/unchecked-type-assertion.yml) | Go | Unchecked type assertion
+[tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
+[panic-in-function-returning-result](rs/panic-in-function-returning-result.yml) | Rust | Calling `unwrap` or `expect` in a function returning a `Result`
