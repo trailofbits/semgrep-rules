@@ -1,0 +1,14 @@
+rules:
+  - id: panic-in-function-returning-result
+    patterns:
+      - pattern-inside: |
+          fn $FUNC(...) -> Result<$T> {
+              ...
+          }
+      - pattern-either:
+          - pattern: $EXPR.unwrap()
+          - pattern: $EXPR.expect(...)
+    message: |
+      `expect` or `unwrap` called in function returning a `Result`.
+    languages: [rust]
+    severity: WARNING
