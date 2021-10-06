@@ -1,0 +1,21 @@
+rules:
+- id: missing-runlock-on-rwmutex
+  patterns:
+    - pattern-either:
+      - pattern: panic(...)
+      - pattern: return ...
+    - pattern-inside: |
+        $T.RLock()
+        ...
+        $T.RUnlock()
+    - pattern-not-inside: |
+        $T.RUnlock()
+        ...
+    - pattern-not-inside: |
+        defer $T.RUnlock()
+        ...
+  message: |
+    Missing RUnlock on an RWMutex lock before returning from a function. 
+    See https://pkg.go.dev/sync#RWMutex for more information.
+  languages: [go]
+  severity: ERROR
