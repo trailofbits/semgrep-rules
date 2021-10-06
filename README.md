@@ -63,4 +63,5 @@ Rule ID | Language | What it Finds
 [racy-write-to-map](go/racy-write-to-map.yml) | Go | Concurrent writes to the same map in multiple goroutines
 [unchecked-type-assertion](go/unchecked-type-assertion.yml) | Go | Unchecked type assertion
 [tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
+[missing-unlock-before-return](go/missing-unlock-before-return.yml) | Go | Missing mutex unlock before returning from a function. This could result in panics resulting from double lock operations
 [panic-in-function-returning-result](rs/panic-in-function-returning-result.yml) | Rust | Calling `unwrap` or `expect` in a function returning a `Result`

@@ -1,0 +1,21 @@
+rules:
+- id: missing-unlock-before-return
+  patterns:
+    - pattern-either:
+      - pattern: panic(...)
+      - pattern: return ...
+    - pattern-inside: |
+        $T.Lock()
+        ...
+        $T.Unlock()
+    - pattern-not-inside: |
+        $T.Unlock()
+        ...
+    - pattern-not-inside: |
+        defer $T.Unlock()
+        ...
+  message: |
+    Missing mutex unlock before returning from a function. 
+    This could result in panics resulting from double lock operations
+  languages: [go]
+  severity: ERROR
