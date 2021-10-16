@@ -14,6 +14,10 @@ rules:
     - pattern-not-inside: |
         defer $T.RUnlock()
         ...
+    - pattern-not-inside: |
+        $FOO(..., ..., func(...) { 
+            ... 
+        })
   message: |
     Missing RUnlock on an RWMutex lock before returning from a function. 
     See https://pkg.go.dev/sync#RWMutex for more information.

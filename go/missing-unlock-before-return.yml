@@ -14,6 +14,10 @@ rules:
     - pattern-not-inside: |
         defer $T.Unlock()
         ...
+    - pattern-not-inside: |
+        $FOO(..., ..., func(...) { 
+            ... 
+        })
   message: |
     Missing mutex unlock before returning from a function. 
     This could result in panics resulting from double lock operations
