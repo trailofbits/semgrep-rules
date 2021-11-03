@@ -1,5 +1,5 @@
 rules:
-- id: my_pattern_id
+- id: numpy-in-torch-datasets
   patterns:
     - pattern-either:
       - pattern: |
@@ -14,6 +14,9 @@ rules:
               ...
               $Y = np.random.randint(...)
               ...
-  message: Semgrep found a match
+  message: |
+    Using the NumPy RNG inside of a Torch dataset can lead to a number of issues with loading data, including identical augmentations.
+    Instead, use the random number generators built into Python and PyTorch. 
+    See https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects/ for more details       
   languages: [python]
   severity: WARNING
