@@ -1,0 +1,19 @@
+rules:
+- id: my_pattern_id
+  patterns:
+    - pattern-either:
+      - pattern: |
+          class $X(Dataset):
+            def __getitem__(...):
+              ...
+              np.random.randint(...)
+              ...
+      - pattern: |
+          class $X(Dataset):
+            def __getitem__(...):
+              ...
+              $Y = np.random.randint(...)
+              ...
+  message: Semgrep found a match
+  languages: [python]
+  severity: WARNING
