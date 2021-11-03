@@ -7,7 +7,7 @@ rules:
     - pattern-not: torch.save($M.state_dict(), ...)
     - pattern-not-inside: $M.load_state_dict(torch.load($P))
   message: | 
-    Avoid using functions reliant on pickling as it can lead to arbitrary code execution. If pickle is necessary, load from state_dict or use fickling. 
-    Else, consider using a safer serialization method like HDF5 or ONNX. For more information, see https://www.trailofbits.com/post/never-a-dill-moment-exploiting-machine-learning-pickle-files
+    Functions reliant on pickle can result in arbitrary code execution. Consider loading from state_dict, using fickling, or switching to a safer serialization method like ONNX.
+    For more information, see https://www.trailofbits.com/post/never-a-dill-moment-exploiting-machine-learning-pickle-files
   languages: [python]
   severity: WARNING
