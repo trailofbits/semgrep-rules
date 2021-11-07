@@ -1,0 +1,14 @@
+rules:
+- id: waiting-with-torch-distributed
+  patterns:
+    - pattern-either:
+      - pattern: |
+          $REQ = torch.distributed.irecv(...)
+          ...
+      - pattern: $REQ = torch.distributed.isend(...)
+    - pattern-not-inside: |
+        ...
+        $REQ.wait()
+  message: Not waiting for requests is a source of undefined behavior.
+  languages: [python]
+  severity: WARNING
