@@ -1,0 +1,10 @@
+rules:
+- id: numpy-in-pytorch-modules
+  patterns:
+    - pattern: $RESULT = numpy.$FUNCTION(...)
+    - pattern-inside: |
+        class $MODULE(torch.nn.Module):
+            ...
+  message: Avoid using NumPy in PyTorch modules for efficiency and proper ONNX loading amongst other reasons 
+  languages: [python]
+  severity: WARNING
