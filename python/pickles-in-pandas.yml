@@ -1,5 +1,5 @@
 rules:
-- id: load-pickles-in-pandas
+- id: pickles-in-pandas
   patterns:
     - pattern-either:
       - pattern: pandas.read_pickle(...)
