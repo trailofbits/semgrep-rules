@@ -1,5 +1,5 @@
 rules:
-- id: load-pickles-in-pytorch
+- id: pickles-in-pytorch
   patterns:
     - pattern-either:
       - pattern: torch.save(...)
