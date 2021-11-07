@@ -1,0 +1,9 @@
+rules:
+- id: torch-tensor-item
+  patterns:
+    - pattern-either:
+      - pattern: $ANYTHING = $TENSOR.item()
+      - pattern: $TENSOR.item()
+  message: Avoid using NumPy in PyTorch modules for efficiency and proper ONNX loading amongst other reasons 
+  languages: [python]
+  severity: WARNING
