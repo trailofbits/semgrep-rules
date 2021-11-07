@@ -2,7 +2,7 @@ rules:
 - id: load-pickles-in-numpy
   pattern: numpy.load(..., allow_pickle=True)
   message: |
-    Functions reliant on pickle can result in arbitrary code execution. Consider using Fickling or switching to a safer serialization method. 
+    Functions reliant on pickle can result in arbitrary code execution. Consider using fickling or switching to a safer serialization method. 
     For more information, see https://www.trailofbits.com/post/never-a-dill-moment-exploiting-machine-learning-pickle-files
   languages: [python]
   severity: WARNING
