@@ -1,5 +1,5 @@
 rules:
-- id: load-pickles-in-numpy
+- id: pickles-in-numpy
   pattern: numpy.load(..., allow_pickle=True)
   message: |
     Functions reliant on pickle can result in arbitrary code execution. Consider using fickling or switching to a safer serialization method. 
