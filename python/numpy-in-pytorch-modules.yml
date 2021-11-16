@@ -5,6 +5,6 @@ rules:
     - pattern-inside: |
         class $MODULE(torch.nn.Module):
             ...
-  message: Avoid using NumPy in PyTorch modules for efficiency and proper ONNX loading amongst other reasons 
+  message: Avoid using NumPy in PyTorch modules for efficiency and proper ONNX loading 
   languages: [python]
   severity: WARNING
