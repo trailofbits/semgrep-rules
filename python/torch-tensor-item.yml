@@ -4,6 +4,6 @@ rules:
     - pattern-either:
       - pattern: $ANYTHING = $TENSOR.item()
       - pattern: $TENSOR.item()
-  message: Avoid using NumPy in PyTorch modules for efficiency and proper ONNX loading amongst other reasons 
+  message: Avoid using NumPy in PyTorch modules for efficiency and proper ONNX loading 
   languages: [python]
   severity: WARNING
