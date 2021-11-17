@@ -1,6 +1,0 @@
-rules:
-- id: torch-data-attribute
-  pattern: $ANYTHING = $TENSOR.data
-  message: Avoid using the .data attribute of Torch tensors for efficiency and proper ONNX loading amongst other reasons
-  languages: [python]
-  severity: WARNING
