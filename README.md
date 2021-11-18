@@ -75,5 +75,5 @@ Rule ID | Language | What it Finds
 [pickles-in-torch-distributed](python/pickles-in-torch-distributed.yml) | Python | Potential arbitrary code execution from PyTorch Distributed functions reliant on pickling
 [torch-package](python/torch-package.yml) | Python | Potential arbitrary code execution from torch.package 
 [torch-tensor](python/torch-tensor.yml) | Python | Possible parsing issues and inefficiency from improper tensor creation
-[waiting-with-torch-distributed](python/waiting-with-torch-distributed.yml) | Python | No waiting for requests in torch.distributed 
+[waiting-with-torch-distributed](python/waiting-with-torch-distributed.yml) | Python | Possible undefined behavior when not waiting for requests 
 [panic-in-function-returning-result](rs/panic-in-function-returning-result.yml) | Rust | Calling `unwrap` or `expect` in a function returning a `Result`
