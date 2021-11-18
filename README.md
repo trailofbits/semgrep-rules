@@ -65,4 +65,15 @@ Rule ID | Language | What it Finds
 [missing-unlock-before-return](go/missing-unlock-before-return.yml) | Go | Missing mutex unlock before returning from a function. This could cause panics resulting from double lock operations
 [missing-runlock-on-rwmutex](go/missing-runlock-on-rwmutex.yml) | Go | Missing RUnlock on an RWMutex lock before returning from a function.
 [tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
+[automatic-memory-pinning](python/automatic-memory-pinning.yml) | Python | Memory is not automatically pinned
+[lxml-in-pandas](python/lxml-in-pandas.yml) | Python | Potential XXE attacks from loading lxml in pandas
+[numpy-in-pytorch-modules](python/numpy-in-pytorch-modules.yml) | Python | Uses NumPy functions inside PyTorch modules 
+[numpy-in-torch-datasets](python/numpy-in-torch-datasets.yml) | Python | Calls to the Numpy RNG inside of a Torch dataset
+[pickles-in-numpy](python/pickles-in-numpy.yml) | Python | Potential arbitrary code execution from NumPy functions reliant on pickling
+[pickles-in-pandas](python/pickles-in-pandas.yml) | Python | Potential arbitrary code execution from Pandas functions reliant on pickling
+[pickles-in-pytorch](python/pickles-in-pytorch.yml) | Python | Potential arbitrary code execution from PyTorch functions reliant on pickling
+[pickles-in-torch-distributed](python/pickles-in-torch-distributed.yml) | Python | Potential arbitrary code execution from PyTorch Distributed functions reliant on pickling
+[torch-package](python/torch-package.yml) | Python | Potential arbitrary code execution from torch.package 
+[torch-tensor](python/torch-tensor.yml) | Python | Possible parsing issues and inefficiency from improper tensor creation
+[waiting-with-torch-distributed](python/waiting-with-torch-distributed.yml) | Python | No waiting for requests in torch.distributed 
 [panic-in-function-returning-result](rs/panic-in-function-returning-result.yml) | Rust | Calling `unwrap` or `expect` in a function returning a `Result`
