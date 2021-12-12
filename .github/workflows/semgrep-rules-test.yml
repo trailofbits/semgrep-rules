@@ -1,26 +1,22 @@
-name: tests
+name: semgrep-rules-test
 on: [push]
 
 jobs:
-  build:
+  self_test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.7, 3.8, 3.9]
-
+    name: run semgrep rules tests
     steps:
     - uses: actions/checkout@v2
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: Set up Python 3.9
       uses: actions/setup-python@v1
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: 3.9
 
-    - name: Install dependencies
+    - name: installation
       run: |
         python -m pip install --upgrade pip
         python3 -m pip install semgrep
     
-    - name: Real test
+    - name: tests
     - run: | 
         python -m semgrep --quiet --test python/
