@@ -1,10 +1,14 @@
 name: semgrep-rules-test
-on: [push]
+
+on:
+  push:
+    branches:
+    - main
 
 jobs:
-  self_test:
-    runs-on: ubuntu-latest
+  build:
     name: run semgrep rules tests
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Set up Python 3.9
@@ -18,5 +22,5 @@ jobs:
         python3 -m pip install semgrep
     
     - name: tests
-    - run: | 
+      run: | 
         python -m semgrep --quiet --test python/
