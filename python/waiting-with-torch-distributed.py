@@ -1,7 +1,6 @@
 import torch.distributed as dist
 
 def bad(): 
-  # ruleid: waiting-with-torch-distributed
   def run(rank, size):
       tensor = torch.zeros(1)
       req = None
@@ -16,7 +15,7 @@ def bad():
           print('Rank 1 started receiving')
       req.wait()
       print('Rank ', rank, ' has data ', tensor[0])
-
+  # ruleid: waiting-with-torch-distributed
   req = dist.isend(tensor=tensor, dst=1)
   req = dist.irecv(tensor=tensor, src=0)
   return req
