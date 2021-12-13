@@ -24,3 +24,5 @@ jobs:
     - name: tests
       run: | 
         python -m semgrep --quiet --test python/
+        python -m semgrep --quiet --test rust/
+        python -m semgrep --quiet --test go/
