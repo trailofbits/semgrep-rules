@@ -17,5 +17,6 @@ def bad():
       print('Rank ', rank, ' has data ', tensor[0])
   # ruleid: waiting-with-torch-distributed
   req = dist.isend(tensor=tensor, dst=1)
+  # ruleid: waiting-with-torch-distributed
   req = dist.irecv(tensor=tensor, src=0)
   return req
