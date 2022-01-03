@@ -2,8 +2,10 @@ rules:
 - id: automatic-memory-pinning
   patterns:
     - pattern: torch.utils.data.DataLoader(...)
-    - pattern-not-inside: torch.utils.data.DataLoader(..., pin_memory=True, ...)
-    - pattern-not-inside: torch.utils.data.DataLoader(..., pin_memory=1, ...)
-  message: If possible, it is better to rely on automatic pinning in PyTorch to avoid undefined behavior and for efficiency
+    - pattern-not: torch.utils.data.DataLoader(..., pin_memory=False, ...)
+    - pattern-not: torch.utils.data.DataLoader(..., pin_memory=0, ...)
+    - pattern-not-inside: torch.utils.data.DataLoader(..., pin_memory=..., ...)
+  message: |
+      If possible, it is better to rely on automatic pinning in PyTorch to avoid undefined behavior and for efficiency
   languages: [python]
   severity: WARNING
