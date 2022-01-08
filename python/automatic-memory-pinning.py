@@ -12,11 +12,5 @@ loader = torch.utils.data.DataLoader(dataset, batch_size=2, collate_fn=collate_w
 # ruleid: automatic-memory-pinning
 loader = torch.utils.data.DataLoader(dataset, batch_size=2, collate_fn=collate_wrapper)
 
-# ruleid: automatic-memory-pinning
-loader = torch.utils.data.DataLoader(dataset, batch_size=2, collate_fn=collate_wrapper,
-                    pin_memory=False)
 
-# ruleid: automatic-memory-pinning
-loader = torch.utils.data.DataLoader(dataset, batch_size=2, collate_fn=collate_wrapper,
-                    pin_memory=0)
 
