@@ -5,6 +5,7 @@ rules:
     - pattern-not: pandas.read_html(..., flavor="bs4", ...)
     - pattern-not: pandas.read_html(..., flavor="html5lib", ...)
   message: |
-    Found usage of the lxml library, which is vulnerable to attacks such as XML external entity (XXE) attacks. For more information, see https://lxml.de/FAQ.html 
+    Found usage of the lxml library, which is vulnerable to attacks such as XML external entity (XXE) attacks. 
+    For more information, see https://lxml.de/FAQ.html 
   languages: [python]
   severity: WARNING
