@@ -51,7 +51,7 @@ Rule ID | Language | What it Finds
 [hanging-goroutine](go/hanging-goroutine.yml) | Go | Goroutine leaks
 [iterate-over-empty-collection](go/iterate-over-empty-collection.yml) | Go | Iterations over empty collection
 [nil-check-after-call](go/nil-check-after-call.yml) | Go | Possible nil dereferences
-[questionable-assignment](go/questionable-assignment.yml) | Go | Possible unintentional assignment when an error occurs
+[invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yml) | Go | Possible unintentional assignment when an error occurs
 [nondeterministic-select](go/nondeterministic-select.yml) | Go | Nondeterministic `select` logic.
 [servercodec-readrequestbody-unhandled-nil](go/servercodec-readrequestbody-unhandled-nil.yml) | Go | Possible incorrect `ServerCodec` interface implementation
 [sleep-used-for-synchronizations](go/sleep-used-for-synchronizations.yml) | Go | Uses `time.Sleep` for goroutine synchronization

@@ -10,6 +10,14 @@ rules:
             $FOO.$BAR(...)
             ...
             if $FOO == nil { ... }
+        - pattern: |
+            $FUNC(..., $FOO.$BAR(...), ...)
+            ...
+            if $FOO != nil { ... }
+        - pattern: |
+            $FUNC(..., $FOO.$BAR(...), ...)
+            ...
+            if $FOO == nil { ... }
     - pattern-not: |
        $FOO.$BAR(...)
        ...
