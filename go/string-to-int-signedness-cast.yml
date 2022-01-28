@@ -21,7 +21,7 @@ rules:
               - pattern: |
                               $X, ... = strconv.Atoi(...)
                               ...
-                              int32($X)
+                              int8($X)
               - pattern: |
                               $X, ... = strconv.Atoi(...)
                               ...
@@ -29,15 +29,7 @@ rules:
               - pattern: |
                               $X, ... = strconv.Atoi(...)
                               ...
-                              int8($X)
-              - pattern: |
-                              $X, ... = strconv.ParseInt(..., ..., 64)
-                              ...
-                              uint32($X)
-              - pattern: |
-                              $X, ... = strconv.ParseInt(..., ..., 64)
-                              ...
-                              uint16($X)
+                              int32($X)
               - pattern: |
                               $X, ... = strconv.ParseInt(..., ..., 64)
                               ...
@@ -45,35 +37,39 @@ rules:
               - pattern: |
                               $X, ... = strconv.ParseInt(..., ..., 64)
                               ...
-                              int32($X)
+                              uint16($X)
               - pattern: |
                               $X, ... = strconv.ParseInt(..., ..., 64)
-                              ...
-                              int16($X)
-              - pattern: |
-                              $X, ... = strconv.ParseInt(..., ..., 64)
-                              ...
-                              int8($X)
-              - pattern: |
-                              $X, ... = strconv.ParseUint(..., ..., 64)
-                              ...
-                              int64($X)
-              - pattern: |
-                              $X, ... = strconv.ParseUint(..., ..., 64)
-                              ...
-                              int32($X)
-              - pattern: |
-                              $X, ... = strconv.ParseUint(..., ..., 64)
-                              ...
-                              int16($X)
-              - pattern: |
-                              $X, ... = strconv.ParseUint(..., ..., 64)
-                              ...
-                              int8($X)
-              - pattern: |
-                              $X, ... = strconv.ParseUint(..., ..., 64)
                               ...
                               uint32($X)
+              - pattern: |
+                              $X, ... = strconv.ParseInt(..., ..., 64)
+                              ...
+                              int8($X)
+              - pattern: |
+                              $X, ... = strconv.ParseInt(..., ..., 64)
+                              ...
+                              int16($X)
+              - pattern: |
+                              $X, ... = strconv.ParseInt(..., ..., 64)
+                              ...
+                              int32($X)
+              - pattern: |
+                              $X, ... = strconv.ParseUint(..., ..., 64)
+                              ...
+                              int8($X)
+              - pattern: |
+                              $X, ... = strconv.ParseUint(..., ..., 64)
+                              ...
+                              int16($X)
+              - pattern: |
+                              $X, ... = strconv.ParseUint(..., ..., 64)
+                              ...
+                              int32($X)
+              - pattern: |
+                              $X, ... = strconv.ParseUint(..., ..., 64)
+                              ...
+                              uint8($X)
               - pattern: |
                               $X, ... = strconv.ParseUint(..., ..., 64)
                               ...
@@ -81,7 +77,7 @@ rules:
               - pattern: |
                               $X, ... = strconv.ParseUint(..., ..., 64)
                               ...
-                              uint8($X)
+                              uint32($X)
     message: Downcasting of 64-bit integer
     languages: [go]
     severity: ERROR
