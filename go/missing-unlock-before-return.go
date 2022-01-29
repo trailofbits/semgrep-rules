@@ -65,3 +65,28 @@ func (c *Container) inc_FP(name string) error {
 	c.mu.Unlock()
 	return nil
 }
+
+// This could still cause a deadlock in the case that the caller function
+// implements a recover() to avoid the application from crashing
+func (c *Container) inc2(name string) error {
+	c.mu.Lock()
+	c.counters[name]++
+	if name == "c" {
+		// ruleid: missing-unlock-before-return
+		panic("letter not allowed")
+	}
+	c.mu.Unlock()
+	return nil
+}
+
+func (c *Container) inc2_FP(name string) error {
+	c.mu.Lock()
+	c.counters[name]++
+	if name == "c" {
+		c.mu.Unlock()
+		// ruleid: missing-unlock-before-return
+		panic("letter not allowed")
+	}
+	c.mu.Unlock()
+	return nil
+}
