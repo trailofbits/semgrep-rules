@@ -1,0 +1,20 @@
+rules:
+- id: pickles-in-pandas
+  patterns:
+    - pattern-either:
+      - pattern: pandas.read_pickle(...)
+      - pattern: $DF.to_pickle(...)
+      - pattern: |
+          $X = $DF.to_pickle
+          ...
+          $X(...)
+      - pattern: |
+          def $FUNCTION(..., $X = $DF.to_pickle, ...): 
+            ...
+            $X(...)
+  message: |
+      Functions reliant on pickle can result in arbitrary code execution.  Consider using fickling or switching to a safer serialization method. 
+      For more information, see https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+  languages: [python]
+  severity: WARNING
+

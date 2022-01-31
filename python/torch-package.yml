@@ -1,0 +1,6 @@
+rules:
+- id: torch-package
+  pattern: import torch.package
+  message: Avoid torch.package; it can result in arbitrary code execution
+  languages: [python]
+  severity: WARNING

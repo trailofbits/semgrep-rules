@@ -1,0 +1,11 @@
+rules:
+- id: automatic-memory-pinning
+  patterns:
+  - pattern-not: |
+      torch.utils.data.DataLoader(..., pin_memory=$VALUE, ...)
+  - pattern: |
+      torch.utils.data.DataLoader(...)
+  message: |
+      If possible, it is better to rely on automatic pinning in PyTorch to avoid undefined behavior and for efficiency 
+  languages: [python]
+  severity: WARNING

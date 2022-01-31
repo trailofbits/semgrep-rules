@@ -1,0 +1,24 @@
+rules:
+- id: numpy-in-torch-datasets
+  patterns:
+    - pattern-either:
+      - pattern: |
+          class $X(Dataset):
+            ...
+            def __getitem__(...):
+              ...
+              np.random.randint(...)
+              ...
+      - pattern: |
+          class $X(Dataset):
+            ...
+            def __getitem__(...):
+              ...
+              $Y = np.random.randint(...)
+              ...
+  message: |
+    Using the NumPy RNG inside of a Torch dataset can lead to a number of issues with loading data, including identical augmentations.
+    Instead, use the random number generators built into Python and PyTorch. 
+    See https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects/ for more details       
+  languages: [python]
+  severity: WARNING

@@ -1,0 +1,13 @@
+rules:
+- id: pickles-in-torch-distributed
+  patterns:
+    - pattern-either:
+      - pattern: torch.distributed.broadcast_object_list(...)
+      - pattern: torch.distributed.all_gather_object(...)
+      - pattern: torch.distributed.gather_object(...)
+      - pattern: torch.distributed.scatter_object_list(...)
+  message: |
+   Functions reliant on pickle can result in arbitrary code execution. 
+   For more information, see https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/ 
+  languages: [python]
+  severity: WARNING
