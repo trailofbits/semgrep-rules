@@ -1,5 +1,5 @@
 rules:
-- id: iterate-over-empty-collection
+- id: iterate-over-empty-map
   patterns:
     - pattern: |
         $C = make(map[$T1] $T2, ...)
@@ -26,7 +26,7 @@ rules:
     - pattern-not: |
         $C = make(map[$T1] $T2, ...)
         ...
-        $CODEC.Unmarshal($C)
+        $CODEC.Unmarshal($BYTES, &$C)
         ...
         for $K := range $C { ... }
 

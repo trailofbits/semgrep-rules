@@ -1,0 +1,22 @@
+rules:
+  - id: invalid-usage-of-modified-variable
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $X, err = ...
+              if err != nil {
+                <... $FOO(..., $X, ...) ...>
+              }
+          - pattern: |
+              $X, err = ...
+              if err != nil {
+                <... $FOO(..., $X.$Y, ...) ...>
+              }
+          - pattern: |
+              $X.$Y, err = ...
+              if err != nil {
+                <... $FOO(..., $X.$Y, ...) ...>
+              }
+    message: Variable `$X` is likely modified and later used on error
+    languages: [go]
+    severity: WARNING

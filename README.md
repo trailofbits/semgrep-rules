@@ -34,7 +34,7 @@ You can also tell Semgrep to ignore files and directories that match any pattern
 
 
 ```shell
-$ $ semgrep --config /path/to/semgrep-rules/ . --exclude='*_test.go'
+$ semgrep --config /path/to/semgrep-rules/ . --exclude='*_test.go'
 ```
 
 Use `-o` to output results to a file:
@@ -51,17 +51,14 @@ Rule ID | Language | What it Finds
 [hanging-goroutine](go/hanging-goroutine.yml) | Go | Goroutine leaks
 [iterate-over-empty-collection](go/iterate-over-empty-collection.yml) | Go | Iterations over empty collection
 [nil-check-after-call](go/nil-check-after-call.yml) | Go | Possible nil dereferences
-[questionable-assignment](go/questionable-assignment.yml) | Go | Possible unintentional assignment when an error occurs
-[nondeterministic-select](go/nondeterministic-select.yml) | Go | Nondeterministic `select` logic.
+[invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yml) | Go | Possible unintentional assignment when an error occurs
 [servercodec-readrequestbody-unhandled-nil](go/servercodec-readrequestbody-unhandled-nil.yml) | Go | Possible incorrect `ServerCodec` interface implementation
-[sleep-used-for-synchronizations](go/sleep-used-for-synchronizations.yml) | Go | Uses `time.Sleep` for goroutine synchronization
 [string-to-int-signedness-cast](go/string-to-int-signedness-cast.yml) | Go | Integer underflows
 [sync-mutex-value-copied](go/sync-mutex-value-copied.yml) | Go | Copying of `sync.Mutex` via value receivers
 [waitgroup-add-called-inside-goroutine](go/waitgroup-add-called-inside-goroutine.yml) | Go | Calls to `sync.WaitGroup.Add` inside of anonymous goroutines
 [waitgroup-wait-inside-loop](go/waitgroup-wait-inside-loop.yml) | Go | Calls to `sync.WaitGroup.Wait` inside a loop
 [racy-append-to-slice](go/racy-append-to-slice.yml) | Go | Concurrent calls to `append` from multiple goroutines
 [racy-write-to-map](go/racy-write-to-map.yml) | Go | Concurrent writes to the same map in multiple goroutines
-[unchecked-type-assertion](go/unchecked-type-assertion.yml) | Go | Unchecked type assertion
 [missing-unlock-before-return](go/missing-unlock-before-return.yml) | Go | Missing mutex unlock before returning from a function. This could cause panics resulting from double lock operations
 [missing-runlock-on-rwmutex](go/missing-runlock-on-rwmutex.yml) | Go | Missing RUnlock on an RWMutex lock before returning from a function.
 [tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
