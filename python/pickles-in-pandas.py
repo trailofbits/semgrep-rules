@@ -1,18 +1,16 @@
 import pandas as pd 
 
-touch = 1 
+original_df = pd.DataFrame({"foo": range(5), "bar": range(5, 10)})  
 
 # ruleid: pickles-in-pandas
-invalid = pd.read_pickle(touch) 
+pd.to_pickle(original_df, "./dummy.pkl")
 
 # ruleid: pickles-in-pandas
-also_invalid = pd.read_pickle(touch) 
+original_df.to_pickle("./dummy.pkl")
 
 # ruleid: pickles-in-pandas
-yet_another = touch.to_pickle
-result = yet_another()
+unpickled_df = pd.read_pickle("./dummy.pkl")  
 
 # ruleid: pickles-in-pandas
-def fake_function(first=null, second=$touch.to_pickle):
-    result = second()
-    return result 
+def invalid_func(another = original_df.to_pickle("./dummy.pkl")):
+  return another
