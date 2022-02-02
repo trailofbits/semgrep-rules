@@ -11,6 +11,9 @@ func main() {
 
 	res2 := appendToSlice2()
 	printResults(res2)
+
+	res3 := appendToSlice_FP()
+	printResults(res3)
 }
 
 func appendToSlice1() []int {
@@ -41,6 +44,27 @@ func appendToSlice2() []int {
 			m := iCpy * 2
 			// ruleid: racy-append-to-slice
 			r = append(r, m)
+		}(i)
+	}
+
+	wg.Wait()
+
+	return r
+}
+
+func appendToSlice_FP() []int {
+	var wg sync.WaitGroup
+	var rMut sync.Mutex
+	var r []int
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(iCpy int) {
+			defer wg.Done()
+			m := iCpy * 2
+			// ok: racy-append-to-slice
+			rMut.Lock()
+			r = append(r, m)
+			rMut.Unlock()
 		}(i)
 	}
 

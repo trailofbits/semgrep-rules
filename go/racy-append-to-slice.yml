@@ -26,6 +26,10 @@ rules:
             }(...)
             ...
           }
+    - pattern-not-inside: |
+          $MUTEX.Lock()
+          ...
+          $MUTEX.Unlock()
   message: |
     Appending $SLICE from multiple goroutines is not concurrency safe.
   severity: ERROR
