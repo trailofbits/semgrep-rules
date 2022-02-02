@@ -84,7 +84,7 @@ func (c *Container) inc2_FP(name string) error {
 	c.counters[name]++
 	if name == "c" {
 		c.mu.Unlock()
-		// ruleid: missing-unlock-before-return
+		// ok: missing-unlock-before-return
 		panic("letter not allowed")
 	}
 	c.mu.Unlock()
