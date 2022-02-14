@@ -17,6 +17,12 @@ rules:
               if err != nil {
                 <... $FOO(..., $X.$Y, ...) ...>
               }
+          - pattern: |
+              $X, err := ...
+              if err != nil {
+                ...
+                <... $X.$Y ...>
+              }
     message: Variable `$X` is likely modified and later used on error
     languages: [go]
     severity: WARNING

@@ -5,17 +5,22 @@ import (
 )
 
 type Engineer struct {
-	FName	string
-	LName	string
-	Age		int
+	Id      int
+	FName   string
+	LName   string
+	Age     int
 	Address *Address
 }
 
 type Address struct {
-	City	string
-	State	string
+	City  string
+	State string
 }
 
+type Log struct {
+	Id      int
+	Message string
+}
 
 func main() {
 	engineers := getEngineers()
@@ -30,26 +35,35 @@ func main() {
 		fmt.Printf("Unable to obtain engineer with FName %s\n", eng2.FName)
 	}
 
-	eng3 := Engineer{"Lee", "Renaldo", 50, nil}
+	eng3 := Engineer{4, "Lee", "Renaldo", 50, nil}
 	// ruleid: invalid-usage-of-modified-variable
 	eng3.Address, err = getEngineerAddressByIndex(engineers, 1)
 	if err != nil {
 		fmt.Printf("Unable to obtain address %#v!\n", eng3.Address)
 	}
 
+	// ruleid: invalid-usage-of-modified-variable
+	eng4, err := getEngineerAtIndex(engineers, 5)
+	if err != nil {
+		log := Log{
+			Id:      eng4.Id,
+			Message: "Unable to obtain engineer",
+		}
+		fmt.Printf("%#v\n", log)
+	}
+
 	fmt.Printf("Engineer 1: %s", fmt.Sprintf("%s %s", eng1.FName, eng1.LName))
 }
 
-
 func getEngineerAtIndex(slice []Engineer, idx int) (*Engineer, error) {
-	if idx >= len(slice){
+	if idx >= len(slice) {
 		return nil, fmt.Errorf("invalid index")
 	}
 	return &slice[idx], nil
 }
 
 func getEngineerAddressByIndex(slice []Engineer, idx int) (*Address, error) {
-	if idx >= len(slice){
+	if idx >= len(slice) {
 		return nil, fmt.Errorf("invalid index")
 	}
 	return slice[idx].Address, nil
@@ -58,28 +72,31 @@ func getEngineerAddressByIndex(slice []Engineer, idx int) (*Address, error) {
 func getEngineers() []Engineer {
 	return []Engineer{
 		{
+			1,
 			"James",
 			"Osterberg",
 			24,
-			&Address {
+			&Address{
 				"Detroit",
 				"Michigan",
 			},
 		},
 		{
+			2,
 			"Althea",
 			"Gordon",
 			43,
-			&Address {
+			&Address{
 				"New York",
 				"New York",
 			},
 		},
 		{
+			3,
 			"José-Manuel",
 			"Arthur Chao",
 			55,
-			&Address {
+			&Address{
 				"Paris",
 				"Île-de-France",
 			},
