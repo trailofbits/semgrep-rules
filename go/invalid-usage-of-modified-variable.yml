@@ -23,6 +23,8 @@ rules:
                 ...
                 <... $X.$Y ...>
               }
-    message: Variable `$X` is likely modified and later used on error
+    message: |
+      Variable `$X` is likely modified and later used on error. In some cases this could result 
+      in panics due to a nil dereference  
     languages: [go]
     severity: WARNING
