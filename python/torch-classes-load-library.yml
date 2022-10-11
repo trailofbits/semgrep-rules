@@ -1,0 +1,11 @@
+rules:
+- id: torch-classes-load-library
+  patterns:
+    - pattern-either: 
+      - pattern: |
+          torch.classes.load_library(...)
+  message: |
+      Loading custom operator libraries can result in arbitrary code execution.
+      Docs: https://pytorch.org/tutorials/advanced/torch_script_custom_classes.html
+  languages: [python]
+  severity: WARNING

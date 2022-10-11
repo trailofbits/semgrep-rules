@@ -1,0 +1,11 @@
+rules:
+- id: tensorflow-load-library
+  patterns:
+    - pattern-either: 
+      - pattern: |
+      tf.load_library($PATH)
+  message: |
+      Loading custom operator libraries can result in arbitrary code execution.
+      Docs: https://www.tensorflow.org/api_docs/python/tf/load_library
+  languages: [python]
+  severity: WARNING

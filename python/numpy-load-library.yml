@@ -1,0 +1,11 @@
+rules:
+- id: numpy-load-library
+  patterns:
+    - pattern-either: 
+      - pattern: |
+          numpy.ctypeslib.load_library($PATH, $DIRECTORY)
+  message: |
+      Loading custom operator libraries can result in arbitrary code execution.
+      Docs: https://numpy.org/doc/stable/reference/routines.ctypeslib.html
+  languages: [python]
+  severity: WARNING
