@@ -3,13 +3,13 @@ rules:
   patterns:
     - pattern-either: 
       - pattern: |
-          with tarfile.open($PATH) as $TAR:
+          with tarfile.open(...) as $TAR:
               ...
               $TAR.extractall($DESTPATH)
       - pattern: |
-          tarfile.open($PATH).extractall($DESTTPATH)
+          tarfile.open(...).extractall($DESTTPATH)
       - pattern: |
-          $TAR = tarfile.open($PATH)
+          $TAR = tarfile.open(...)
           ...
           $TAR.extractall($DESTTPATH)
   message: |

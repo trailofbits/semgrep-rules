@@ -32,6 +32,10 @@ def extract_3(args):
     tf = tarfile.open(path)
     tf.extractall(save_path)
 
+def extract_4(args, tarobj):
+    # ruleid: tarfile-extractall-traversal
+    tf = tarfile.open(mode='r', fileobj=None)
+    tf.extractall(save_path)
 
 def run():
     parser = get_parser()
