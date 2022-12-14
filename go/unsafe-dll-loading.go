@@ -79,4 +79,8 @@ func main() {
 	fmt.Println(test10.Load())
 	test10.System = true
 
+	// ruleid: unsafe-dll-loading
+	test0, _ := syscall.LoadLibrary("q_insecure.dll")
+	fmt.Println(test0)
+
 }
