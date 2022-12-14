@@ -83,4 +83,9 @@ func main() {
 	test0, _ := syscall.LoadLibrary("q_insecure.dll")
 	fmt.Println(test0)
 
+	// ruleid: unsafe-dll-loading
+	windows.LoadDLL("r_insecure.dll")
+
+	// ruleid: unsafe-dll-loading
+	windows.MustLoadDLL("s_insecure.dll")
 }

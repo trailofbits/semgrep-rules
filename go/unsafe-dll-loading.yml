@@ -4,6 +4,8 @@ rules:
       - pattern-either:
           - pattern: syscall.LoadDLL(...)
           - pattern: syscall.LoadLibrary(...)
+          - pattern: windows.LoadDLL(...)
+          - pattern: windows.MustLoadDLL(...)
           - pattern: syscall.NewLazyDLL(...)
           - pattern: |
               $X = windows.NewLazyDLL(...)
