@@ -90,3 +90,15 @@ func (c *Container) inc2_FP(name string) error {
 	c.mu.Unlock()
 	return nil
 }
+
+func (c *Container) inc3(name string) error {
+	c.mu.Lock()
+	c.counters[name]++
+	if name == "c" {
+		c.mu.Unlock()
+		// ok: missing-unlock-before-return
+		return fmt.Errorf("letter not allowed")
+	}
+	// ruleid: missing-unlock-before-return
+	return nil
+}

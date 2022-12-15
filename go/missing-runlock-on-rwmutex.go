@@ -54,6 +54,17 @@ func (c *RWContainer) inc(name string) error {
 	return nil
 }
 
+func (c *RWContainer) inc2(name string) error {
+	c.mu.RLock()
+	c.counters[name]++
+	if name == "c" {
+		// ruleid: missing-runlock-on-rwmutex
+		return fmt.Errorf("letter not allowed")
+	}
+	// ruleid: missing-runlock-on-rwmutex
+	return nil
+}
+
 func (c *RWContainer) inc_FP(name string) error {
 	c.mu.RLock()
 	c.counters[name]++

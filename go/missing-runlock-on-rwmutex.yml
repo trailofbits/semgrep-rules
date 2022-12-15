@@ -1,5 +1,19 @@
 rules:
 - id: missing-runlock-on-rwmutex
+  message: >-
+    Missing RUnlock on an RWMutex lock before returning from a function
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-667: Improper Locking"
+    subcategory: vuln
+    confidence: MEDIUM
+    likelihood: HIGH
+    impact: MEDIUM
+    references:
+      - https://pkg.go.dev/sync#RWMutex
+
   patterns:
     - pattern-either:
       - pattern: panic(...)
@@ -7,7 +21,6 @@ rules:
     - pattern-inside: |
         $T.RLock()
         ...
-        $T.RUnlock()
     - pattern-not-inside: |
         $T.RUnlock()
         ...
@@ -18,8 +31,3 @@ rules:
         $FOO(..., ..., func(...) { 
             ... 
         })
-  message: |
-    Missing RUnlock on an RWMutex lock before returning from a function. 
-    See https://pkg.go.dev/sync#RWMutex for more information.
-  languages: [go]
-  severity: ERROR

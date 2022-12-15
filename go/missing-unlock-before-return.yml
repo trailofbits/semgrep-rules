@@ -1,5 +1,20 @@
 rules:
 - id: missing-unlock-before-return
+  message: >-
+    Missing mutex unlock before returning from a function. 
+    This could result in panics resulting from double lock operations
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-667: Improper Locking"
+    subcategory: vuln
+    confidence: MEDIUM
+    likelihood: HIGH
+    impact: MEDIUM
+    references:
+      - https://pkg.go.dev/sync#Mutex
+    
   patterns:
     - pattern-either:
       - pattern: panic(...)
@@ -7,7 +22,6 @@ rules:
     - pattern-inside: |
         $T.Lock()
         ...
-        $T.Unlock()
     - pattern-not-inside: |
         $T.Unlock()
         ...
@@ -18,8 +32,3 @@ rules:
         $FOO(..., ..., func(...) { 
             ... 
         })
-  message: |
-    Missing mutex unlock before returning from a function. 
-    This could result in panics resulting from double lock operations
-  languages: [go]
-  severity: ERROR
