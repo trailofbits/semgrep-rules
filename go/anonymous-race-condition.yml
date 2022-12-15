@@ -6,7 +6,7 @@ rules:
   severity: ERROR
   metadata:
     category: security
-    cwe: ""
+    cwe: "CWE-118: Incorrect Access of Indexable Resource ('Range Error')"
     subcategory: vuln
     confidence: MEDIUM
     likelihood: HIGH

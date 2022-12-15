@@ -52,6 +52,11 @@ func main() {
 		fmt.Printf("%#v\n", log)
 	}
 
+	// ok: invalid-usage-of-modified-variable
+	if eng5, err := getEngineerAtIndex(engineers, 6); err == nil {
+		fmt.Printf("Obtained engineer with FName %s\n", eng5.FName)
+	}
+
 	fmt.Printf("Engineer 1: %s", fmt.Sprintf("%s %s", eng1.FName, eng1.LName))
 }
 

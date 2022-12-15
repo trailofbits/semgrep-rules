@@ -64,8 +64,8 @@ func ConcurrentFunctions_FP(fns ...func()) {
 	// ok: anonymous-race-condition
 	for _, fn := range fns {
 		wg.Add(1)
-		go func(fn func()) {
-			fn()
+		go func(fn2 func()) {
+			fn2()
 			wg.Done()
 		}(fn)
 	}
