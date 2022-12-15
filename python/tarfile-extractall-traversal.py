@@ -37,12 +37,31 @@ def extract_4(args, tarobj):
     tf = tarfile.open(mode='r', fileobj=None)
     tf.extractall(save_path)
 
+def extract_5(args, tarobj):
+    # ok: tarfile-extractall-traversal
+    tf = tarfile.open(mode='r', fileobj=None)
+    tf.extractall(save_path, members=safu_members())
+
+def extract_6(args, tarobj):
+    # ok: tarfile-extractall-traversal
+    tf = tarfile.open(mode='r', fileobj=None)
+    tf.extractall(members=safu_members(), numeric_owner=True, path=save_path)
+
+def extract_7(args, tarobj):
+    # todoruleid: tarfile-extractall-traversal
+    tf = tarfile.open(mode='r', fileobj=None)
+    tf.extractall(members=None, numeric_owner=True, path=save_path)
+
 def run():
     parser = get_parser()
     args = parser.parse_args()
-    #extract_1(args)
-    #extract_2(args)
+    extract_1(args)
+    extract_2(args)
     extract_3(args)
+    extract_4(args)
+    extract_5(args)
+    extract_6(args)
+    extract_7(args)
 
 
 if __name__ == '__main__':

@@ -1,8 +1,13 @@
 rules:
 - id: torch-tensor
-  pattern: torch.Tensor(...)
-  message: | 
-   Avoid using torch.Tensor() to directly create a tensor for efficiency and proper parsing. 
-   For more information, see https://pytorch.org/docs/stable/tensors.html
+  message: Avoid using `torch.Tensor()` to directly create a tensor for efficiency and proper parsing
   languages: [python]
   severity: WARNING
+  metadata:
+    category: performance
+    subcategory: audit
+    confidence: HIGH
+    references:
+      - https://pytorch.org/docs/stable/tensors.html
+
+  pattern: torch.Tensor(...)

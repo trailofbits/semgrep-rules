@@ -1,14 +1,23 @@
 rules:
 - id: pickles-in-pytorch
+  message: >-
+    Functions reliant on pickle can result in arbitrary code execution. 
+    Consider loading from `state_dict`, using fickling, or switching to a safer serialization method like ONNX
+  languages: [python]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-502: Deserialization of Untrusted Data"
+    subcategory: vuln
+    confidence: HIGH
+    likelihood: MEDIUM
+    impact: HIGH
+    references:
+      - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
   patterns:
     - pattern-either:
       - pattern: torch.save(...)
       - pattern: torch.load(...)
     - pattern-not: torch.save($M.state_dict(), ...)
-    - pattern-not-inside: $M.load_state_dict(torch.load($P))
-  message: | 
-    Functions reliant on pickle can result in arbitrary code execution. 
-    Consider loading from state_dict, using fickling, or switching to a safer serialization method like ONNX.
-    For more information, see https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/ 
-  languages: [python]
-  severity: WARNING
+    - pattern-not-inside: $M.load_state_dict(torch.load(...))
