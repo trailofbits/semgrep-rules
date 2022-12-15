@@ -6,7 +6,7 @@ rules:
   severity: ERROR
   metadata:
     category: security
-    cwe: "CWE-118: Incorrect Access of Indexable Resource ('Range Error')"
+    cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
     subcategory: vuln
     confidence: MEDIUM
     likelihood: HIGH

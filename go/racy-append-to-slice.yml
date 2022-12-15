@@ -1,7 +1,17 @@
 rules:
 - id: racy-append-to-slice
-  languages:
-    - go
+  message: >-
+    Appending `$SLICE` from multiple goroutines is not concurrency safe
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+    subcategory: vuln
+    confidence: MEDIUM
+    likelihood: HIGH
+    impact: MEDIUM
+
   patterns:
     - pattern: |
           $SLICE = append($SLICE, $ITEM)
@@ -34,6 +44,3 @@ rules:
           $MUTEX.Lock()
           ...
           $MUTEX.Unlock()
-  message: |
-    Appending $SLICE from multiple goroutines is not concurrency safe.
-  severity: ERROR
