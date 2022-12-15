@@ -1,0 +1,30 @@
+rules:
+  - id: unsafe-dll-loading
+    patterns:
+      - pattern-either:
+          - pattern: syscall.LoadDLL(...)
+          - pattern: syscall.LoadLibrary(...)
+          - pattern: windows.LoadDLL(...)
+          - pattern: windows.MustLoadDLL(...)
+          - pattern: syscall.NewLazyDLL(...)
+          - pattern: |
+              $X = windows.NewLazyDLL(...)
+              ...
+              $X.$Y()
+              ...
+              $X.System = true
+          - pattern: |
+              $X = windows.NewLazyDLL(...)
+              ...
+              $X.$Y()
+      - pattern-not: |
+          $X = windows.NewLazyDLL(...)
+          ...
+          $X.System = true
+          ...
+          $X.$Y()
+    message: The function is vulnerable to DLL hijacking attacks. Use the windows.NewLazySystemDLL() function
+             to search only the Windows directory for the DLL.
+    languages:
+      - go
+    severity: ERROR
