@@ -8,7 +8,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-476: NULL Pointer Dereference"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: HIGH
     likelihood: MEDIUM
     impact: LOW

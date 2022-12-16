@@ -8,7 +8,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-688: Function Call With Incorrect Variable or Reference as Argument"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: HIGH
     likelihood: HIGH
     impact: LOW

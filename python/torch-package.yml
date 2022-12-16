@@ -6,7 +6,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-502: Deserialization of Untrusted Data"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: LOW
     likelihood: MEDIUM
     impact: HIGH

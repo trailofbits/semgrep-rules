@@ -5,7 +5,7 @@ rules:
   severity: WARNING
   metadata:
     category: performance
-    subcategory: audit
+    subcategory: [audit]
     confidence: HIGH
     references:
       - https://pytorch.org/docs/stable/tensors.html

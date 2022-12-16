@@ -8,7 +8,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-330: Use of Insufficiently Random Values"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: HIGH
     likelihood: MEDIUM
     impact: MEDIUM

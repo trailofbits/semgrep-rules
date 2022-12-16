@@ -7,7 +7,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-833: Deadlock"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: LOW

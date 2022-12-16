@@ -7,7 +7,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-755: Improper Handling of Exceptional Conditions"
-    subcategory: audit
+    subcategory: [audit]
     confidence: HIGH
     likelihood: MEDIUM
     impact: LOW

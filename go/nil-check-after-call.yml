@@ -6,7 +6,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-253: Incorrect Check of Function Return Value"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: MEDIUM

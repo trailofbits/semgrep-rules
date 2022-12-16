@@ -6,7 +6,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-758: Reliance on Undefined, Unspecified, or Implementation-Defined Behavior"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: MEDIUM
     likelihood: LOW
     impact: LOW

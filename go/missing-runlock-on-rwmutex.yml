@@ -7,7 +7,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-667: Improper Locking"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM

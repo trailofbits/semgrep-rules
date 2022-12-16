@@ -6,7 +6,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-681: Incorrect Conversion between Numeric Types"
-    subcategory: audit
+    subcategory: [audit]
     confidence: HIGH
     likelihood: LOW
     impact: MEDIUM

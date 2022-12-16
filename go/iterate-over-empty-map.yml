@@ -7,7 +7,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-665: Improper Initialization"
-    subcategory: audit
+    subcategory: [audit]
     confidence: MEDIUM
     likelihood: LOW
     impact: LOW

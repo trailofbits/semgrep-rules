@@ -7,7 +7,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM

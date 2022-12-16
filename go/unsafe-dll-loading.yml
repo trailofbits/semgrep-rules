@@ -8,7 +8,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-427: Uncontrolled Search Path Element"
-    subcategory: vuln
+    subcategory: [vuln]
     confidence: HIGH
     likelihood: MEDIUM
     impact: HIGH

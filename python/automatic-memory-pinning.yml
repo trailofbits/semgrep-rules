@@ -7,7 +7,7 @@ rules:
   metadata:
     category: security
     cwe: "CWE-676: Use of Potentially Dangerous Function"
-    subcategory: audit
+    subcategory: [audit]
     confidence: HIGH
     likelihood: LOW
     impact: LOW
