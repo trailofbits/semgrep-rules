@@ -38,6 +38,15 @@ func (cc *TobCodecCorrect) ReadRequestBody(body interface{}) error {
 	return json.Unmarshal(*cc.req.Body, &result)
 }
 
+// ok: servercodec-readrequestbody-unhandled-nil
+func (cc *TobCodecCorrect) ReadRequestBody(body interface{}) error {
+	var result [1]interface{}
+	if body != nil {
+		result[0] = body
+		return json.Unmarshal(*cc.req.Body, &result)
+	}
+}
+
 // ruleid: servercodec-readrequestbody-unhandled-nil
 func (ci *TobCodecIncorrect) ReadRequestBody(body interface{}) error {
 	var result [1]interface{}

@@ -12,3 +12,6 @@
 .history/
 
 *.testproj/
+
+# Intellij
+.idea/

@@ -1,5 +1,19 @@
 rules:
 - id: anonymous-race-condition
+  message: >-
+    Possible race condition due to memory aliasing of variable `$X`
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: HIGH
+    impact: MEDIUM
+    references:
+      - https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables
+
   patterns:
     - pattern-either: 
       - pattern: |
@@ -28,6 +42,16 @@ rules:
             go func(...) {
               ...
               $FOO(..., $X,...)
+              ...
+            }(...)
+            ...
+          }
+      - pattern: |
+          for $Y, $X := range ... {
+            ...
+            go func(...){
+              ...
+              $X. ... .$M(...)
               ...
             }(...)
             ...
@@ -86,7 +110,3 @@ rules:
           }(...)
           ...
         }
-  message: |
-    Possible race condition due to memory aliasing of variable `$X`
-  severity: ERROR
-  languages: [go]

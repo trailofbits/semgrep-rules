@@ -1,5 +1,19 @@
 rules:
 - id: hanging-goroutine
+  message: >-
+    Potential goroutine leak due to unbuffered channel send inside loop or unbuffered channel receive in select block
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-833: Deadlock"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: LOW
+    references:
+      - https://blog.trailofbits.com/2021/11/08/discovering-goroutine-leaks-with-semgrep
+
   patterns:
     - pattern-either: 
       - pattern: |
@@ -137,7 +151,3 @@ rules:
     - pattern-not-inside: |
         $CHANNEL := make(..., $T)
         ...
-  message: |
-    Potential goroutine leak due to unbuffered channel send inside loop or unbuffered channel receive in select block.
-  severity: ERROR
-  languages: [go]

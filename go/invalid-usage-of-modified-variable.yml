@@ -1,30 +1,29 @@
 rules:
-  - id: invalid-usage-of-modified-variable
-    patterns:
-      - pattern-either:
-          - pattern: |
-              $X, err = ...
-              if err != nil {
-                <... $FOO(..., $X, ...) ...>
-              }
-          - pattern: |
-              $X, err = ...
-              if err != nil {
-                <... $FOO(..., $X.$Y, ...) ...>
-              }
-          - pattern: |
-              $X.$Y, err = ...
-              if err != nil {
-                <... $FOO(..., $X.$Y, ...) ...>
-              }
-          - pattern: |
-              $X, err := ...
-              if err != nil {
-                ...
-                <... $X.$Y ...>
-              }
-    message: |
-      Variable `$X` is likely modified and later used on error. In some cases this could result 
-      in panics due to a nil dereference  
-    languages: [go]
-    severity: WARNING
+- id: invalid-usage-of-modified-variable
+  message: >-
+    Variable `$X` is likely modified and later used on error. In some cases this could result 
+    in panics due to a nil dereference  
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-665: Improper Initialization"
+    subcategory: [audit]
+    confidence: HIGH
+    likelihood: MEDIUM
+    impact: MEDIUM
+
+  patterns:
+    - pattern-either:
+        - pattern: |
+            $X, err = ...
+            if err != nil {
+              <... $X ...>
+            }
+        - pattern: |
+            $X, err := ...
+            if err != nil {
+              ...
+              <... $X.$Y ...>
+            }
+  

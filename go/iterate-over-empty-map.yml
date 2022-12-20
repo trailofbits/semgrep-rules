@@ -1,5 +1,17 @@
 rules:
 - id: iterate-over-empty-map
+  message: >-
+    Iteration over a possibly empty map `$C`. This is likely a bug or redundant code
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-665: Improper Initialization"
+    subcategory: [audit]
+    confidence: MEDIUM
+    likelihood: LOW
+    impact: LOW
+
   patterns:
     - pattern: |
         $C = make(map[$T1] $T2, ...)
@@ -30,7 +42,4 @@ rules:
         ...
         for $K := range $C { ... }
 
-  message: |
-    Iteration over a possibly empty map `$C`. This is likely a bug or redundant code.
-  languages: [go]
-  severity: ERROR
+  
