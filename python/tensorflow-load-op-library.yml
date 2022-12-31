@@ -3,7 +3,7 @@ rules:
   patterns:
     - pattern-either: 
       - pattern: |
-      tf.load_op_library($PATH)
+      tensorflow.load_op_library($PATH)
   message: |
       Loading custom operator libraries can result in arbitrary code execution.
       Docs: https://www.tensorflow.org/api_docs/python/tf/load_op_library

@@ -1,6 +1,6 @@
-import tensorflow as tf
+import tensorflow
 
 path = ""
 
 #rule-id
-tf.load_library(path)
+tensorflow.load_library(path)
