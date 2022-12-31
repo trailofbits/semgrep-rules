@@ -7,7 +7,6 @@ def foo(x):
   # ruleid: torch-tensor
   return torch.Tensor(x)
 
-
 import torch as t
 
 # ruleid: torch-tensor
@@ -16,3 +15,7 @@ y = t.Tensor(x)
 def foo(x): 
   # ruleid: torch-tensor
   return t.Tensor(x)
+
+
+# ok: torch-tensor
+y = torch.tensor([0, 1])

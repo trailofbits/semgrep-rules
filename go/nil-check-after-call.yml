@@ -1,5 +1,16 @@
 rules:
 - id: nil-check-after-call
+  message: Potential `$FOO` nil dereference when `$BAR` is called
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-253: Incorrect Check of Function Return Value"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: MEDIUM
+
   patterns:
     - pattern-either:
         - pattern: |
@@ -58,7 +69,3 @@ rules:
         $FOO = $FOO.$BAR(...)
         ...
         if $FOO != nil { ... }
-
-  message: Potential `$FOO` nil dereference when `$BAR` is called
-  languages: [go]
-  severity: ERROR

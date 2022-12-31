@@ -1,21 +1,33 @@
 rules:
 - id: racy-write-to-map
-  languages:
-    - go
+  message: >-
+    Writing `$MAP` from multiple goroutines is not concurrency safe
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: HIGH
+    impact: MEDIUM
+
   patterns:
     - pattern: |
           $MAP[$KEY] = $VALUE
-    - pattern-either:
-      - pattern-inside: |
-          $MAP = make(map[$KTYPE]$VTYPE)
+    - pattern-inside: |
+        $MAP = make(map[$KTYPE]$VTYPE)
+        ...
+        for ... {
           ...
-          for ... {
+          go func(...) {
             ...
-            go func(...) {
-              ...
-            }(...)
+            $MAP[$KEY] = $VALUE
             ...
-          }
-  message: |
-    Writing $MAP from multiple goroutines is not concurrency safe.
-  severity: ERROR
+          }(...)
+          ...
+        }
+    - pattern-not-inside: |
+          $MUTEX.Lock()
+          ...
+          $MUTEX.Unlock()

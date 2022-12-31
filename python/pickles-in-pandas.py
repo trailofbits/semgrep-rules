@@ -14,3 +14,6 @@ unpickled_df = pd.read_pickle("./dummy.pkl")
 # ruleid: pickles-in-pandas
 def invalid_func(another = original_df.to_pickle("./dummy.pkl")):
   return another
+
+# ok: pickles-in-pandas
+uncsved_df = pd.read_csv("./dummy.pkl")  

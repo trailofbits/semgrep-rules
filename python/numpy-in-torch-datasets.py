@@ -1,5 +1,6 @@
 import numpy as np
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
+from tob.strangelib import Dataset as DatasetStrange
 
 # ruleid: numpy-in-torch-datasets
 class RandomDataset(Dataset):
@@ -19,7 +20,28 @@ class AnotherRandomDataset(Dataset):
         print("Hello World")
         x = np.random.randint(0, 1000, 3)
         return x 
-      
+
+# ruleid: numpy-in-torch-datasets
+class AnotherRandomDatasetOther(Dataset):
+    def __len__(self):
+        return 1000
+     
+    def __getitem__(self, index):
+        print("Hello World")
+        x = numpy.random.randint(0, 1000, 3)
+        return x
+
+# ok: numpy-in-torch-datasets
+class NotTorchDataset(DatasetStrange):
+    def __len__(self):
+        return 1000
+     
+    def __getitem__(self, index):
+        print("Hello World")
+        x = numpy.random.randint(0, 1000, 3)
+        return x 
+
+# ok: numpy-in-torch-datasets
 class YetAnotherRandomDataset(Dataset):
     def __len__(self):
         return 1000

@@ -11,9 +11,8 @@ type Counter struct {
 
 
 // ok: sync-mutex-value-copied
-func (c *Counter) Increase(d int64) (r int64) {
+func (c *Counter) ValueFine(d int64) (r int64) {
 	c.Lock()
-	c.n += d
 	r = c.n
 	c.Unlock()
 	return

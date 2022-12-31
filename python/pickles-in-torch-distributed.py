@@ -20,3 +20,6 @@ dist.gather_object(
 
 # ruleid: pickles-in-torch-distributed
 dist.scatter_object_list(output_list, objects, src=0)
+
+# ok: pickles-in-torch-distributed
+dist.scatter(output_list, objects, src=0)
