@@ -1,0 +1,11 @@
+rules:
+- id: numpy-distutils
+  patterns:
+    - pattern-either: 
+      - pattern: |
+          numpy.distutils
+  message: |
+      Compiling arbitrary code can result in code execution. Ensure the source code is from a trusted location.
+      Docs: https://numpy.org/doc/stable/reference/distutils.html
+  languages: [python]
+  severity: WARNING

@@ -1,0 +1,11 @@
+rules:
+- id: onnx-session-options
+  patterns:
+    - pattern-either:
+      - pattern: |
+          register_custom_ops_library($PATH)
+  message: |
+    Loading custom operator libraries can result in arbitrary code execution.
+    Docs: https://onnxruntime.ai/docs/reference/operators/add-custom-op.html
+  languages: [python]
+  severity: WARNING
