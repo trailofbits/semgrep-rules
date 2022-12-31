@@ -3,7 +3,7 @@ rules:
   patterns:
     - pattern-either: 
       - pattern: |
-          np.f2py.compile(...)
+          numpy.f2py.compile(...)
   message: |
       Compiling arbitrary code can result in code execution. Ensure the source code is from a trusted location.
       Docs: https://numpy.org/doc/stable/f2py/usage.html#
