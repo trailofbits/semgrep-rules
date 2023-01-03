@@ -1,11 +1,19 @@
 rules:
 - id: numpy-f2py-compile
-  patterns:
-    - pattern-either: 
-      - pattern: |
-          numpy.f2py.compile(...)
-  message: |
-      Compiling arbitrary code can result in code execution. Ensure the source code is from a trusted location.
-      Docs: https://numpy.org/doc/stable/f2py/usage.html#
+  message: Compiling arbitrary code can result in code execution. Ensure the source code is from a trusted location
   languages: [python]
   severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: LOW
+    likelihood: LOW
+    impact: MEDIUM
+    references:
+      - https://numpy.org/doc/stable/f2py/usage.html
+
+  patterns:
+    - pattern: |
+        numpy.f2py.compile(...)
+  

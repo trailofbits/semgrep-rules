@@ -1,11 +1,19 @@
 rules:
 - id: onnx-session-options
-  patterns:
-    - pattern-either:
-      - pattern: |
-          onnxruntime.tools.convert_onnx_models_to_ort $PATH --custom_op_library $PATH"
-  message: |
-    Loading custom operator libraries can result in arbitrary code execution.
-    Docs: https://onnxruntime.ai/docs/reference/operators/add-custom-op.html
+  message: Loading custom operator libraries can result in arbitrary code execution
   languages: [python]
   severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: LOW
+    likelihood: LOW
+    impact: MEDIUM
+    references:
+      - https://onnxruntime.ai/docs/reference/operators/add-custom-op.html
+
+  patterns:
+    - pattern: |
+        onnxruntime.tools.convert_onnx_models_to_ort $PATH --custom_op_library $PATH"
+  

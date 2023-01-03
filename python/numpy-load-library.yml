@@ -1,11 +1,20 @@
 rules:
 - id: numpy-load-library
+  message: Loading custom operator libraries can result in arbitrary code execution
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: LOW
+    likelihood: LOW
+    impact: MEDIUM
+    references:
+      - https://numpy.org/doc/stable/reference/routines.ctypeslib.html#numpy.ctypeslib.load_library
+  
   patterns:
     - pattern-either: 
       - pattern: |
           numpy.ctypeslib.load_library($PATH, $DIRECTORY)
-  message: |
-      Loading custom operator libraries can result in arbitrary code execution.
-      Docs: https://numpy.org/doc/stable/reference/routines.ctypeslib.html
-  languages: [python]
-  severity: WARNING
+  
