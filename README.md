@@ -61,7 +61,7 @@ Rule ID | Language | What it Finds
 [racy-write-to-map](go/racy-write-to-map.yml) | Go | Concurrent writes to the same map in multiple goroutines
 [missing-unlock-before-return](go/missing-unlock-before-return.yml) | Go | Missing mutex unlock before returning from a function. This could cause panics resulting from double lock operations
 [missing-runlock-on-rwmutex](go/missing-runlock-on-rwmutex.yml) | Go | Missing RUnlock on an RWMutex lock before returning from a function
-[unsafe-dll-loading.yml](go/unsafe-dll-loading.yml) | Go | The used function is vulnerable to DLL hijacking attacks
+[unsafe-dll-loading.yml](go/unsafe-dll-loading.yml) | Go | Use of function vulnerable to DLL hijacking attacks
 [tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
 [automatic-memory-pinning](python/automatic-memory-pinning.yml) | Python | Memory is not automatically pinned
 [lxml-in-pandas](python/lxml-in-pandas.yml) | Python | Potential XXE attacks from loading lxml in pandas
