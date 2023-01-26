@@ -1,9 +1,0 @@
-rules:
-- id: pickle-load
-  patterns:
-    - pattern: pickle.load(...)
-  message: |
-      Functions reliant on pickle can result in arbitrary code execution.  Considerswitching to a safer serialization method. 
-      Docs: https://docs.python.org/3/library/pickle.html
-  languages: [python]
-  severity: WARNING

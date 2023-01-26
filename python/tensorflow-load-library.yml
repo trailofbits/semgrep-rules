@@ -1,11 +1,23 @@
 rules:
 - id: tensorflow-load-library
-  patterns:
-    - pattern-either: 
-      - pattern: |
-      tensorflow.load_library($PATH)
-  message: |
-      Loading custom operator libraries can result in arbitrary code execution.
-      Docs: https://www.tensorflow.org/api_docs/python/tf/load_library
+  message: Loading custom operator libraries can result in arbitrary code execution
   languages: [python]
-  severity: WARNING
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: HIGH
+    references:
+      - https://www.tensorflow.org/api_docs/python/tf/load_library
+      - https://www.tensorflow.org/api_docs/python/tf/load_op_library
+
+  patterns:
+    - pattern-either:
+      - pattern: tensorflow.load_library(...)
+      - pattern: tensorflow.load_op_library(...)
+    - pattern-not: tensorflow.load_library("...")
+    - pattern-not: tensorflow.load_op_library("...")
+  

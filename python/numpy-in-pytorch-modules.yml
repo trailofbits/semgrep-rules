@@ -8,7 +8,7 @@ rules:
   metadata:
     category: performance
     subcategory: [audit]
-    confidence: HIGH
+    confidence: MEDIUM
 
   patterns:
     - pattern: $RESULT = numpy.$FUNCTION(...)

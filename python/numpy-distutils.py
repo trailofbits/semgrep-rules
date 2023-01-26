@@ -1,4 +1,8 @@
-from numpy import f2py
+# ruleid: numpy-distutils
+from numpy import distutils
 
-sourcecode = ""
-f2py.compile(sourcecode, modulename='add')
+# ruleid: numpy-distutils
+from numpy.distutils import exec_command
+
+# ok: numpy-distutils
+import numpy as np

@@ -1,9 +1,0 @@
-rules:
-- id: pandas-read-csv
-  patterns:
-    - pattern: pandas.read_csv(...)
-  message: |
-      Use strict input checking to ensure the correct path or data is loaded. Ensure this is not used on a public endpoint.
-      Docs: https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html
-  languages: [python]
-  severity: WARNING
