@@ -8,7 +8,7 @@ rules:
     category: security
     cwe: "CWE-502: Deserialization of Untrusted Data"
     subcategory: [vuln]
-    confidence: HIGH
+    confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
     references:

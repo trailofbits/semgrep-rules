@@ -14,9 +14,8 @@ rules:
     references:
       - https://pytorch.org/docs/stable/data.html#memory-pinning
 
-  patterns:
-    - pattern: |
-        torch.utils.data.DataLoader(...)
-    - pattern-not: |
-        torch.utils.data.DataLoader(..., pin_memory=$VALUE, ...)
-  
+  pattern-either:
+    - patterns:
+      - pattern: torch.utils.data.DataLoader(...)
+      - pattern-not: torch.utils.data.DataLoader(..., pin_memory=$VALUE, ...)
+    - pattern: torch.utils.data.DataLoader(..., pin_memory=False, ...)

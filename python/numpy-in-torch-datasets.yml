@@ -8,10 +8,10 @@ rules:
   metadata:
     category: security
     cwe: "CWE-330: Use of Insufficiently Random Values"
-    subcategory: [vuln]
+    subcategory: [audit]
     confidence: HIGH
     likelihood: MEDIUM
-    impact: MEDIUM
+    impact: LOW
     references:
       - https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects
 

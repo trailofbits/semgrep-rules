@@ -9,7 +9,7 @@ rules:
     category: security
     cwe: "CWE-502: Deserialization of Untrusted Data"
     subcategory: [vuln]
-    confidence: HIGH
+    confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
     references:
@@ -17,6 +17,8 @@ rules:
 
   patterns:
     - pattern: numpy.load(..., allow_pickle=$VALUE, ...)
+    - pattern-not: numpy.load("...", ...)
+    - pattern-not: numpy.load(..., file="...", ...)
     - metavariable-pattern:
         metavariable: $VALUE
         patterns:

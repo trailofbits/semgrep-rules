@@ -19,4 +19,12 @@ rules:
     - pattern-either:
       - pattern: pandas.read_pickle(...)
       - pattern: pandas.to_pickle(...)
-      - pattern: $SMTH.to_pickle(...)
+      - patterns:
+          - pattern-inside: |
+              import pandas
+              ...
+          - pattern: $SMTH.to_pickle(...)
+
+    - pattern-not: pandas.read_pickle("...")
+    - pattern-not: pandas.to_pickle(..., "...")
+    - pattern-not: $SMTH.to_pickle("...")

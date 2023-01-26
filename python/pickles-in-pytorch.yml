@@ -9,7 +9,7 @@ rules:
     category: security
     cwe: "CWE-502: Deserialization of Untrusted Data"
     subcategory: [vuln]
-    confidence: HIGH
+    confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
     references:
@@ -19,5 +19,7 @@ rules:
     - pattern-either:
       - pattern: torch.save(...)
       - pattern: torch.load(...)
+    - pattern-not: torch.load("...")
+    - pattern-not: torch.save(..., "...")
     - pattern-not: torch.save($M.state_dict(), ...)
     - pattern-not-inside: $M.load_state_dict(torch.load(...))
