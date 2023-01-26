@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    technology: [numpy]
     description: "Potential arbitrary code execution from `NumPy` library loading"
     references:
       - https://numpy.org/doc/stable/reference/routines.ctypeslib.html#numpy.ctypeslib.load_library

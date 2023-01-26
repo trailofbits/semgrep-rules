@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    technology: [pytorch]
     description: "Potential arbitrary code execution from `PyTorch.Distributed` functions reliant on pickling"
     references:
       - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/

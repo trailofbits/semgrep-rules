@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    technology: [pytorch]
     description: "Potential arbitrary code execution from `PyTorch` library loading"
     references:
       - https://pytorch.org/tutorials/advanced/torch_script_custom_classes.html

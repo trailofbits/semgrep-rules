@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    technology: [--no-technology--]
     description: "Race conditions within anonymous goroutines"
     references:
       - https://github.com/golang/go/wiki/CommonMistakes#using-goroutines-on-loop-iterator-variables

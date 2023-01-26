@@ -9,8 +9,11 @@ rules:
     category: performance
     subcategory: [audit]
     confidence: MEDIUM
+    technology: [pytorch, numpy]
     description: "Uses of `NumPy` functions inside `PyTorch` modules"
-
+    references:
+      - https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects
+      
   patterns:
     - pattern: $RESULT = numpy.$FUNCTION(...)
     - pattern-inside: |

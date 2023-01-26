@@ -10,6 +10,7 @@ rules:
     confidence: LOW
     likelihood: MEDIUM
     impact: HIGH
+    technology: [pytorch]
     description: "Potential arbitrary code execution from `torch.package`"
     references:
       - https://pytorch.org/docs/1.13/package.html#torch-package

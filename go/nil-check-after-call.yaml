@@ -10,8 +10,11 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: MEDIUM
+    technology: [--no-technology--]
     description: "Possible nil dereferences"
-
+    references:
+      - https://blog.trailofbits.com/2019/11/07/attacking-go-vr-ttps/
+    
   patterns:
     - pattern-either:
         - pattern: |

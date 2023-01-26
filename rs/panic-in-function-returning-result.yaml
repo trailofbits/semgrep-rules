@@ -11,7 +11,10 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: LOW
+    technology: [--no-technology--]
     description: "Calling `unwrap` or `expect` in a function returning a `Result`"
+    references:
+      - https://doc.rust-lang.org/std/result/
   
   patterns:
     - pattern-either:

@@ -11,8 +11,11 @@ rules:
     confidence: MEDIUM
     likelihood: LOW
     impact: LOW
+    technology: [--no-technology--]
     description: "Probably redundant iteration over an empty map"
-
+    references:
+      - https://blog.trailofbits.com/2019/11/07/attacking-go-vr-ttps/
+    
   patterns:
     - pattern: |
         $C = make(map[$T1] $T2, ...)

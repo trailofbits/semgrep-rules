@@ -10,7 +10,10 @@ rules:
     confidence: HIGH
     likelihood: LOW
     impact: MEDIUM
+    technology: [--no-technology--]
     description: "Integer underflows"
+    references:
+      - https://github.com/golang/go/issues/30209
 
   pattern-either:
     # 64 -> lower or sign

@@ -10,7 +10,10 @@ rules:
     confidence: MEDIUM
     likelihood: LOW
     impact: LOW
+    technology: [pytorch]
     description: "Possible `PyTorch` undefined behavior when not waiting for requests"
+    references:
+      - https://pytorch.org/docs/stable/distributed.html#torch.distributed.isend
 
   patterns:
     - pattern-either:

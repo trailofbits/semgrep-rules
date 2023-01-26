@@ -12,9 +12,11 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    technology: [--no-technology--]
     description: "Missing `mutex` unlock before returning from a function"
     references:
       - https://pkg.go.dev/sync#Mutex
+      - https://blog.trailofbits.com/2020/06/09/how-to-check-if-a-mutex-is-locked-in-go/
     
   patterns:
     - pattern-either:

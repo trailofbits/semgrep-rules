@@ -11,7 +11,10 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    technology: [--no-technology--]
     description: "Concurrent calls to `append` from multiple goroutines"
+    references:
+      - https://go.dev/blog/maps#concurrency
 
   patterns:
     - pattern: |

@@ -12,6 +12,7 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: LOW
+    technology: [pytorch, numpy]
     description: "Calls to the `NumPy` RNG inside of a `Torch` dataset"
     references:
       - https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects

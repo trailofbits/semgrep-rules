@@ -12,6 +12,7 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: LOW
+    technology: [--no-technology--]
     description: "Possible incorrect `ServerCodec` interface implementation"
     references:
       - https://github.com/golang/go/blob/go1.15.2/src/net/rpc/server.go#L643-L658

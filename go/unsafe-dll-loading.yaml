@@ -12,7 +12,10 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: HIGH
+    technology: [--no-technology--]
     description: "Use of function vulnerable to DLL hijacking attacks"
+    references:
+      - https://pkg.go.dev/golang.org/x/sys/windows#LazyDLL
 
   patterns:
     - pattern-either:

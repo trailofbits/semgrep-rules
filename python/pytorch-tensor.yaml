@@ -7,6 +7,7 @@ rules:
     category: performance
     subcategory: [audit]
     confidence: HIGH
+    technology: [pytorch]
     description: "Possible parsing issues and inefficiency from improper tensor creation"
     references:
       - https://pytorch.org/docs/stable/tensors.html

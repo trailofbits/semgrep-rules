@@ -11,6 +11,7 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: MEDIUM
+    technology: [pandas]
     description: "Potential XXE attacks from loading `lxml` in pandas"
     references:
       - https://lxml.de/FAQ.html 
