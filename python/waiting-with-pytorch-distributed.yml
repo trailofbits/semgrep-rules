@@ -1,5 +1,5 @@
 rules:
-- id: waiting-with-torch-distributed
+- id: waiting-with-pytorch-distributed
   message: Not waiting for requests is a source of undefined behavior
   languages: [python]
   severity: WARNING
@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: LOW
     impact: LOW
+    description: "Possible `PyTorch` undefined behavior when not waiting for requests"
 
   patterns:
     - pattern-either:

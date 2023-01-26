@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: LOW
     impact: LOW
+    description: "Probably redundant iteration over an empty map"
 
   patterns:
     - pattern: |

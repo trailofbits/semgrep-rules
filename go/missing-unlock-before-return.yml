@@ -12,6 +12,7 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    description: "Missing `mutex` unlock before returning from a function"
     references:
       - https://pkg.go.dev/sync#Mutex
     

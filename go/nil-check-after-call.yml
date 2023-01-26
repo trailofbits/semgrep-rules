@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: MEDIUM
+    description: "Possible nil dereferences"
 
   patterns:
     - pattern-either:

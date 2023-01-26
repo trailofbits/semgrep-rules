@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: MEDIUM
+    description: "Potential path traversal in call to `extractall` for a `tarfile`"
     references:
       - https://docs.python.org/3/library/tarfile.html#tarfile.TarFile.extractall
 

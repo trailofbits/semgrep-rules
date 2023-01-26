@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    description: "Concurrent writes to the same map in multiple goroutines"
 
   patterns:
     - pattern: |

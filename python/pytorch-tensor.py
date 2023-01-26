@@ -1,21 +1,21 @@
 import torch 
 
-# ruleid: torch-tensor
+# ruleid: pytorch-tensor
 y = torch.Tensor(x)
 
 def foo(x): 
-  # ruleid: torch-tensor
+  # ruleid: pytorch-tensor
   return torch.Tensor(x)
 
 import torch as t
 
-# ruleid: torch-tensor
+# ruleid: pytorch-tensor
 y = t.Tensor(x)
 
 def foo(x): 
-  # ruleid: torch-tensor
+  # ruleid: pytorch-tensor
   return t.Tensor(x)
 
 
-# ok: torch-tensor
+# ok: pytorch-tensor
 y = torch.tensor([0, 1])

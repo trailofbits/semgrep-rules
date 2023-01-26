@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    description: "Potential arbitrary code execution from `TensorFlow` library loading"
     references:
       - https://www.tensorflow.org/api_docs/python/tf/load_library
       - https://www.tensorflow.org/api_docs/python/tf/load_op_library

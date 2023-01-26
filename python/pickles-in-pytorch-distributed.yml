@@ -1,5 +1,5 @@
 rules:
-- id: pickles-in-torch-distributed
+- id: pickles-in-pytorch-distributed
   message: >-
     Functions reliant on pickle can result in arbitrary code execution
   languages: [python]
@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    description: "Potential arbitrary code execution from `PyTorch.Distributed` functions reliant on pickling"
     references:
       - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
 

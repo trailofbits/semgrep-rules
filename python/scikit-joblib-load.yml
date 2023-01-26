@@ -12,6 +12,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    description: "Potential arbitrary code execution from `SciKit.Joblib` functions reliant on pickling"
     references:
       - https://scikit-learn.org/stable/model_persistence.html
 

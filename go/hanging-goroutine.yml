@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: LOW
+    description: "Goroutine leaks"
     references:
       - https://blog.trailofbits.com/2021/11/08/discovering-goroutine-leaks-with-semgrep
 

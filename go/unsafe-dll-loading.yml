@@ -12,6 +12,7 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: HIGH
+    description: "Use of function vulnerable to DLL hijacking attacks"
 
   patterns:
     - pattern-either:

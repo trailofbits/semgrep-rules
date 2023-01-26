@@ -10,6 +10,7 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: LOW
+    description: "Use of deprecated `numpy.distutils`"
     references:
       - https://numpy.org/doc/stable/reference/distutils.html
 

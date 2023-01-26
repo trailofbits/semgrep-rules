@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    description: "Missing `RUnlock` on an `RWMutex` lock before returning from a function"
     references:
       - https://pkg.go.dev/sync#RWMutex
 

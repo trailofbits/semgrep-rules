@@ -11,6 +11,7 @@ rules:
     confidence: MEDIUM
     likelihood: HIGH
     impact: MEDIUM
+    description: "Concurrent calls to `append` from multiple goroutines"
 
   patterns:
     - pattern: |

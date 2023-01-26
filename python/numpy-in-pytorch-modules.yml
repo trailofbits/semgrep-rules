@@ -9,6 +9,7 @@ rules:
     category: performance
     subcategory: [audit]
     confidence: MEDIUM
+    description: "Uses of `NumPy` functions inside `PyTorch` modules"
 
   patterns:
     - pattern: $RESULT = numpy.$FUNCTION(...)

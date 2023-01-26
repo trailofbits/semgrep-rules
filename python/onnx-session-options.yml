@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    description: "Potential arbitrary code execution from `ONNX` library loading"
     references:
       - https://onnxruntime.ai/docs/reference/operators/add-custom-op.html
 

@@ -11,6 +11,7 @@ rules:
     confidence: HIGH
     likelihood: LOW
     impact: LOW
+    description: "`PyTorch` memory not automatically pinned"
     references:
       - https://pytorch.org/docs/stable/data.html#memory-pinning
 

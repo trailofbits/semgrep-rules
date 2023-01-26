@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    description: "Potential arbitrary code execution from `NumPy` `f2py` compilation"
     references:
       - https://numpy.org/doc/stable/f2py/usage.html
 

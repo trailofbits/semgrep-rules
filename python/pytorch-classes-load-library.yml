@@ -1,5 +1,5 @@
 rules:
-- id: torch-classes-load-library
+- id: pytorch-classes-load-library
   message: Loading custom operator libraries can result in arbitrary code execution
   languages: [python]
   severity: ERROR
@@ -10,6 +10,7 @@ rules:
     confidence: MEDIUM
     likelihood: MEDIUM
     impact: HIGH
+    description: "Potential arbitrary code execution from `PyTorch` library loading"
     references:
       - https://pytorch.org/tutorials/advanced/torch_script_custom_classes.html
 

@@ -1,11 +1,11 @@
-# ruleid: torch-package
+# ruleid: pytorch-package
 import torch.package
 
-# ruleid: torch-package
+# ruleid: pytorch-package
 from torch import package 
 
-# ruleid: torch-package
+# ruleid: pytorch-package
 import torch.package as tp 
 
-# ok: torch-package
+# ok: pytorch-package
 import torchx.package as tp

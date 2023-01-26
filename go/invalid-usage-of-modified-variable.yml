@@ -12,6 +12,7 @@ rules:
     confidence: HIGH
     likelihood: MEDIUM
     impact: MEDIUM
+    description: "Possible unintentional assignment when an error occurs"
 
   patterns:
     - pattern-either:

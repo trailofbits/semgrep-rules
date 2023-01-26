@@ -12,6 +12,7 @@ rules:
     confidence: HIGH
     likelihood: HIGH
     impact: LOW
+    description: "Copying of `sync.Mutex` via value receivers"
     references:
       - https://go101.org/article/concurrent-common-mistakes.html
 
