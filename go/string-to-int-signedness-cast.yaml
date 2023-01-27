@@ -1,0 +1,133 @@
+rules:
+- id: string-to-int-signedness-cast
+  message: Downcasting or changing sign of an integer with `$CAST_METHOD` method
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-681: Incorrect Conversion between Numeric Types"
+    subcategory: [audit]
+    confidence: HIGH
+    likelihood: LOW
+    impact: MEDIUM
+    technology: [--no-technology--]
+    description: "Integer underflows"
+    references:
+      - https://github.com/golang/go/issues/30209
+
+  pattern-either:
+    # 64 -> lower or sign
+    - patterns:
+      - metavariable-pattern:
+          metavariable: $CAST_METHOD
+          pattern-either:
+            - pattern: uint8
+            - pattern: uint16
+            - pattern: uint32
+            - pattern: int8
+            - pattern: int16
+            - pattern: int32
+
+      - pattern-either:
+        - pattern: |
+            $X, ... = strconv.Atoi(...)
+            ...
+            $CAST_METHOD($X)
+
+        - pattern: |
+            $X, ... = strconv.ParseInt(..., ..., 64)
+            ...
+            $CAST_METHOD($X)
+
+        - pattern: |
+            $X, ... = strconv.ParseUint(..., ..., 64)
+            ...
+            $CAST_METHOD($X)
+
+    # assume int has 64 bits
+    - pattern: |
+        $X, ... = strconv.Atoi(...)
+        ...
+        uint64($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseInt(..., ..., 64)
+        ...
+        uint64($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseUint(..., ..., 64)
+        ...
+        int64($X)
+
+    # 32 -> lower or sign
+    - patterns:
+      - metavariable-pattern:
+          metavariable: $CAST_METHOD
+          pattern-either:
+            - pattern: uint8
+            - pattern: uint16
+            - pattern: int8
+            - pattern: int16
+
+      - pattern-either:
+        - pattern: |
+            $X, ... = strconv.ParseInt(..., ..., 32)
+            ...
+            $CAST_METHOD($X)
+
+        - pattern: |
+            $X, ... = strconv.ParseUint(..., ..., 32)
+            ...
+            $CAST_METHOD($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseInt(..., ..., 32)
+        ...
+        uint32($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseUint(..., ..., 32)
+        ...
+        int32($X)
+
+    # 16 -> lower or sign
+    - patterns:
+      - metavariable-pattern:
+          metavariable: $CAST_METHOD
+          pattern-either:
+            - pattern: uint8
+            - pattern: int8
+
+      - pattern-either:
+        - pattern: |
+            $X, ... = strconv.ParseInt(..., ..., 16)
+            ...
+            $CAST_METHOD($X)
+
+        - pattern: |
+            $X, ... = strconv.ParseUint(..., ..., 16)
+            ...
+            $CAST_METHOD($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseInt(..., ..., 16)
+        ...
+        uint16($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseUint(..., ..., 16)
+        ...
+        int16($X)
+
+
+    # 8 -> sign
+    - pattern: |
+        $X, ... = strconv.ParseInt(..., ..., 8)
+        ...
+        uint8($X)
+
+    - pattern: |
+        $X, ... = strconv.ParseUint(..., ..., 8)
+        ...
+        int8($X)

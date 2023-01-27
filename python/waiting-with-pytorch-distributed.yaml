@@ -1,0 +1,26 @@
+rules:
+- id: waiting-with-pytorch-distributed
+  message: Not waiting for requests is a source of undefined behavior
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-758: Reliance on Undefined, Unspecified, or Implementation-Defined Behavior"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: LOW
+    impact: LOW
+    technology: [pytorch]
+    description: "Possible `PyTorch` undefined behavior when not waiting for requests"
+    references:
+      - https://pytorch.org/docs/stable/distributed.html#torch.distributed.isend
+
+  patterns:
+    - pattern-either:
+      - pattern: $REQ = torch.distributed.irecv(...)
+      - pattern: $REQ = torch.distributed.isend(...)
+
+    - pattern-not-inside: |
+        ...
+        $REQ.wait()
+  

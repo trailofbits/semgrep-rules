@@ -1,0 +1,23 @@
+rules:
+- id: automatic-memory-pinning
+  message: >-
+      If possible, it is better to rely on automatic pinning in PyTorch to avoid undefined behavior and for efficiency 
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: HIGH
+    likelihood: LOW
+    impact: LOW
+    technology: [pytorch]
+    description: "`PyTorch` memory not automatically pinned"
+    references:
+      - https://pytorch.org/docs/stable/data.html#memory-pinning
+
+  pattern-either:
+    - patterns:
+      - pattern: torch.utils.data.DataLoader(...)
+      - pattern-not: torch.utils.data.DataLoader(..., pin_memory=$VALUE, ...)
+    - pattern: torch.utils.data.DataLoader(..., pin_memory=False, ...)

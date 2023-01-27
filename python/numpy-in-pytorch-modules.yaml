@@ -1,0 +1,21 @@
+rules:
+- id: numpy-in-pytorch-modules
+  message: >-
+    Usage of NumPy library inside PyTorch `$MODULE` module was found.
+    Avoid mixing these libraries for efficiency and proper ONNX loading
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: performance
+    subcategory: [audit]
+    confidence: MEDIUM
+    technology: [pytorch, numpy]
+    description: "Uses of `NumPy` functions inside `PyTorch` modules"
+    references:
+      - https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects
+      
+  patterns:
+    - pattern: $RESULT = numpy.$FUNCTION(...)
+    - pattern-inside: |
+        class $MODULE(torch.nn.Module):
+            ...

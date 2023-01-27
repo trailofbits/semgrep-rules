@@ -1,0 +1,38 @@
+rules:
+- id: sync-mutex-value-copied
+  message: >-
+    A `sync.Mutex` is copied in function `$FUNC` given that `$T` is value receiver. 
+    As a result, the struct `$T` may not be locked as intended
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-688: Function Call With Incorrect Variable or Reference as Argument"
+    subcategory: [vuln]
+    confidence: HIGH
+    likelihood: HIGH
+    impact: LOW
+    technology: [--no-technology--]
+    description: "Copying of `sync.Mutex` via value receivers"
+    references:
+      - https://go101.org/article/concurrent-common-mistakes.html
+
+  patterns:
+    - pattern-either: 
+      - pattern: |
+          func ($T $TYPE) $FUNC(...){
+            ...
+            $T.Lock()
+            ...
+          }
+      - pattern: |
+          func ($T $TYPE) $FUNC(...){
+            ...
+            $T.RLock()
+            ...
+          }
+    - pattern-not: |
+        func ($T2 *$TYPE2) $FUNC(...){
+          ...
+        }
+  

@@ -45,33 +45,61 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 
 ## Rules
 
-Rule ID | Language | What it Finds
---- | --- | ---
-[anonymous-race-condition](go/anonymous-race-condition.yml) | Go | Race conditions within anonymous goroutines
-[hanging-goroutine](go/hanging-goroutine.yml) | Go | Goroutine leaks
-[iterate-over-empty-collection](go/iterate-over-empty-collection.yml) | Go | Iterations over empty collection
-[nil-check-after-call](go/nil-check-after-call.yml) | Go | Possible nil dereferences
-[invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yml) | Go | Possible unintentional assignment when an error occurs
-[servercodec-readrequestbody-unhandled-nil](go/servercodec-readrequestbody-unhandled-nil.yml) | Go | Possible incorrect `ServerCodec` interface implementation
-[string-to-int-signedness-cast](go/string-to-int-signedness-cast.yml) | Go | Integer underflows
-[sync-mutex-value-copied](go/sync-mutex-value-copied.yml) | Go | Copying of `sync.Mutex` via value receivers
-[waitgroup-add-called-inside-goroutine](go/waitgroup-add-called-inside-goroutine.yml) | Go | Calls to `sync.WaitGroup.Add` inside of anonymous goroutines
-[waitgroup-wait-inside-loop](go/waitgroup-wait-inside-loop.yml) | Go | Calls to `sync.WaitGroup.Wait` inside a loop
-[racy-append-to-slice](go/racy-append-to-slice.yml) | Go | Concurrent calls to `append` from multiple goroutines
-[racy-write-to-map](go/racy-write-to-map.yml) | Go | Concurrent writes to the same map in multiple goroutines
-[missing-unlock-before-return](go/missing-unlock-before-return.yml) | Go | Missing mutex unlock before returning from a function. This could cause panics resulting from double lock operations
-[missing-runlock-on-rwmutex](go/missing-runlock-on-rwmutex.yml) | Go | Missing RUnlock on an RWMutex lock before returning from a function
-[unsafe-dll-loading.yml](go/unsafe-dll-loading.yml) | Go | Use of function vulnerable to DLL hijacking attacks
-[tarfile-extractall-traversal](python/tarfile-extractall-traversal.yml) | Python | Potential path traversal in call to `extractall` for a `tarfile`
-[automatic-memory-pinning](python/automatic-memory-pinning.yml) | Python | Memory is not automatically pinned
-[lxml-in-pandas](python/lxml-in-pandas.yml) | Python | Potential XXE attacks from loading lxml in pandas
-[numpy-in-pytorch-modules](python/numpy-in-pytorch-modules.yml) | Python | Uses NumPy functions inside PyTorch modules 
-[numpy-in-torch-datasets](python/numpy-in-torch-datasets.yml) | Python | Calls to the Numpy RNG inside of a Torch dataset
-[pickles-in-numpy](python/pickles-in-numpy.yml) | Python | Potential arbitrary code execution from NumPy functions reliant on pickling
-[pickles-in-pandas](python/pickles-in-pandas.yml) | Python | Potential arbitrary code execution from Pandas functions reliant on pickling
-[pickles-in-pytorch](python/pickles-in-pytorch.yml) | Python | Potential arbitrary code execution from PyTorch functions reliant on pickling
-[pickles-in-torch-distributed](python/pickles-in-torch-distributed.yml) | Python | Potential arbitrary code execution from PyTorch Distributed functions reliant on pickling
-[torch-package](python/torch-package.yml) | Python | Potential arbitrary code execution from torch.package 
-[torch-tensor](python/torch-tensor.yml) | Python | Possible parsing issues and inefficiency from improper tensor creation
-[waiting-with-torch-distributed](python/waiting-with-torch-distributed.yml) | Python | Possible undefined behavior when not waiting for requests 
-[panic-in-function-returning-result](rs/panic-in-function-returning-result.yml) | Rust | Calling `unwrap` or `expect` in a function returning a `Result`
+### go
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [anonymous-race-condition](go/anonymous-race-condition.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.anonymous-race-condition.anonymous-race-condition) | 🟧 | 🌗 | Race conditions within anonymous goroutines |
+| [hanging-goroutine](go/hanging-goroutine.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.hanging-goroutine.hanging-goroutine) | 🟩 | 🌗 | Goroutine leaks |
+| [invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.invalid-usage-of-modified-variable.invalid-usage-of-modified-variable) | 🟧 | 🌘 | Possible unintentional assignment when an error occurs |
+| [iterate-over-empty-map](go/iterate-over-empty-map.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.iterate-over-empty-map.iterate-over-empty-map) | 🟩 | 🌗 | Probably redundant iteration over an empty map |
+| [missing-runlock-on-rwmutex](go/missing-runlock-on-rwmutex.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.missing-runlock-on-rwmutex.missing-runlock-on-rwmutex) | 🟧 | 🌗 | Missing `RUnlock` on an `RWMutex` lock before returning from a function |
+| [missing-unlock-before-return](go/missing-unlock-before-return.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.missing-unlock-before-return.missing-unlock-before-return) | 🟧 | 🌗 | Missing `mutex` unlock before returning from a function |
+| [nil-check-after-call](go/nil-check-after-call.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.nil-check-after-call.nil-check-after-call) | 🟧 | 🌗 | Possible nil dereferences |
+| [racy-append-to-slice](go/racy-append-to-slice.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.racy-append-to-slice.racy-append-to-slice) | 🟧 | 🌗 | Concurrent calls to `append` from multiple goroutines |
+| [racy-write-to-map](go/racy-write-to-map.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.racy-write-to-map.racy-write-to-map) | 🟧 | 🌗 | Concurrent writes to the same map in multiple goroutines |
+| [servercodec-readrequestbody-unhandled-nil](go/servercodec-readrequestbody-unhandled-nil.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.servercodec-readrequestbody-unhandled-nil.servercodec-readrequestbody-unhandled-nil) | 🟩 | 🌘 | Possible incorrect `ServerCodec` interface implementation |
+| [string-to-int-signedness-cast](go/string-to-int-signedness-cast.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.string-to-int-signedness-cast.string-to-int-signedness-cast) | 🟧 | 🌘 | Integer underflows |
+| [sync-mutex-value-copied](go/sync-mutex-value-copied.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.sync-mutex-value-copied.sync-mutex-value-copied) | 🟩 | 🌘 | Copying of `sync.Mutex` via value receivers |
+| [unsafe-dll-loading](go/unsafe-dll-loading.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.unsafe-dll-loading.unsafe-dll-loading) | 🟥 | 🌘 | Use of function vulnerable to DLL hijacking attacks |
+| [waitgroup-add-called-inside-goroutine](go/waitgroup-add-called-inside-goroutine.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.waitgroup-add-called-inside-goroutine.waitgroup-add-called-inside-goroutine) | 🟧 | 🌗 | Calls to `sync.WaitGroup.Add` inside of anonymous goroutines |
+| [waitgroup-wait-inside-loop](go/waitgroup-wait-inside-loop.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.waitgroup-wait-inside-loop.waitgroup-wait-inside-loop) | 🟧 | 🌗 | Calls to `sync.WaitGroup.Wait` inside a loop |
+
+
+### python
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [automatic-memory-pinning](python/automatic-memory-pinning.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.automatic-memory-pinning.automatic-memory-pinning) | 🟩 | 🌘 | `PyTorch` memory not automatically pinned |
+| [lxml-in-pandas](python/lxml-in-pandas.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.lxml-in-pandas.lxml-in-pandas) | 🟧 | 🌘 | Potential XXE attacks from loading `lxml` in pandas |
+| [numpy-distutils](python/numpy-distutils.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-distutils.numpy-distutils) | 🟩 | 🌘 | Use of deprecated `numpy.distutils` |
+| [numpy-f2py-compile](python/numpy-f2py-compile.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-f2py-compile.numpy-f2py-compile) | 🟥 | 🌗 | Potential arbitrary code execution from `NumPy` `f2py` compilation |
+| [numpy-in-pytorch-datasets](python/numpy-in-pytorch-datasets.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-in-pytorch-datasets.numpy-in-pytorch-datasets) | 🟩 | 🌘 | Calls to the `NumPy` RNG inside of a `Torch` dataset |
+| [numpy-in-pytorch-modules](python/numpy-in-pytorch-modules.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-in-pytorch-modules.numpy-in-pytorch-modules) | 🌫️ | 🌗 | Uses of `NumPy` functions inside `PyTorch` modules |
+| [numpy-load-library](python/numpy-load-library.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-load-library.numpy-load-library) | 🟥 | 🌗 | Potential arbitrary code execution from `NumPy` library loading |
+| [onnx-session-options](python/onnx-session-options.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.onnx-session-options.onnx-session-options) | 🟥 | 🌗 | Potential arbitrary code execution from `ONNX` library loading |
+| [pickles-in-numpy](python/pickles-in-numpy.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-numpy.pickles-in-numpy) | 🟥 | 🌗 | Potential arbitrary code execution from `NumPy` functions reliant on pickling |
+| [pickles-in-pandas](python/pickles-in-pandas.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-pandas.pickles-in-pandas) | 🟥 | 🌗 | Potential arbitrary code execution from `Pandas` functions reliant on pickling |
+| [pickles-in-pytorch-distributed](python/pickles-in-pytorch-distributed.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-pytorch-distributed.pickles-in-pytorch-distributed) | 🟥 | 🌗 | Potential arbitrary code execution from `PyTorch.Distributed` functions reliant on pickling |
+| [pickles-in-pytorch](python/pickles-in-pytorch.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-pytorch.pickles-in-pytorch) | 🟥 | 🌗 | Potential arbitrary code execution from `PyTorch` functions reliant on pickling |
+| [pytorch-classes-load-library](python/pytorch-classes-load-library.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pytorch-classes-load-library.pytorch-classes-load-library) | 🟥 | 🌗 | Potential arbitrary code execution from `PyTorch` library loading |
+| [pytorch-package](python/pytorch-package.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pytorch-package.pytorch-package) | 🟥 | 🌕 | Potential arbitrary code execution from `torch.package` |
+| [pytorch-tensor](python/pytorch-tensor.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pytorch-tensor.pytorch-tensor) | 🌫️ | 🌘 | Possible parsing issues and inefficiency from improper tensor creation |
+| [scikit-joblib-load](python/scikit-joblib-load.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.scikit-joblib-load.scikit-joblib-load) | 🟥 | 🌗 | Potential arbitrary code execution from `SciKit.Joblib` functions reliant on pickling |
+| [tarfile-extractall-traversal](python/tarfile-extractall-traversal.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.tarfile-extractall-traversal.tarfile-extractall-traversal) | 🟧 | 🌗 | Potential path traversal in call to `extractall` for a `tarfile` |
+| [tensorflow-load-library](python/tensorflow-load-library.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.tensorflow-load-library.tensorflow-load-library) | 🟥 | 🌗 | Potential arbitrary code execution from `TensorFlow` library loading |
+| [waiting-with-pytorch-distributed](python/waiting-with-pytorch-distributed.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.waiting-with-pytorch-distributed.waiting-with-pytorch-distributed) | 🟩 | 🌗 | Possible `PyTorch` undefined behavior when not waiting for requests |
+
+
+### rs
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [panic-in-function-returning-result](rs/panic-in-function-returning-result.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.rs.panic-in-function-returning-result.panic-in-function-returning-result) | 🟩 | 🌘 | Calling `unwrap` or `expect` in a function returning a `Result` |
+
+
+## Contributing
+
+Pull Requests and issues are welcomed!
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.

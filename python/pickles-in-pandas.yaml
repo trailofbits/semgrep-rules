@@ -1,0 +1,32 @@
+rules:
+- id: pickles-in-pandas
+  message: >-
+    Functions reliant on pickle can result in arbitrary code execution.
+    Consider using fickling or switching to a safer serialization method
+  languages: [python]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-502: Deserialization of Untrusted Data"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: HIGH
+    technology: [pandas]
+    description: "Potential arbitrary code execution from `Pandas` functions reliant on pickling"
+    references:
+      - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+  patterns:
+    - pattern-either:
+      - pattern: pandas.read_pickle(...)
+      - pattern: pandas.to_pickle(...)
+      - patterns:
+          - pattern-inside: |
+              import pandas
+              ...
+          - pattern: $SMTH.to_pickle(...)
+
+    - pattern-not: pandas.read_pickle("...")
+    - pattern-not: pandas.to_pickle(..., "...")
+    - pattern-not: $SMTH.to_pickle("...")

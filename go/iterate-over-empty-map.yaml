@@ -1,0 +1,49 @@
+rules:
+- id: iterate-over-empty-map
+  message: >-
+    Iteration over a possibly empty map `$C`. This is likely a bug or redundant code
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-665: Improper Initialization"
+    subcategory: [audit]
+    confidence: MEDIUM
+    likelihood: LOW
+    impact: LOW
+    technology: [--no-technology--]
+    description: "Probably redundant iteration over an empty map"
+    references:
+      - https://blog.trailofbits.com/2019/11/07/attacking-go-vr-ttps/
+    
+  patterns:
+    - pattern: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $C[$X] = $V
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $C[$X]++
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $C[$X]--
+        ...
+        for $K := range $C { ... }
+    - pattern-not: |
+        $C = make(map[$T1] $T2, ...)
+        ...
+        $CODEC.Unmarshal($BYTES, &$C)
+        ...
+        for $K := range $C { ... }
+
+  

@@ -1,0 +1,21 @@
+rules:
+- id: numpy-distutils
+  message: NumPy distutils is deprecated, and will be removed in the future
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: HIGH
+    likelihood: MEDIUM
+    impact: LOW
+    technology: [numpy]
+    description: "Use of deprecated `numpy.distutils`"
+    references:
+      - https://numpy.org/doc/stable/reference/distutils.html
+
+  patterns:
+    - pattern: |
+        import numpy.distutils
+  

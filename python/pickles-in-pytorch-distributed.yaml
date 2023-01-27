@@ -1,0 +1,24 @@
+rules:
+- id: pickles-in-pytorch-distributed
+  message: >-
+    Functions reliant on pickle can result in arbitrary code execution
+  languages: [python]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-502: Deserialization of Untrusted Data"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: HIGH
+    technology: [pytorch]
+    description: "Potential arbitrary code execution from `PyTorch.Distributed` functions reliant on pickling"
+    references:
+      - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+  patterns:
+    - pattern-either:
+      - pattern: torch.distributed.broadcast_object_list(...)
+      - pattern: torch.distributed.all_gather_object(...)
+      - pattern: torch.distributed.gather_object(...)
+      - pattern: torch.distributed.scatter_object_list(...)

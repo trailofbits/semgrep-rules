@@ -1,0 +1,36 @@
+rules:
+- id: servercodec-readrequestbody-unhandled-nil
+  message: >-
+    The `func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error` function does not handle `nil` argument, as the `ServerCodec` interface requires.
+    An incorrect implementation could lead to denial of service
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-476: NULL Pointer Dereference"
+    subcategory: [vuln]
+    confidence: HIGH
+    likelihood: MEDIUM
+    impact: LOW
+    technology: [--no-technology--]
+    description: "Possible incorrect `ServerCodec` interface implementation"
+    references:
+      - https://github.com/golang/go/blob/go1.15.2/src/net/rpc/server.go#L643-L658
+
+  patterns:
+    - pattern: |
+        func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error {
+          ...
+        }
+    - pattern-not: |
+        func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error {
+          ...
+          if $ARG == nil { ... }
+          ...
+        }
+    - pattern-not: |
+        func ($O *$CODEC) ReadRequestBody($ARG $TYPE) error {
+          ...
+          if $ARG != nil { ... }
+          ...
+        }

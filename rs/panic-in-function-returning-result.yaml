@@ -1,0 +1,53 @@
+rules:
+- id: panic-in-function-returning-result
+  message: >-
+    `expect` or `unwrap` called in function returning a `Result`
+  languages: [rust]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-755: Improper Handling of Exceptional Conditions"
+    subcategory: [audit]
+    confidence: HIGH
+    likelihood: MEDIUM
+    impact: LOW
+    technology: [--no-technology--]
+    description: "Calling `unwrap` or `expect` in a function returning a `Result`"
+    references:
+      - https://doc.rust-lang.org/std/result/
+  
+  patterns:
+    - pattern-either:
+      - pattern: $EXPR.unwrap()
+      - pattern: $EXPR.expect(...)
+
+    - pattern-either:
+      - pattern-inside: |
+          fn $FUNC(...) -> Result<$T1, $T2> {
+              ...
+          }
+
+      - pattern-inside: |
+          fn $FUNC(...) -> Result<$T> {
+              ...
+          }
+
+      - patterns:
+        - pattern-inside: |
+            fn $FUNC(...) -> $RETTYPE {
+                ...
+            }
+
+        - pattern-either:
+          - pattern-inside: |
+              type $RETTYPE = Result<$T>;
+              ...
+              fn $FUNC(...) -> $RETTYPE {
+                  ...
+              }
+          - pattern-inside: |
+              type $RETTYPE = Result<$T1, $T2>;
+              ...
+              fn $FUNC(...) -> $RETTYPE {
+                  ...
+              }

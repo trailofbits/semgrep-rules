@@ -1,0 +1,19 @@
+rules:
+- id: pytorch-package
+  message: Avoid importing torch.package - it can result in arbitrary code execution via pickle
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-502: Deserialization of Untrusted Data"
+    subcategory: [audit]
+    confidence: LOW
+    likelihood: MEDIUM
+    impact: HIGH
+    technology: [pytorch]
+    description: "Potential arbitrary code execution from `torch.package`"
+    references:
+      - https://pytorch.org/docs/1.13/package.html#torch-package
+      - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+  pattern: import torch.package

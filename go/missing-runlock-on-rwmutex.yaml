@@ -1,0 +1,36 @@
+rules:
+- id: missing-runlock-on-rwmutex
+  message: >-
+    Missing `RUnlock` on an `RWMutex` lock before returning from a function
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-667: Improper Locking"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: HIGH
+    impact: MEDIUM
+    technology: [--no-technology--]
+    description: "Missing `RUnlock` on an `RWMutex` lock before returning from a function"
+    references:
+      - https://pkg.go.dev/sync#RWMutex
+      - https://blog.trailofbits.com/2020/06/09/how-to-check-if-a-mutex-is-locked-in-go/
+
+  patterns:
+    - pattern-either:
+      - pattern: panic(...)
+      - pattern: return ...
+    - pattern-inside: |
+        $T.RLock()
+        ...
+    - pattern-not-inside: |
+        $T.RUnlock()
+        ...
+    - pattern-not-inside: |
+        defer $T.RUnlock()
+        ...
+    - pattern-not-inside: |
+        $FOO(..., ..., func(...) { 
+            ... 
+        })

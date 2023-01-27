@@ -1,0 +1,20 @@
+rules:
+- id: pytorch-classes-load-library
+  message: Loading custom operator libraries can result in arbitrary code execution
+  languages: [python]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-676: Use of Potentially Dangerous Function"
+    subcategory: [audit]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: HIGH
+    technology: [pytorch]
+    description: "Potential arbitrary code execution from `PyTorch` library loading"
+    references:
+      - https://pytorch.org/tutorials/advanced/torch_script_custom_classes.html
+
+  patterns:
+    - pattern: torch.classes.load_library(...)
+    - pattern-not: torch.classes.load_library("...")

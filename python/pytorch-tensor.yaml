@@ -1,0 +1,15 @@
+rules:
+- id: pytorch-tensor
+  message: Avoid using `torch.Tensor()` to directly create a tensor for efficiency and proper parsing
+  languages: [python]
+  severity: WARNING
+  metadata:
+    category: performance
+    subcategory: [audit]
+    confidence: HIGH
+    technology: [pytorch]
+    description: "Possible parsing issues and inefficiency from improper tensor creation"
+    references:
+      - https://pytorch.org/docs/stable/tensors.html
+
+  pattern: torch.Tensor(...)

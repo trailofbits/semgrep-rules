@@ -1,0 +1,43 @@
+rules:
+- id: unsafe-dll-loading
+  message: >-
+    The function is vulnerable to DLL hijacking attacks.
+    Use `windows.NewLazySystemDLL()` function to limit DLL search to the Windows directory
+  languages: [go]
+  severity: ERROR
+  metadata:
+    category: security
+    cwe: "CWE-427: Uncontrolled Search Path Element"
+    subcategory: [vuln]
+    confidence: HIGH
+    likelihood: MEDIUM
+    impact: HIGH
+    technology: [--no-technology--]
+    description: "Use of function vulnerable to DLL hijacking attacks"
+    references:
+      - https://pkg.go.dev/golang.org/x/sys/windows#LazyDLL
+
+  patterns:
+    - pattern-either:
+        - pattern: syscall.LoadDLL(...)
+        - pattern: syscall.LoadLibrary(...)
+        - pattern: windows.LoadDLL(...)
+        - pattern: windows.MustLoadDLL(...)
+        - pattern: syscall.NewLazyDLL(...)
+        - pattern: |
+            $X = windows.NewLazyDLL(...)
+            ...
+            $X.$Y()
+            ...
+            $X.System = true
+        - pattern: |
+            $X = windows.NewLazyDLL(...)
+            ...
+            $X.$Y()
+    - pattern-not: |
+        $X = windows.NewLazyDLL(...)
+        ...
+        $X.System = true
+        ...
+        $X.$Y()
+  

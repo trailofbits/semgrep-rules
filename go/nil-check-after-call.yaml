@@ -1,0 +1,75 @@
+rules:
+- id: nil-check-after-call
+  message: Potential `$FOO` nil dereference when `$BAR` is called
+  languages: [go]
+  severity: WARNING
+  metadata:
+    category: security
+    cwe: "CWE-253: Incorrect Check of Function Return Value"
+    subcategory: [vuln]
+    confidence: MEDIUM
+    likelihood: MEDIUM
+    impact: MEDIUM
+    technology: [--no-technology--]
+    description: "Possible nil dereferences"
+    references:
+      - https://blog.trailofbits.com/2019/11/07/attacking-go-vr-ttps/
+    
+  patterns:
+    - pattern-either:
+        - pattern: |
+            $FOO.$BAR(...)
+            ...
+            if $FOO != nil { ... }
+        - pattern: |
+            $FOO.$BAR(...)
+            ...
+            if $FOO == nil { ... }
+        - pattern: |
+            $FUNC(..., $FOO.$BAR(...), ...)
+            ...
+            if $FOO != nil { ... }
+        - pattern: |
+            $FUNC(..., $FOO.$BAR(...), ...)
+            ...
+            if $FOO == nil { ... }
+    - pattern-not: |
+       $FOO.$BAR(...)
+       ...
+       $FOO = ...
+       ...
+       if $FOO != nil { ... }
+    - pattern-not: |
+       $FOO.$BAR(...)
+       ...
+       ..., $FOO, ... = ...
+       ...
+       if $FOO == nil { ... }
+    - pattern-not: |
+       $FOO.$BAR(...)
+       ...
+       ..., $FOO, ... = ...
+       ...
+       if $FOO != nil { ... }
+    - pattern-not: |
+       $FOO.$BAR(...)
+       ...
+       $FOO = ...
+       ...
+       if $FOO == nil { ... }
+    - pattern-not: |
+        ..., $FOO = $FOO.$BAR(...)
+        ...
+        if $FOO == nil { ... }
+    - pattern-not: |
+        ..., $FOO = $FOO.$BAR(...)
+        ...
+        if $FOO != nil { ... }
+    - pattern-not: |
+        $FOO = $FOO.$BAR(...)
+        ...
+        if $FOO == nil { ... }
+    - pattern-not: |
+        $FOO = $FOO.$BAR(...)
+        ...
+        if $FOO != nil { ... }
