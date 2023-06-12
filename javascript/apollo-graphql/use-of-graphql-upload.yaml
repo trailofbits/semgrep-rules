@@ -16,5 +16,6 @@ rules:
         - apollo-graphql-server
       references:
         - https://github.com/apollographql/apollo-server/security/advisories/GHSA-2p3c-p3qw-69r4
+
     patterns:
       - pattern: app.use(graphqlUploadExpress());

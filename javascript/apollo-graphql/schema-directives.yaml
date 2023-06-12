@@ -16,6 +16,7 @@ rules:
         - apollo-graphql-server
       references:
         - https://www.apollographql.com/docs/apollo-server/schema/directives/#custom-directives
+
     pattern-either: 
       - pattern: |
             new ApolloServer({..., schemaDirectives: ..., ...})

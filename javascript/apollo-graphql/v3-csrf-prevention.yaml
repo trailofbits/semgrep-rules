@@ -17,6 +17,7 @@ rules:
         - apollo-graphql-server-v3
       references:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors/#preventing-cross-site-request-forgery-csrf
+
     patterns:
       - pattern: new ApolloServer({...})
       - pattern-not: |

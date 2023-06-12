@@ -19,6 +19,7 @@ rules:
       references:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors#configuring-cors-options-for-apollo-server
     mode: taint
+
     pattern-sources:
       # Remove this once the above matches functions (https://github.com/returntocorp/semgrep/issues/6748)
       - pattern: |
