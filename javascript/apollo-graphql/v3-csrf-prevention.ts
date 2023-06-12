@@ -1,12 +1,12 @@
 // BAD 1: Lacks 'csrfPrevention: true'
-//ruleid: apollo-graphql-v3-csrfPrevention
+//ruleid: v3-csrf-prevention
 const apollo_server_1 = new ApolloServer({
     typeDefs,
     resolvers,
 });
 
 // BAD 2: Has 'csrfPrevention: false'
-//ruleid: apollo-graphql-v3-csrfPrevention
+//ruleid: v3-csrf-prevention
 const apollo_server_2 = new ApolloServer({
     typeDefs,
     resolvers,
@@ -14,7 +14,7 @@ const apollo_server_2 = new ApolloServer({
 });
 
 // Good: Has 'csrfPrevention: true'
-//ok: apollo-graphql-v3-csrfPrevention
+//ok: v3-csrf-prevention
 const apollo_server_3 = new ApolloServer({
     typeDefs,
     resolvers,

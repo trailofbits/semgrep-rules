@@ -1,10 +1,10 @@
 import { ApolloServer } from 'apollo-server-express';
 
 // ====================
-// apollo-graphql-v3-express-no-cors tests
+// v3-express-no-cors tests
 // ====================
 // BAD: Lacks 'cors'
-//ruleid: apollo-graphql-v3-express-no-cors
+//ruleid: v3-express-no-cors
 const apollo_server_1 = new ApolloServer({
     typeDefs,
     resolvers,
@@ -15,7 +15,7 @@ const apollo_server_2 = new ApolloServer({
     typeDefs,
     resolvers,
 });
-//ok: apollo-graphql-v3-express-no-cors
+//ok: v3-express-no-cors
 apollo_server_2.applyMiddleware({
     app,
     cors: { origin: false },
@@ -23,7 +23,7 @@ apollo_server_2.applyMiddleware({
 });
 
 // ====================
-// apollo-graphql-v3-express-bad-cors tests
+// v3-express-bad-cors tests
 // ====================
 // GOOD: CORS is defined to deny all
 const apollo_server_3 = new ApolloServer({
@@ -32,7 +32,7 @@ const apollo_server_3 = new ApolloServer({
 });
 apollo_server_3.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: { origin: false },
     path: "/graphql"
 });
@@ -45,7 +45,7 @@ const apollo_server_4 = new ApolloServer({
 const apollo_server_4_var = { origin: false }
 apollo_server_4.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: apollo_server_4_var,
     path: "/graphql"
 });
@@ -58,7 +58,7 @@ const apollo_server_5 = new ApolloServer({
 });
 apollo_server_5.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: apollo_server_5_var,
     path: "/graphql"
 });
@@ -71,7 +71,7 @@ const apollo_server_6 = new ApolloServer({
 });
 apollo_server_6.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: true },
     path: "/graphql"
 });
@@ -84,7 +84,7 @@ const apollo_server_7 = new ApolloServer({
 const apollo_server_7_var = { origin: true }
 apollo_server_7.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: apollo_server_7_var,
     path: "/graphql"
 });
@@ -97,7 +97,7 @@ const apollo_server_8 = new ApolloServer({
 });
 apollo_server_8.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: apollo_server_8_var,
     path: "/graphql"
 });
@@ -110,7 +110,7 @@ const apollo_server_8_1 = new ApolloServer({
 });
 apollo_server_8_1.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: 'null' },
     path: "/graphql"
 });
@@ -122,7 +122,7 @@ const apollo_server_8_2 = new ApolloServer({
 });
 apollo_server_8_2.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: ['test.com', 'null', 'test2.com'] },
     path: "/graphql"
 });
@@ -135,7 +135,7 @@ const apollo_server_9 = new ApolloServer({
 });
 apollo_server_9.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: /\.example.com$/ },
     path: "/graphql"
 });
@@ -147,7 +147,7 @@ const apollo_server_10 = new ApolloServer({
 });
 apollo_server_10.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: /\.example\.com/ },
     path: "/graphql"
 });
@@ -159,7 +159,7 @@ const apollo_server_11 = new ApolloServer({
 });
 apollo_server_11.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: ['test.com', /\.example.com$/, 'test2.com'] },
     path: "/graphql"
 });
@@ -171,7 +171,7 @@ const apollo_server_12 = new ApolloServer({
 });
 apollo_server_12.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: ['test.com', /\.example\.com/, 'test2.com'] },
     path: "/graphql"
 });
@@ -183,7 +183,7 @@ const apollo_server_13 = new ApolloServer({
 });
 apollo_server_13.applyMiddleware({
     app,
-    //ruleid: apollo-graphql-v3-express-bad-cors
+    //ruleid: v3-express-bad-cors
     cors: { origin: ['test.com', /\.example\.com$/, /\.example2.com/] },
     path: "/graphql"
 });
@@ -196,7 +196,7 @@ const apollo_server_14 = new ApolloServer({
 }); 
 apollo_server_14.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: { origin: 'https://example.com' },
     path: "/graphql"
 });
@@ -208,7 +208,7 @@ const apollo_server_15 = new ApolloServer({
 }); 
 apollo_server_15.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: { origin: ['https://example.com'] },
     path: "/graphql"
 });
@@ -220,7 +220,7 @@ const apollo_server_16 = new ApolloServer({
 }); 
 apollo_server_16.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: { origin: ['https://example.com', 'test.com', 'test2.com'] },
     path: "/graphql"
 });
@@ -232,7 +232,7 @@ const apollo_server_17 = new ApolloServer({
 }); 
 apollo_server_17.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: { origin: /\.example2\.com$/ },
     path: "/graphql"
 });
@@ -244,7 +244,7 @@ const apollo_server_18 = new ApolloServer({
 }); 
 apollo_server_18.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: { origin: ['https://example.com',  /\.example2\.com$/, "test.com"] },
     path: "/graphql"
 });
@@ -264,7 +264,7 @@ const apollo_server_19 = new ApolloServer({
 }); 
 apollo_server_19.applyMiddleware({
     app,
-    //ok: apollo-graphql-v3-express-bad-cors
+    //ok: v3-express-bad-cors
     cors: apollo_server_19_var,
     path: "/graphql"
 });

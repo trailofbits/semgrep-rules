@@ -1,12 +1,12 @@
 // OK: Lacks 'csrfPrevention: true', but on v4 this option is false by default
-//ok: apollo-graphql-v4-csrfPrevention
+//ok: v4-csrf-prevention
 const apollo_server_1 = new ApolloServer({
     typeDefs,
     resolvers,
 });
 
 // Good: Has 'csrfPrevention: true'
-//ok: apollo-graphql-v4-csrfPrevention
+//ok: v4-csrf-prevention
 const apollo_server_3 = new ApolloServer({
     typeDefs,
     resolvers,
@@ -14,7 +14,7 @@ const apollo_server_3 = new ApolloServer({
 });
 
 // BAD: Has 'csrfPrevention: false'
-//ruleid: apollo-graphql-v4-csrfPrevention
+//ruleid: v4-csrf-prevention
 const apollo_server_2 = new ApolloServer({
     typeDefs,
     resolvers,

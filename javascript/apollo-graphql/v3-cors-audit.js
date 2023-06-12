@@ -4,7 +4,7 @@ import 'apollo-server';
 const apollo_graphql_potentially_bad_cors_good_1 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-potentially-bad-cors
+    //ok: v3-potentially-bad-cors
     cors: { origin: false }
 });
 
@@ -12,7 +12,7 @@ const apollo_graphql_potentially_bad_cors_good_1 = new ApolloServer({
 const apollo_graphql_potentially_bad_cors_good_2 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-potentially-bad-cors
+    //ok: v3-potentially-bad-cors
     cors: { origin: [] }
 });
 
@@ -21,7 +21,7 @@ const apollo_graphql_potentially_bad_cors_good_3_var = { origin: [] }
 const apollo_graphql_potentially_bad_cors_good_3 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-potentially-bad-cors
+    //ok: v3-potentially-bad-cors
     cors: apollo_graphql_potentially_bad_cors_good_3_var
 });
 
@@ -30,7 +30,7 @@ const apollo_graphql_potentially_bad_cors_good_3 = new ApolloServer({
 const apollo_server_bad_cors_bad_1 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: { origin: true }
 });
 
@@ -39,7 +39,7 @@ const apollo_server_bad_cors_bad_2_var = { origin: true }
 const apollo_server_bad_cors_bad_2 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: apollo_server_bad_cors_bad_2_var
 });
 
@@ -48,7 +48,7 @@ const apollo_server_bad_cors_bad_2 = new ApolloServer({
 const apollo_graphql_potentially_bad_cors_bad_3 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: { origin: "attacker.com"}
 });
 
@@ -56,7 +56,7 @@ const apollo_graphql_potentially_bad_cors_bad_3 = new ApolloServer({
 const apollo_graphql_potentially_bad_cors_bad_4 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: { origin: /\.attacker\.com$/ }
 });
 
@@ -64,7 +64,7 @@ const apollo_graphql_potentially_bad_cors_bad_4 = new ApolloServer({
 const apollo_graphql_potentially_bad_cors_bad_5 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: { origin: ["attacker.com", "attacker2.com", "attacker3.com"]}
 });
 
@@ -73,7 +73,7 @@ const apollo_graphql_potentially_bad_cors_bad_5 = new ApolloServer({
 const apollo_graphql_potentially_bad_cors_bad_6 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: { origin: ["attacker.com", /attacker2\.com/, "attacker3.com"]}
 });
 
@@ -81,7 +81,7 @@ const apollo_graphql_potentially_bad_cors_bad_6 = new ApolloServer({
 const apollo_graphql_potentially_bad_cors_bad_7 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: { 
         origin: function (origin, callback) {
             callback(null, true)
@@ -98,7 +98,7 @@ const apollo_graphql_potentially_bad_cors_bad_8_var = {
 const apollo_graphql_potentially_bad_cors_bad_8 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-potentially-bad-cors
+    //ruleid: v3-potentially-bad-cors
     cors: apollo_graphql_potentially_bad_cors_bad_8_var
 });
 

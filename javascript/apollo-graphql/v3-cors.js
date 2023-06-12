@@ -1,17 +1,17 @@
 import { ApolloServer } from 'apollo-server';
 
 // ====================
-// apollo-graphql-v3-no-cors tests
+// v3-no-cors tests
 // ====================
 // BAD: Lacks 'cors'
-//ruleid: apollo-graphql-v3-no-cors
+//ruleid: v3-no-cors
 const apollo_server_no_cors_bad_1 = new ApolloServer({
     typeDefs,
     resolvers,
 });
 
 // GOOD: CORS is defined to deny all
-//ok: apollo-graphql-v3-no-cors
+//ok: v3-no-cors
 const apollo_server_no_cors_good_1 = new ApolloServer({
     typeDefs,
     resolvers,
@@ -20,13 +20,13 @@ const apollo_server_no_cors_good_1 = new ApolloServer({
 
 
 // ====================
-// apollo-graphql-v3-bad-cors tests
+// v3-bad-cors tests
 // ====================
 // GOOD: CORS is defined to deny all
 const apollo_server_bad_cors_good_1 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-no-cors
+    //ok: v3-no-cors
     cors: { origin: false }
 });
 
@@ -34,7 +34,7 @@ const apollo_server_bad_cors_good_1 = new ApolloServer({
 const apollo_server_bad_cors_good_1_1 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-no-cors
+    //ok: v3-no-cors
     cors: { origin: false, credentials: true }
 });
 
@@ -43,7 +43,7 @@ const apollo_server_bad_cors_good_2_var = { origin: false }
 const apollo_server_bad_cors_good_2 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-no-cors
+    //ok: v3-no-cors
     cors: apollo_server_bad_cors_good_2_var
 });
 
@@ -52,7 +52,7 @@ const apollo_server_bad_cors_good_2 = new ApolloServer({
 const apollo_server_bad_cors_bad_1 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: true }
 });
 
@@ -61,7 +61,7 @@ const apollo_server_bad_cors_bad_1_1_var = true;
 const apollo_server_bad_cors_bad_1_1 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: apollo_server_bad_cors_bad_1_1_var }
 });
 
@@ -70,7 +70,7 @@ const apollo_server_bad_cors_bad_2_var = { origin: true }
 const apollo_server_bad_cors_bad_2 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: apollo_server_bad_cors_bad_2_var
 });
 
@@ -79,7 +79,7 @@ const apollo_server_bad_cors_bad_2 = new ApolloServer({
 const apollo_server_bad_cors_bad_3 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: /\.example.com$/ }
 });
 
@@ -87,7 +87,7 @@ const apollo_server_bad_cors_bad_3 = new ApolloServer({
 const apollo_server_bad_cors_bad_4 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: /\.example\.com/ }
 });
 
@@ -95,7 +95,7 @@ const apollo_server_bad_cors_bad_4 = new ApolloServer({
 const apollo_server_5 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: ['test.com', /\.example.com$/, 'test2.com'] }
 });
 
@@ -103,7 +103,7 @@ const apollo_server_5 = new ApolloServer({
 const apollo_server_6 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: ['test.com', /\.example\.com/, 'test2.com'] }
 });
 
@@ -111,7 +111,7 @@ const apollo_server_6 = new ApolloServer({
 const apollo_server_7 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: ['test.com', /\.example\.com$/, /\.example2.com/] }
 });
 
@@ -119,7 +119,7 @@ const apollo_server_7 = new ApolloServer({
 const apollo_server_8 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: 'null' }
 });
 
@@ -127,7 +127,7 @@ const apollo_server_8 = new ApolloServer({
 const apollo_server_9 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ruleid: apollo-graphql-v3-bad-cors
+    //ruleid: v3-bad-cors
     cors: { origin: ['test.com', 'null', 'test2.com'] }
 });
 
@@ -136,7 +136,7 @@ const apollo_server_9 = new ApolloServer({
 const apollo_server_ok_4 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: { origin: 'https://example.com' }
 });
 
@@ -144,7 +144,7 @@ const apollo_server_ok_4 = new ApolloServer({
 const apollo_server_ok_2 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: { origin: ['https://example.com'] }
 });
 
@@ -152,7 +152,7 @@ const apollo_server_ok_2 = new ApolloServer({
 const apollo_server_ok_3 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: { origin: ['https://example.com', 'test.com', 'test2.com'] }
 });
 
@@ -160,7 +160,7 @@ const apollo_server_ok_3 = new ApolloServer({
 const apollo_server_ok_5 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: { origin:  /\.example2\.com$/ }
 });
 
@@ -168,7 +168,7 @@ const apollo_server_ok_5 = new ApolloServer({
 const apollo_server_ok_6 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: { origin: ['https://example.com',  /\.example2\.com$/, "test.com"] }
 });
 
@@ -177,7 +177,7 @@ const apollo_server_ok_8_cors_policy = { origin: ["https://example.com", 'test.c
 const apollo_server_ok_8 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: apollo_server_ok_8_cors_policy
 });
 
@@ -193,7 +193,7 @@ if ((process.env.ENABLE_CORS || 'true') === 'true') {
 const apollo_server_ok_9 = new ApolloServer({
     typeDefs,
     resolvers,
-    //ok: apollo-graphql-v3-bad-cors
+    //ok: v3-bad-cors
     cors: apollo_server_ok_9_cors_policy
 });
 

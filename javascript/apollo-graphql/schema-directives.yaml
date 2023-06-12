@@ -1,5 +1,5 @@
 rules:
-  - id: apollo-graphql-schemaDirectives
+  - id: schema-directives
     languages: [js, ts]
     message: >-
       The Apollo GraphQL uses the 'schemaDirectives' option. This works in ApolloServer v2, but does nothing in version >=3. Depending on what the directives are used for, this can expose authenticated endpoints, disable rate limiting, and more. See the references on how to create custom directives in v3 and v4. 

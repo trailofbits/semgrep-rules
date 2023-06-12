@@ -1,5 +1,5 @@
 rules:
-  - id: apollo-graphql-v3-csrfPrevention
+  - id: v3-csrf-prevention
     languages: [js, ts]
     message: >-
       The Apollo GraphQL server lacks the 'csrfPrevention' option. This option is 'false' by the default in v3 of the Apollo GraphQL v3, which can enable CSRF attacks.
@@ -9,7 +9,7 @@ rules:
       cwe: "CWE-352: Cross-Site Request Forgery (CSRF)"
       subcategory: [vuln]
       confidence: HIGH
-      likelihood: LOW
+      likelihood: MEDIUM
       impact: MEDIUM
       technology:
         - graphql

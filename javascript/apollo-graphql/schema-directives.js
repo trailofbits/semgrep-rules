@@ -1,5 +1,5 @@
 // BAD: Has 'schemaDirectives'
-//ruleid: apollo-graphql-schemaDirectives
+//ruleid: schema-directives
 const apollo_server_1 = new ApolloServer({
     typeDefs,
     resolvers,
@@ -9,7 +9,7 @@ const apollo_server_1 = new ApolloServer({
 });
 
 // Good: Does not have 'schemaDirectives'
-//ok: apollo-graphql-schemaDirectives
+//ok: schema-directives
 const apollo_server_3 = new ApolloServer({
     typeDefs,
     resolvers,
