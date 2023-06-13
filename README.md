@@ -98,6 +98,21 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 | [panic-in-function-returning-result](rs/panic-in-function-returning-result.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.rs.panic-in-function-returning-result.panic-in-function-returning-result) | 🟩 | 🌘 | Calling `unwrap` or `expect` in a function returning a `Result` |
 
 
+### javascript
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [schema-directives](javascript/apollo-graphql/schema-directives.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.schema-directives.schema-directives) | 🟥 | 🌗 | Use of outdated ApolloServer option 'schemaDirectives' |
+| [use-of-graphql-upload](javascript/apollo-graphql/use-of-graphql-upload.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.use-of-graphql-upload.use-of-graphql-upload) | 🟧 | 🌕 | Use of the graphql-upload library |
+| [v3-potentially-bad-cors](javascript/apollo-graphql/v3-cors-audit.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-cors-audit.v3-potentially-bad-cors) | 🟧 | 🌕 | Potentially bad CORS policy |
+| [v3-express-bad-cors](javascript/apollo-graphql/v3-cors-express.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-cors-express.v3-express-bad-cors) | 🟥 | 🌗 | Bad CORS policy |
+| [v3-express-no-cors](javascript/apollo-graphql/v3-cors-express.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-cors-express.v3-express-no-cors) | 🟩 | 🌘 | Lack of CORS policy |
+| [v3-bad-cors](javascript/apollo-graphql/v3-cors.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-cors.v3-bad-cors) | 🟥 | 🌗 | Bad CORS policy |
+| [v3-no-cors](javascript/apollo-graphql/v3-cors.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-cors.v3-no-cors) | 🟩 | 🌘 | Lack of CORS policy |
+| [v3-csrf-prevention](javascript/apollo-graphql/v3-csrf-prevention.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-csrf-prevention.v3-csrf-prevention) | 🟧 | 🌘 | Lack of CSRF prevention |
+| [v4-csrf-prevention](javascript/apollo-graphql/v4-csrf-prevention.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v4-csrf-prevention.v4-csrf-prevention) | 🟧 | 🌘 | CSRF protection disabled |
+
+
 ## Contributing
 
 Pull Requests and issues are welcomed!
