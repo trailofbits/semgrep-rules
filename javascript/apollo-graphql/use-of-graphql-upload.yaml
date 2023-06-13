@@ -1,0 +1,22 @@
+rules:
+  - id: use-of-graphql-upload
+    languages: [js, ts]
+    message: >-
+      The Apollo GraphQL server is using the graphql-upload library. This library allows file uploads using POSTs with content-type: multipart/form-data, which can enable to CSRF attacks. Ensure that you are enabling CSRF protection if you really need to use graphql-upload .
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-352: Cross-Site Request Forgery (CSRF)"
+      subcategory: [vuln]
+      confidence: LOW
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology:
+        - graphql
+        - apollo-graphql-server
+      description: "Use of the graphql-upload library"
+      references:
+        - https://github.com/apollographql/apollo-server/security/advisories/GHSA-2p3c-p3qw-69r4
+
+    patterns:
+      - pattern: app.use(graphqlUploadExpress());

@@ -1,0 +1,44 @@
+rules:
+  # Rule for potentially bad CORS policies in the batteries-included apollo-server
+  - id: v3-potentially-bad-cors
+    languages: [js, ts]
+    message: >-
+      The Apollo GraphQL server is setup with a CORS policy that does not deny all origins. Carefully review the origins to see if any of them are incorrectly setup (third-party websites, bad regexes, functions that reflect every origin, etc.).
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-942: Permissive Cross-domain Policy with Untrusted Domains"
+      subcategory: [audit]
+      confidence: LOW
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology:
+        - graphql
+        - apollo-graphql-server
+        - apollo-graphql-server-v3
+      description: "Potentially bad CORS policy"
+      references:
+        - https://www.apollographql.com/docs/apollo-server/v3/security/cors#configuring-cors-options-for-apollo-server
+    mode: taint
+
+    pattern-sources:
+      # Remove this once the above matches functions (https://github.com/returntocorp/semgrep/issues/6748)
+      - pattern: |
+          { origin: function(...) {...} }
+      - patterns:
+          - pattern-inside: |
+              { origin: $NOT_KNOWN_GOOD_CORS_ORIGIN }
+          - metavariable-pattern:
+              metavariable: $NOT_KNOWN_GOOD_CORS_ORIGIN
+              patterns:
+                # 'false' denies every origin
+                - pattern-not: |
+                    false
+                # An empty array denies every origin.
+                - pattern-not: |
+                    []
+    pattern-sinks:
+      - patterns:
+          - pattern: |
+              {..., cors: $CORS_ORIGIN, ...}
+          - focus-metavariable: $CORS_ORIGIN

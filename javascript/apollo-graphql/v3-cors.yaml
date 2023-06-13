@@ -1,0 +1,98 @@
+rules:
+  # Rule default CORS policies in the batteries-included apollo-server
+  - id: v3-no-cors
+    languages: [js, ts]
+    message: >-
+      The Apollo GraphQL server lacks a CORS policy. By default, the batteries-included apollo-server package serves the Access-Control-Allow-Origin HTTP header with the wildcard value (*).
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-942: Permissive Cross-domain Policy with Untrusted Domains"
+      subcategory: [vuln]
+      confidence: HIGH
+      likelihood: LOW
+      impact: LOW
+      technology:
+        - graphql
+        - apollo-graphql-server
+        - apollo-graphql-server-v3
+      description: "Lack of CORS policy"
+      references:
+        - https://www.apollographql.com/docs/apollo-server/v3/security/cors#configuring-cors-options-for-apollo-server
+
+    patterns:
+      - pattern-either:
+          - pattern-inside: |
+              $X = require('apollo-server');
+              ...
+          - pattern-inside: |
+              import 'apollo-server';
+              ...
+      - pattern: |
+          new ApolloServer({...})
+      - pattern-not: |
+          new ApolloServer({..., cors: ..., ...})
+
+  # Rule for bad CORS policies in the batteries-included apollo-server
+  - id: v3-bad-cors
+    languages: [js, ts]
+    message: >-
+      The Apollo GraphQL server is setup with a CORS policy that reflects any origin, or with a regex that has known flaws.
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-942: Permissive Cross-domain Policy with Untrusted Domains"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: HIGH
+      technology:
+        - graphql
+        - apollo-graphql-server
+      description: "Bad CORS policy"
+      references:
+        - https://www.apollographql.com/docs/apollo-server/v3/security/cors#configuring-cors-options-for-apollo-server
+    mode: taint
+
+    pattern-sources:
+      - patterns:
+          - pattern-inside: |
+              { origin: $BAD_CORS_ORIGIN }
+          - metavariable-pattern:
+              metavariable: $BAD_CORS_ORIGIN
+              pattern-either:
+                # 'true' mean that every origin is reflected
+                - pattern: |
+                    true
+                - patterns:
+                    # pattern alone or inside an array
+                    - pattern-either:
+                        - pattern: |
+                            $CORS_SINGLE_ORIGIN
+                        - pattern: |
+                            [..., $CORS_SINGLE_ORIGIN, ...]
+                    - metavariable-pattern:
+                        metavariable: $CORS_SINGLE_ORIGIN
+                        pattern-either:
+                          # the '.' character is not escaped
+                          - pattern-regex: ^/.*[^\\]\..*/$
+                          # the regex does not end with '$'
+                          - pattern-regex: ^/.*[^$]/$
+                          # An attacker can make requests from ‘null’ origins
+                          - pattern: |
+                              'null'
+    pattern-sinks:
+      - patterns:
+          # The ApolloServer comes from the 'apollo-server' package
+          - pattern-either:
+              - pattern-inside: |
+                  $X = require('apollo-server');
+                  ...
+              - pattern-inside: |
+                  import 'apollo-server';
+                  ...
+          # The sink is the ApolloServer's cors argument
+          - pattern: |
+              new ApolloServer({..., cors: $CORS_ORIGIN, ...})
+          # This tells Semgrep that the sink is only the $CORS_ORIGIN variable
+          - focus-metavariable: $CORS_ORIGIN
