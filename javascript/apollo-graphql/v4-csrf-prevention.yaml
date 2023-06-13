@@ -15,6 +15,7 @@ rules:
         - graphql
         - apollo-graphql-server
         - apollo-graphql-server-v4
+      description: "CSRF protection disabled"
       references:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors/#preventing-cross-site-request-forgery-csrf
 

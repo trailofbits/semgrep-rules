@@ -14,6 +14,7 @@ rules:
       technology:
         - graphql
         - apollo-graphql-server
+      description: "Use of the graphql-upload library"
       references:
         - https://github.com/apollographql/apollo-server/security/advisories/GHSA-2p3c-p3qw-69r4
 

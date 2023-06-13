@@ -16,6 +16,7 @@ rules:
         - graphql
         - apollo-graphql-server
         - apollo-graphql-server-v3
+      description: "Lack of CORS policy"
       references:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors#configuring-cors-options-for-apollo-server
 
@@ -48,6 +49,7 @@ rules:
       technology:
         - graphql
         - apollo-graphql-server
+      description: "Bad CORS policy"
       references:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors#configuring-cors-options-for-apollo-server
     mode: taint

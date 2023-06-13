@@ -15,6 +15,7 @@ rules:
         - graphql
         - apollo-graphql-server
         - apollo-graphql-server-v3
+      description: "Lack of CSRF prevention"
       references:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors/#preventing-cross-site-request-forgery-csrf
 
