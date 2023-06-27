@@ -173,3 +173,36 @@ func AnonRaceCond_4_FP() {
 
 	wg.Wait()
 }
+
+
+func AnonRaceCond_5() {
+	var wg sync.WaitGroup
+	// ok: anonymous-race-condition
+	for idx, val := range values {
+		wg.Add(1)
+		idx, val := idx, val
+		go func() {
+			val.s.Method("test")
+			fmt.Println("Completed index", idx)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+}
+
+func AnonRaceCond_6() {
+	var wg sync.WaitGroup
+	// ok: anonymous-race-condition
+	for idx, val := range values {
+		wg.Add(1)
+		idx, val := idx, val
+		go func() {
+			fmt.Println(val.s)
+			fmt.Println("Completed index", idx)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+}
