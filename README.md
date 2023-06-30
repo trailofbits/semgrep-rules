@@ -118,3 +118,10 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 Pull Requests and issues are welcomed!
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for more information.
+
+## Licensing
+
+The rules defined in this repository are licensed under AGPLv3.
+
+The sidecar examples *may* be derived from other works, and retain their
+original licenses where required.
