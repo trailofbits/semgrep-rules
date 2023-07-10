@@ -57,7 +57,21 @@ func main() {
 		fmt.Printf("Obtained engineer with FName %s\n", eng5.FName)
 	}
 
+	// ok: invalid-usage-of-modified-variable
+	eng6, err := getEngineerAtIndex(engineers, 7)
+	if err != nil {
+		eng6 = &Engineer{0, "N/A", "N/A", 0, nil}
+		fmt.Printf("Unable to obtain engineer %d!\n", eng6.Id)
+	}
+
+	// ok: invalid-usage-of-modified-variable
+	eng7, err := getEngineerAtIndex(engineers, 8)
+	if err != nil {
+		eng7 = &Engineer{0, "N/A", "N/A", 0, nil}
+	}
+
 	fmt.Printf("Engineer 1: %s", fmt.Sprintf("%s %s", eng1.FName, eng1.LName))
+	fmt.Printf("Engineer 7: %s", fmt.Sprintf("%s %s", eng7.FName, eng7.LName))
 }
 
 func getEngineerAtIndex(slice []Engineer, idx int) (*Engineer, error) {
