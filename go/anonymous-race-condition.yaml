@@ -112,3 +112,23 @@ rules:
           }(...)
           ...
         }
+    - pattern-not: |
+        for $Y, $X := range ... {
+          ...
+          $Y, $X := $Y, $X
+          ...
+          go func(...){
+            ...
+            <... $X.$VAR ...>
+          }(...)
+        }
+    - pattern-not: |
+        for $Y, $X := range ... {
+          ...
+          $Y, $X := $Y, $X
+          ...
+          go func(...){
+            ...
+            <... $Y.$VAR ...>
+          }(...)
+        }
