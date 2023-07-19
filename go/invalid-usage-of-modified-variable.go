@@ -37,8 +37,8 @@ func main() {
 	}
 
 	// ruleid: invalid-usage-of-modified-variable
-	eng11, err := getEngineerAtIndex(engineers, 5)
-	if err != nil {
+	eng11, err2 := getEngineerAtIndex(engineers, 5)
+	if err2 != nil {
 		fmt.Printf("Something")
 		fmt.Printf("Unable to obtain engineer with FName %s\n", eng11.FName)
 		fmt.Printf("Something")
@@ -57,6 +57,14 @@ func main() {
 	if err != nil {
 		fmt.Printf("Something")
 		fmt.Printf("Unable to obtain engineer with FName %s\n", eng13.FName)
+		fmt.Printf("Something")
+	}
+
+	// ruleid: invalid-usage-of-modified-variable
+	eng14, addr1, err := getEngineerAndAddressByIndex(engineers, 5)
+	if err != nil {
+		fmt.Printf("Something")
+		fmt.Printf("Unable to obtain engineer with FName %s\n", eng14.FName)
 		fmt.Printf("Something")
 	}
 
@@ -185,18 +193,16 @@ func main() {
 		eng91 = &Engineer{0, "N/A", "N/A", 0, nil}
 	}
 
-	// TRUE POSITIVES
-
-	var eng103 *Engineer
-	// ruleid: invalid-usage-of-modified-variable
-	eng103, err = getEngineerAtIndex(engineers, 10)
+	// ok: invalid-usage-of-modified-variable
+	eng92, addr2, err := getEngineerAndAddressByIndex(engineers, 5)
 	if err != nil {
 		fmt.Printf("Something")
-		fmt.Printf("Unable to obtain engineer %d!\n", eng103.Id)
-		eng103 := &Engineer{0, "N/A", "N/A", 0, nil}
-		fmt.Printf("Unable to obtain engineer %d!\n", eng103.Id)
+		eng92, err = getEngineerAtIndex(engineers, 6)
+		fmt.Printf("Something")
 	}
 
+
+	// TRUE POSITIVES
 
 	// ruleid: invalid-usage-of-modified-variable
 	eng11, err = getEngineerAtIndex(engineers, 8)
@@ -247,6 +253,9 @@ func main() {
 	fmt.Printf("Engineer 71: %s", fmt.Sprintf("%s %s", eng7.FName, eng71.LName))
 	fmt.Printf("Engineer 9: %s", fmt.Sprintf("%s %s", eng9.FName, eng9.LName))
 	fmt.Printf("Engineer 91: %s", fmt.Sprintf("%s %s", eng91.FName, eng91.LName))
+	fmt.Printf("Engineer 92: %s", fmt.Sprintf("%s %s", eng92.FName, eng92.LName))
+	fmt.Printf("Address 1: %v", addr1)
+	fmt.Printf("Address 2: %v", addr2)
 }
 
 func getEngineerAtIndex(slice []Engineer, idx int) (*Engineer, error) {
@@ -261,6 +270,13 @@ func getEngineerAddressByIndex(slice []Engineer, idx int) (*Address, error) {
 		return nil, fmt.Errorf("invalid index")
 	}
 	return slice[idx].Address, nil
+}
+
+func getEngineerAndAddressByIndex(slice []Engineer, idx int) (*Engineer, *Address, error) {
+	if idx >= len(slice) {
+		return nil, nil, fmt.Errorf("invalid index")
+	}
+	return &slice[idx], slice[idx].Address, nil
 }
 
 func getEngineers() []Engineer {
