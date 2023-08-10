@@ -95,15 +95,16 @@ func main() {
 		fmt.Printf("Something")
 	}
 
-	// WHOLE VAR AND METHODS TESTS
+	var eng24 *Engineer
 	// ruleid: invalid-usage-of-modified-variable
-	eng4, err := getEngineerAtIndex(engineers, 5)
-	if err != nil {
+	if eng24, err = getEngineerAtIndex(engineers, 6); err != nil {
 		fmt.Printf("Something")
-		fmt.Printf("%#v\n", eng4)
+		fmt.Printf("Unable to obtain engineer with FName %s\n", eng24.FName)
 		fmt.Printf("Something")
+		eng24 = &Engineer{0, "N/A", "N/A", 0, nil}
 	}
 
+	// WHOLE VAR AND METHODS TESTS
 	// ruleid: invalid-usage-of-modified-variable
 	eng5, err := getEngineerAtIndex(engineers, 5)
 	if err != nil {
@@ -112,23 +113,31 @@ func main() {
 		fmt.Printf("Something")
 	}
 
-	// FIELD ASSIGN TESTS
-	eng3 := Engineer{4, "Lee", "Renaldo", 50, nil}
-	// ruleid: invalid-usage-of-modified-variable
-	eng3.Address, err = getEngineerAddressByIndex(engineers, 1)
-	if err != nil {
-		fmt.Printf("Unable to obtain address %#v!\n", eng3.Address)
-	}
-
-	// ruleid: invalid-usage-of-modified-variable
-	eng3.Address, err = getEngineerAddressByIndex(engineers, 1)
-	if err != nil {
-		fmt.Printf("Something")
-		fmt.Printf("Unable to obtain address %#v!\n", eng3.Address)
-		fmt.Printf("Something")
-	}
 
 	// FALSE POSITIVES
+	eng3 := Engineer{4, "Lee", "Renaldo", 50, nil}
+	// ok: invalid-usage-of-modified-variable
+	eng3.Address, err = getEngineerAddressByIndex(engineers, 1)
+	if err != nil {
+		fmt.Printf("Unable to obtain address %#v!\n", eng3.Address)
+	}
+
+	// ok: invalid-usage-of-modified-variable
+	eng3.Address, err = getEngineerAddressByIndex(engineers, 1)
+	if err != nil {
+		fmt.Printf("Something")
+		fmt.Printf("Unable to obtain address %#v!\n", eng3.Address)
+		fmt.Printf("Something")
+	}
+
+	// ok: invalid-usage-of-modified-variable
+	eng4, err := getEngineerAtIndex(engineers, 5)
+	if err != nil {
+		fmt.Printf("Something")
+		fmt.Printf("%#v\n", eng4)
+		fmt.Printf("Something")
+	}
+
 	// ok: invalid-usage-of-modified-variable
 	eng6, err := getEngineerAtIndex(engineers, 7)
 	if err != nil {
@@ -210,18 +219,18 @@ func main() {
 		eng11.Address = nil
 	}
 
-	// The following 3 test cases should match, but I was unable to find a way
-	// to match these without causing some of the false positives to match. This
-	// is largely due to the requirement that "<... $X ...>" be the last line
-	// in the if-block, i.e. the following causes an invalid pattern error:
-	// 	- pattern: |
-	// 		$X, err = ...
-	// 		if err != nil {
-	// 			...
-	// 			<... $X ...>
-	// 			...
-	// 			$X = ...
-	// 		}
+	// The following test case should match, but I was unable to find a way to
+	// match it without causing some of the false positives to match. This is
+	// largely due to the requirement that "<... $X.$Y ...>" be the last line in
+	// the if-block, i.e. the following causes an invalid pattern error:
+	//  - pattern: |
+	//      $X, err = ...
+	//      if err != nil {
+	//          ...
+	//          <... $X.$Y ...>
+	//          ...
+	//          $X = ...
+	//      }
 
 	// eng10, err := getEngineerAtIndex(engineers, 10)
 	// if err != nil {
@@ -229,23 +238,6 @@ func main() {
 	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng10.Id)
 	// 	eng10 = &Engineer{0, "N/A", "N/A", 0, nil}
 	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng10.Id)
-	// }
-
-	// var eng101 *Engineer
-	// eng101, err = getEngineerAtIndex(engineers, 10)
-	// if err != nil {
-	// 	fmt.Printf("Something")
-	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng101.Id)
-	// 	eng101 = &Engineer{0, "N/A", "N/A", 0, nil}
-	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng101.Id)
-	// }
-
-	// eng102, err := getEngineerAtIndex(engineers, 10)
-	// if err != nil {
-	// 	fmt.Printf("Something")
-	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng102.Id)
-	// 	eng102 := &Engineer{0, "N/A", "N/A", 0, nil}
-	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng102.Id)
 	// }
 
 	fmt.Printf("Engineer 1: %s", fmt.Sprintf("%s %s", eng1.FName, eng1.LName))
