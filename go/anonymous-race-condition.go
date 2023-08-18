@@ -245,8 +245,8 @@ func AnonRaceCond_7_FP() {
 
 func AnonRaceCond_8() {
 	var wg sync.WaitGroup
-	// ruleid: anonymous-race-condition
 	for _, num := range numbers {
+		// ruleid: anonymous-race-condition
 		for _, val := range values {
 			fmt.Println(num)
 			wg.Add(1)
@@ -294,8 +294,8 @@ func AnonRaceCond_9() {
 
 func AnonRaceCond_9_FP() {
 	var wg sync.WaitGroup
-	// ruleid: anonymous-race-condition
 	for _, num := range numbers {
+		// ruleid: anonymous-race-condition
 		for _, val := range values {
 			fmt.Println(num)
 			wg.Add(1)
