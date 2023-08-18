@@ -34,6 +34,14 @@ func main() {
 	AnonRaceCond_3_FP()
 	AnonRaceCond_4()
 	AnonRaceCond_4_FP()
+	AnonRaceCond_5()
+	AnonRaceCond_6()
+	AnonRaceCond_7()
+	AnonRaceCond_7_FP()
+	AnonRaceCond_8()
+	AnonRaceCond_8_FP()
+	AnonRaceCond_9()
+	AnonRaceCond_9_FP()
 }
 
 func func1() {
@@ -172,7 +180,6 @@ func AnonRaceCond_4_FP() {
 	wg.Wait()
 }
 
-
 func AnonRaceCond_5() {
 	var wg sync.WaitGroup
 	// ok: anonymous-race-condition
@@ -202,5 +209,101 @@ func AnonRaceCond_6() {
 		}()
 	}
 
+	wg.Wait()
+}
+
+func AnonRaceCond_7() {
+	var wg sync.WaitGroup
+	// ruleid: anonymous-race-condition
+	for idx, val := range values {
+		wg.Add(1)
+		fmt.Println(val)
+		go func() {
+			fmt.Println("Completed index", idx)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+}
+
+func AnonRaceCond_7_FP() {
+	var wg sync.WaitGroup
+	// ok: anonymous-race-condition
+	for idx, val := range values {
+		wg.Add(1)
+		idx := idx
+		fmt.Println(val)
+		go func() {
+			fmt.Println("Completed index", idx)
+			wg.Done()
+		}()
+	}
+
+	wg.Wait()
+}
+
+func AnonRaceCond_8() {
+	var wg sync.WaitGroup
+	// ruleid: anonymous-race-condition
+	for _, num := range numbers {
+		for _, val := range values {
+			fmt.Println(num)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				fmt.Println(val)
+			}()
+		}
+	}
+	wg.Wait()
+}
+
+func AnonRaceCond_8_FP() {
+	var wg sync.WaitGroup
+	// ok: anonymous-race-condition
+	for _, num := range numbers {
+		for _, val := range values {
+			num, val := num, val
+			fmt.Println(num)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				fmt.Println(val)
+			}()
+		}
+	}
+	wg.Wait()
+}
+
+func AnonRaceCond_9() {
+	var wg sync.WaitGroup
+	// ruleid: anonymous-race-condition
+	for _, num := range numbers {
+		for _, val := range values {
+			fmt.Println(val)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				fmt.Println(num)
+			}()
+		}
+	}
+	wg.Wait()
+}
+
+func AnonRaceCond_9_FP() {
+	var wg sync.WaitGroup
+	// ruleid: anonymous-race-condition
+	for _, num := range numbers {
+		for _, val := range values {
+			fmt.Println(num)
+			wg.Add(1)
+			go func() {
+				defer wg.Done()
+				fmt.Println(val)
+			}()
+		}
+	}
 	wg.Wait()
 }
