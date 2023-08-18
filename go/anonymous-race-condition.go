@@ -44,7 +44,6 @@ func func2() {
 	fmt.Println("I am function func2")
 }
 
-
 func ConcurrentFunctions_TP(fns ...func()) {
 	var wg sync.WaitGroup
 	// ruleid: anonymous-race-condition
@@ -104,7 +103,7 @@ func AnonRaceCond_1_FP() {
 func AnonRaceCond_2() {
 	var wg sync.WaitGroup
 	// ruleid: anonymous-race-condition
-	for i := 0; i< len(numbers); i++ {
+	for i := 0; i < len(numbers); i++ {
 		wg.Add(1)
 		go func() {
 			fmt.Println(i)
@@ -115,11 +114,10 @@ func AnonRaceCond_2() {
 	wg.Wait()
 }
 
-
 func AnonRaceCond_2_FP() {
 	var wg sync.WaitGroup
 	// ok: anonymous-race-condition
-	for i := 0; i< len(numbers); i++ {
+	for i := 0; i < len(numbers); i++ {
 		wg.Add(1)
 		go func(n int) {
 			fmt.Println(n)
@@ -133,7 +131,7 @@ func AnonRaceCond_2_FP() {
 func AnonRaceCond_3_FP() {
 	var wg sync.WaitGroup
 	// ok: anonymous-race-condition
-	for i := 0; i< len(numbers); i++ {
+	for i := 0; i < len(numbers); i++ {
 		cpy := i
 		wg.Add(1)
 		go func() {
