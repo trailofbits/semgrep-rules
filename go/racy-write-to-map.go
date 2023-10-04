@@ -39,6 +39,10 @@ func main() {
 	fmt.Println("appendToMap_FP4:")
 	res6 := appendToMap_FP4()
 	printMap(res6)
+
+	fmt.Println("appendToMap_FP5:")
+	res7 := appendToMap_FP5()
+	printMap(res7)
 }
 
 func appendToMap1() map[int]string {
@@ -157,6 +161,28 @@ func appendToMap_FP4() map[int]string {
 	wg.Wait()
 
 	r := make(map[int]string)
+	return r
+}
+
+func appendToMap_FP5() map[int]string {
+	// FP: The map write is done inside a defer lock
+	var wg sync.WaitGroup
+	r := make(map[int]string)
+	var rMut sync.Mutex
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(iCpy int) {
+			defer wg.Done()
+			// ok: racy-write-to-map
+			rMut.Lock()
+			defer rMut.Unlock()
+			r[iCpy] = fmt.Sprintf("number-%d", iCpy)
+		}(i)
+	}
+
+	wg.Wait()
+
 	return r
 }
 
