@@ -74,8 +74,8 @@ func appendToSlice_FP1() []int {
 		go func(iCpy int) {
 			defer wg.Done()
 			m := iCpy * 2
-			// ok: racy-append-to-slice
 			rMut.Lock()
+			// ok: racy-append-to-slice
 			r = append(r, m)
 			rMut.Unlock()
 		}(i)
@@ -159,9 +159,10 @@ func appendToSlice_FP5() []int {
 		go func(iCpy int) {
 			defer wg.Done()
 			m := iCpy * 2
-			// ok: racy-append-to-slice
 			rMut.Lock()
+			fmt.Println("test")
 			defer rMut.Unlock()
+			// ok: racy-append-to-slice
 			r = append(r, m)
 		}(i)
 	}

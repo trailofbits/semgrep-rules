@@ -37,5 +37,6 @@ rules:
           $MUTEX.Unlock()
     - pattern-not-inside: |
           $MUTEX.Lock()
+          ...
           defer $MUTEX.Unlock()
           ...

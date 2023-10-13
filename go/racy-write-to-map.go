@@ -89,8 +89,8 @@ func appendToMap_FP1() map[int]string {
 		wg.Add(1)
 		go func(iCpy int) {
 			defer wg.Done()
-			// ok: racy-write-to-map
 			rMut.Lock()
+			// ok: racy-write-to-map
 			r[iCpy] = fmt.Sprintf("number-%d", iCpy)
 			rMut.Unlock()
 		}(i)
@@ -174,9 +174,10 @@ func appendToMap_FP5() map[int]string {
 		wg.Add(1)
 		go func(iCpy int) {
 			defer wg.Done()
-			// ok: racy-write-to-map
 			rMut.Lock()
+			fmt.Println("test")
 			defer rMut.Unlock()
+			// ok: racy-write-to-map
 			r[iCpy] = fmt.Sprintf("number-%d", iCpy)
 		}(i)
 	}
