@@ -19,6 +19,6 @@ jobs:
           python -m pip install --upgrade pip
           python3 -m pip install semgrep
       - name: validations
-        run: python -m semgrep --validate --config .
+        run: semgrep --validate --config .
       - name: tests
-        run: python -m semgrep --test --test-ignore-todo
+        run: semgrep --test --test-ignore-todo
