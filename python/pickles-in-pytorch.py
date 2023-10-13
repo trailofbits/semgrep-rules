@@ -29,3 +29,7 @@ def test(arg):
 
     # ok: pickles-in-pytorch
     model.load_state_dict(torch.load(arg))
+    
+    state_dict = model.state_dict()
+    # ok: pickles-in-pytorch
+    torch.save(state_dict, arg)

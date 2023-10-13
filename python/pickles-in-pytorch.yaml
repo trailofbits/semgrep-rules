@@ -24,4 +24,10 @@ rules:
     - pattern-not: torch.load("...")
     - pattern-not: torch.save(..., "...")
     - pattern-not: torch.save($M.state_dict(), ...)
-    - pattern-not-inside: $M.load_state_dict(torch.load(...))
+    - pattern-not-inside: $M.load_state_dict(...)
+    - pattern-not:
+          patterns:
+            - pattern: torch.save($STATE_DICT, ...)
+            - pattern-inside: |
+                $STATE_DICT = $M.state_dict()
+                ...
