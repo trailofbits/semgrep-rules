@@ -23,6 +23,9 @@ func main() {
 
 	res6 := appendToSlice_FP4()
 	printResults(res6)
+
+	res7 := appendToSlice_FP5()
+	printResults(res7)
 }
 
 func appendToSlice1() []int {
@@ -71,8 +74,8 @@ func appendToSlice_FP1() []int {
 		go func(iCpy int) {
 			defer wg.Done()
 			m := iCpy * 2
-			// ok: racy-append-to-slice
 			rMut.Lock()
+			// ok: racy-append-to-slice
 			r = append(r, m)
 			rMut.Unlock()
 		}(i)
@@ -143,6 +146,29 @@ func appendToSlice_FP4() []int {
 	wg.Wait()
 
 	var r []int
+	return r
+}
+
+func appendToSlice_FP5() []int {
+	// FP: The `append` is done inside a defer lock
+	var wg sync.WaitGroup
+	var rMut sync.Mutex
+	var r []int
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+		go func(iCpy int) {
+			defer wg.Done()
+			m := iCpy * 2
+			rMut.Lock()
+			fmt.Println("test")
+			defer rMut.Unlock()
+			// ok: racy-append-to-slice
+			r = append(r, m)
+		}(i)
+	}
+
+	wg.Wait()
+
 	return r
 }
 
