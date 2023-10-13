@@ -210,6 +210,13 @@ func main() {
 		fmt.Printf("Something")
 	}
 
+    // ok: invalid-usage-of-modified-variable
+	eng93, err := getEngineerAtIndex(engineers, 8)
+    if err != nil {
+        eng93 = &Engineer{0, "N/A", "N/A", 0, nil}
+        eng93 = &Engineer{eng93.Id, "N/A", "N/A", 0, nil}
+    }
+
 
 	// TRUE POSITIVES
 
@@ -218,6 +225,12 @@ func main() {
 	if err != nil {
 		eng11.Address = nil
 	}
+
+    // ruleid: invalid-usage-of-modified-variable
+	eng12, err = getEngineerAtIndex(engineers, 8)
+    if err != nil {
+        eng12 = &Engineer{eng12.Id, "N/A", "N/A", 0, nil}
+    }
 
 	// The following test case should match, but I was unable to find a way to
 	// match it without causing some of the false positives to match. This is
@@ -232,13 +245,14 @@ func main() {
 	//          $X = ...
 	//      }
 
-	// eng10, err := getEngineerAtIndex(engineers, 10)
-	// if err != nil {
-	// 	fmt.Printf("Something")
-	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng10.Id)
-	// 	eng10 = &Engineer{0, "N/A", "N/A", 0, nil}
-	// 	fmt.Printf("Unable to obtain engineer %d!\n", eng10.Id)
-	// }
+	// todoruleid: invalid-usage-of-modified-variable
+	eng10, err := getEngineerAtIndex(engineers, 10)
+	if err != nil {
+		fmt.Printf("Something")
+		fmt.Printf("Unable to obtain engineer %d!\n", eng10.Id)
+		eng10 = &Engineer{0, "N/A", "N/A", 0, nil}
+		fmt.Printf("Unable to obtain engineer %d!\n", eng10.Id)
+	}
 
 	fmt.Printf("Engineer 1: %s", fmt.Sprintf("%s %s", eng1.FName, eng1.LName))
 	fmt.Printf("Engineer 7: %s", fmt.Sprintf("%s %s", eng7.FName, eng7.LName))
