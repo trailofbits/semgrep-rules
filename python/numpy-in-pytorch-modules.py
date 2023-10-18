@@ -10,6 +10,9 @@ class MyModule(nn.Module):
         # ruleid: numpy-in-pytorch-modules
         y = np.concatenate((x, y), axis=1)
 
+        # ruleid: numpy-in-pytorch-modules
+        np.ndarray.sort(y)
+
     def forward_correct(self, x, y):
         x = self.dropout(x)
         # ok: numpy-in-pytorch-modules
