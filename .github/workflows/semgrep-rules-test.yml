@@ -28,5 +28,5 @@ jobs:
           wget https://raw.githubusercontent.com/returntocorp/semgrep-rules/c5ad4bb0f4c7ee5b8cd47276b582e8bb57bd0a4d/.github/scripts/validate-metadata.py
           wget https://raw.githubusercontent.com/returntocorp/semgrep-rules/develop/metadata-schema.yaml.schm
           python ./validate-metadata.py -s ./metadata-schema.yaml.schm -f .
-      - name: x
+      - name: rules-tests
         run: semgrep --config="r/yaml.semgrep" --severity ERROR .
