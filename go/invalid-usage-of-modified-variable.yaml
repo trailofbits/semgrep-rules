@@ -1,44 +1,43 @@
 rules:
-- id: invalid-usage-of-modified-variable
-  message: >-
-    Variable `$X` is likely modified and later used on error. In some cases this could result 
-    in panics due to a nil dereference  
-  languages: [go]
-  severity: WARNING
-  metadata:
-    category: security
-    cwe: "CWE-665: Improper Initialization"
-    subcategory: [audit]
-    confidence: HIGH
-    likelihood: MEDIUM
-    impact: MEDIUM
-    technology: [--no-technology--]
-    description: "Possible unintentional assignment when an error occurs"
-    references:
-      - https://blog.trailofbits.com/2019/11/07/attacking-go-vr-ttps/
+  - id: invalid-usage-of-modified-variable
+    message: >-
+      Variable `$X` is likely modified and later used on error. In some cases this could result 
+      in panics due to a nil dereference
+    languages: [go]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-665: Improper Initialization"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "Possible unintentional assignment when an error occurs"
+      references:
+        - https://blog.trailofbits.com/2019/11/07/attacking-go-vr-ttps/
 
-  patterns:
-    - pattern: |
-        ..., $X, ..., $ERR = ...
-        if $ERR != nil {
-          ...
-          <... $X.$Y ...>
-        }
+    patterns:
+      - pattern: |
+          ..., $X, ..., $ERR = ...
+          if $ERR != nil {
+            ...
+            <... $X.$Y ...>
+          }
 
-    - pattern-not: |
-        ..., $X, ..., $ERR = ...
-        if $ERR != nil {
-          ...
-          $X, ... = ...
-          ...
-          <... $X.$Y ...>
-        }
-    - pattern-not: |
-        ..., $X, ..., $ERR = ...
-        if $ERR != nil {
-          ...
-          $X = ...
-          ...
-          <... $X.$Y ...>
-        }
-  
+      - pattern-not: |
+          ..., $X, ..., $ERR = ...
+          if $ERR != nil {
+            ...
+            $X, ... = ...
+            ...
+            <... $X.$Y ...>
+          }
+      - pattern-not: |
+          ..., $X, ..., $ERR = ...
+          if $ERR != nil {
+            ...
+            $X = ...
+            ...
+            <... $X.$Y ...>
+          }
