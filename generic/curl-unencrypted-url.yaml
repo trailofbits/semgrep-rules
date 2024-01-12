@@ -1,0 +1,15 @@
+rules:
+  - id: curl-unencrypted-url
+    message: Found `curl` command with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+    pattern-either:
+      - pattern: curl ... http://
+      - pattern: curl ... ftp://

@@ -1,0 +1,13 @@
+rules:
+  - id: installer-allow-untrusted
+    message: Found `installer` command allowing untrusted installations
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-494: Download of Code Without Integrity Check"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+    pattern: installer ... -allowUntrusted

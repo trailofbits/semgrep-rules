@@ -1,0 +1,23 @@
+rules:
+  - id: openssl-insecure-flags
+    message: Found `openssl` command using insecure flags
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+    pattern-either:
+      # A space character was left at the end of some patterns to help ensure
+      # that the intended flag was used, and minimize the chance that another,
+      # longer flag that _starts with_ the intended flag results in a false
+      # positive
+      - pattern: "openssl ... -pass pass:"
+      - pattern: "openssl ... -passin pass:"
+      - pattern: "openssl ... -passout pass:"
+      - pattern: "openssl ... -nodes "
+      - pattern: "openssl ... -noenc "
+      - pattern: "openssl ... -sha1 "

@@ -1,0 +1,27 @@
+rules:
+  - id: port-all-interfaces
+    message: Service port is exposed on all interfaces
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-1327: Binding to an Unrestricted IP Address"
+      subcategory: [audit]
+      confidence: LOW
+      likelihood: LOW
+      impact: LOW
+      references:
+        - https://docs.docker.com/compose/compose-file/compose-file-v3/#ports
+    patterns:
+      - pattern-inside: |
+          services:
+            ...
+      - pattern: |
+          ports:
+            - ...
+            - "$PORT"
+            - ...
+      - focus-metavariable: $PORT
+      - metavariable-regex:
+          metavariable: $PORT
+          regex: "^(?!127.0.0.1:).+"

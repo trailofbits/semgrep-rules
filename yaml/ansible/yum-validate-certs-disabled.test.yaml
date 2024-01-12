@@ -1,0 +1,15 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test (yum-validate-certs-disabled)
+      ansible.builtin.yum:
+        name: https://example.com/package.rpm
+        state: present
+        # ruleid: yum-validate-certs-disabled
+        validate_certs: false
+    - name: Negative test (yum-unencrypted-url and yum-validate-certs-disabled)
+      ansible.builtin.yum:
+        # ok: yum-validate-certs-disabled
+        name: https://example.com/package.rpm
+        state: present

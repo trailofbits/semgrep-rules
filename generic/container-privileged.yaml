@@ -1,0 +1,27 @@
+rules:
+  - id: container-privileged
+    message: Found container command with extended privileges
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-250: Execution with Unnecessary Privileges"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+    pattern-either:
+      - pattern: docker ... --privileged
+      - pattern: docker ... --cap-add=ALL
+      - pattern: docker ... --net=host
+      - pattern: docker ... --userns=host
+      - pattern: docker ... --pid=host
+      - pattern: docker ... --ipc=host
+      - pattern: docker ... --security-opt seccomp=unconfined
+      - pattern: podman ... --privileged
+      - pattern: podman ... --cap-add=ALL
+      - pattern: podman ... --net=host
+      - pattern: podman ... --userns=host
+      - pattern: podman ... --pid=host
+      - pattern: podman ... --ipc=host
+      - pattern: podman ... --security-opt seccomp=unconfined

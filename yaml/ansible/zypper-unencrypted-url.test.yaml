@@ -1,0 +1,14 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      community.general.zypper:
+        # ruleid: zypper-unencrypted-url
+        name: "http://example.com/package.rpm"
+        state: present
+    - name: Negative test
+      community.general.zypper:
+        # ok: zypper-unencrypted-url
+        name: "https://example.com/package.rpm"
+        state: present

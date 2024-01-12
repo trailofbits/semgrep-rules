@@ -1,0 +1,31 @@
+rules:
+  - id: apt-key-unencrypted-url
+    message: Found apt key download with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_key_module.html#parameter-url
+    patterns:
+      - pattern-inside: |
+          $APTKEY:
+            ...
+      - metavariable-pattern:
+          metavariable: $APTKEY
+          pattern-either:
+            - pattern: apt_key
+            - pattern: ansible.builtin.apt_key
+      - pattern: "$KEY: '$VALUE'"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: url
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: "(?i)^(http|ftp):\/\/.*"

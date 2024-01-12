@@ -1,0 +1,15 @@
+rules:
+  - id: wget-no-check-certificate
+    message: Found `wget` command disabling SSL verification
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+    pattern-either:
+      - pattern: wget ... --no-check-certificate
+      - pattern: wget ... --no-hsts

@@ -1,0 +1,13 @@
+rules:
+  - id: ssh-disable-host-key-checking
+    message: Found `ssh` command disabling host key checking
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+    pattern: ssh ... StrictHostKeyChecking=no

@@ -1,0 +1,82 @@
+---
+# making sure it goes through all false values mentioned in https://yaml.org/type/bool.html ...
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: off
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: Off
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: OFF
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: false
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: False
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: FALSE
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: N
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: n
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: no
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: No
+    - name: Positive test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ruleid: apt-key-validate-certs-disabled
+        validate_certs: NO
+    - name: Negative test
+      ansible.builtin.apt_key:
+        # ok: apt-key-validate-certs-disabled
+        url: https://example.com/example-key.asc
+        state: present
+    - name: Negative test
+      ansible.builtin.apt_key:
+        url: https://example.com/example-key.asc
+        state: present
+        # ok: apt-key-validate-certs-disabled
+        validate_certs: true

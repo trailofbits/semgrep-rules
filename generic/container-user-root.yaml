@@ -1,0 +1,17 @@
+rules:
+  - id: container-user-root
+    message: Found container command running as root
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-250: Execution with Unnecessary Privileges"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+    pattern-either:
+      - pattern: docker ... -u root
+      - pattern: docker ... --user root
+      - pattern: podman ... -u root
+      - pattern: podman ... --user root

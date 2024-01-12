@@ -1,0 +1,32 @@
+rules:
+  - id: zypper-unencrypted-url
+    message: Found Zypper package with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/community/general/zypper_module.html#parameter-name
+    patterns:
+      - pattern-inside: |
+          $ZYPPER:
+            ...
+      - pattern: "$KEY: '$VALUE'"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: name
+            - pattern: pkg
+      - metavariable-pattern:
+          metavariable: $ZYPPER
+          pattern-either:
+            - pattern: zypper
+            - pattern: community.general.zypper
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: "(?i)^(http|ftp):\/\/.*"

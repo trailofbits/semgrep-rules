@@ -1,0 +1,15 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test (rpm-key-validate-certs-disabled)
+      ansible.builtin.rpm_key:
+        state: present
+        key: https://example.com/RPM-GPG-KEY.dag.txt
+        # ruleid: rpm-key-validate-certs-disabled
+        validate_certs: false
+    - name: Negative test (rpm-key-unencrypted-url and rpm-key-validate-certs-disabled)
+      ansible.builtin.rpm_key:
+        # ok: rpm-key-validate-certs-disabled
+        state: present
+        key: https://example.com/RPM-GPG-KEY.dag.txt

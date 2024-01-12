@@ -1,0 +1,41 @@
+rules:
+  - id: get-url-unencrypted-url
+    message: Found file download with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-url
+        - https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_get_url_module.html#parameter-url
+    patterns:
+      - pattern-inside: |
+          $GETURL:
+            ...
+      # Assume if they specify a "checksum", then this is a trust-on-first-use
+      # situation, or they've otherwise pre-validated the download.
+      - pattern-not-inside: |
+          $GETURL:
+            ...
+            checksum: ...
+            ...
+      - metavariable-pattern:
+          metavariable: $GETURL
+          pattern-either:
+            - pattern: get_url
+            - pattern: win_get_url
+            - pattern: ansible.builtin.get_url
+            - pattern: ansible.windows.win_get_url
+      - pattern: "$KEY: '$VALUE'"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: url
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: "(?i)^(http|ftp):\/\/.*"
