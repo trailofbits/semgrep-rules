@@ -7,6 +7,7 @@ rules:
       category: security
       cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
       subcategory: [audit]
+      technology: [ansible, apt]
       confidence: HIGH
       likelihood: HIGH
       impact: HIGH

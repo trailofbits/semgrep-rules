@@ -7,6 +7,7 @@ rules:
       category: security
       cwe: "CWE-295: Improper Certificate Validation"
       subcategory: [audit]
+      technology: [ansible, rpm]
       confidence: HIGH
       likelihood: HIGH
       impact: HIGH

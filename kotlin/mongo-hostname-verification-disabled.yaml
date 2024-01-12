@@ -6,6 +6,7 @@ rules:
     metadata:
       category: security
       subcategory: [audit]
+      technology: [java, kotlin, mongodb]
       cwe: "CWE-295: Improper Certificate Validation"
       confidence: HIGH
       likelihood: HIGH

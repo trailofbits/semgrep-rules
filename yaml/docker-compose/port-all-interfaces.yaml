@@ -7,6 +7,7 @@ rules:
       category: security
       cwe: "CWE-1327: Binding to an Unrestricted IP Address"
       subcategory: [audit]
+      technology: [docker, compose]
       confidence: LOW
       likelihood: LOW
       impact: LOW

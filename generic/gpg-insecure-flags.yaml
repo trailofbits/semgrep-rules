@@ -6,10 +6,13 @@ rules:
     metadata:
       category: security
       subcategory: [audit]
+      technology: [shell]
       cwe: "CWE-295: Improper Certificate Validation"
       confidence: MEDIUM
       likelihood: MEDIUM
       impact: HIGH
+      references:
+        - https://www.gnupg.org/gph/de/manual/r1023.html
     pattern-either:
       - pattern: gpg ... --allow-non-selfsigned-uid
       - pattern: gpg ... --allow-freeform-uid
