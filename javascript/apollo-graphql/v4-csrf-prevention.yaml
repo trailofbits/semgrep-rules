@@ -20,7 +20,7 @@ rules:
         - https://www.apollographql.com/docs/apollo-server/v3/security/cors/#preventing-cross-site-request-forgery-csrf
       fix-regex:
         regex: 'csrfPrevention:\s*false'
-        replacement: 'csrfPrevention: true'
+        replacement: "csrfPrevention: true"
 
     patterns:
       - pattern: |
