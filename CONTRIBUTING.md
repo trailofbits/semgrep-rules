@@ -26,7 +26,19 @@ Then [install semgrep CLI](https://semgrep.dev/docs/getting-started/), and you a
 
 ### Linting
 
-Currenty we don't use any linting tools. In the future we plan to use `yamlfmt`.
+First, [install `prettier`](https://prettier.io/docs/en/install), or [use `brew`](https://formulae.brew.sh/formula/prettier) to do so.
+
+Use the following command to check rule files for formatting errors:
+
+```bash
+prettier --check '**/*.{yaml,yml}'
+```
+
+Any issues can be automatically fixed with the following command:
+
+```bash
+prettier --write '**/*.{yaml,yml}'
+```
 
 ### Testing
 
