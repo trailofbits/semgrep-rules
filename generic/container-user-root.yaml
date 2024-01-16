@@ -15,6 +15,10 @@ rules:
         - https://docs.docker.com/engine/reference/commandline/run/
     pattern-either:
       - pattern: docker ... -u root
+      - pattern: docker ... -u 0
       - pattern: docker ... --user root
+      - pattern: docker ... --user 0
       - pattern: podman ... -u root
+      - pattern: podman ... --u 0
       - pattern: podman ... --user root
+      - pattern: podman ... --user 0
