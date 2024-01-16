@@ -1,0 +1,45 @@
+rules:
+  - id: get-url-validate-certs-disabled
+    message: Found file download with SSL verification disabled
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      technology: [ansible]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/get_url_module.html#parameter-validate_certs
+        - https://docs.ansible.com/ansible/latest/collections/ansible/windows/win_get_url_module.html#parameter-validate_certs
+    patterns:
+      - pattern-inside: |
+          $GETURL:
+            ...
+            url: ...
+            ...
+      # Assume if they specify a "checksum", then this is a trust-on-first-use
+      # situation, or they've otherwise pre-validated the download.
+      - pattern-not-inside: |
+          $GETURL:
+            ...
+            checksum: ...
+            ...
+      - metavariable-pattern:
+          metavariable: $GETURL
+          pattern-either:
+            - pattern: get_url
+            - pattern: win_get_url
+            - pattern: ansible.builtin.get_url
+            - pattern: ansible.windows.win_get_url
+      - pattern: "$KEY: $VALUE"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: validate_certs
+      - metavariable-pattern:
+          metavariable: $VALUE
+          pattern-either:
+            - pattern: "false"

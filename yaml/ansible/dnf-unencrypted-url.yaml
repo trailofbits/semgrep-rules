@@ -1,0 +1,36 @@
+rules:
+  - id: dnf-unencrypted-url
+    message: Found dnf download with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      subcategory: [audit]
+      technology: [ansible, dnf]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf_module.html#parameter-name
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/dnf5_module.html#parameter-name
+    patterns:
+      - pattern-inside: |
+          $DNF:
+            ...
+      - metavariable-pattern:
+          metavariable: $DNF
+          pattern-either:
+            - pattern: dnf
+            - pattern: ansible.builtin.dnf
+            - pattern: dnf5
+            - pattern: ansible.builtin.dnf5
+      - pattern: "$KEY: '$VALUE'"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: name
+            - pattern: pkg
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: "(?i)^(http|ftp):\/\/.*"

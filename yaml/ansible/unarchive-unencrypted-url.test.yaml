@@ -1,0 +1,16 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.unarchive:
+        # ruleid: unarchive-unencrypted-url
+        src: http://example.com/example.zip
+        dest: /usr/local/bin
+        remote_src: yes
+    - name: Negative test
+      ansible.builtin.unarchive:
+        # ok: unarchive-unencrypted-url
+        src: https://example.com/example.zip
+        dest: /usr/local/bin
+        remote_src: yes

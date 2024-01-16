@@ -1,0 +1,14 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.rpm_key:
+        state: present
+        # ruleid: rpm-key-unencrypted-url
+        key: http://example.com/RPM-GPG-KEY.dag.txt
+    - name: Negative test (rpm-key-unencrypted-url and rpm-key-validate-certs-disabled)
+      ansible.builtin.rpm_key:
+        state: present
+        # ok: rpm-key-unencrypted-url
+        key: https://example.com/RPM-GPG-KEY.dag.txt

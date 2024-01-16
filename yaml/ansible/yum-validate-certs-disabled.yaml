@@ -1,0 +1,33 @@
+rules:
+  - id: yum-validate-certs-disabled
+    message: Found yum with SSL verification disabled
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      technology: [ansible, yum]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/yum_module.html#parameter-validate_certs
+    patterns:
+      - pattern-inside: |
+          $YUM:
+            ...
+      - metavariable-pattern:
+          metavariable: $YUM
+          pattern-either:
+            - pattern: yum
+            - pattern: ansible.builtin.yum
+      - pattern: "$KEY: $VALUE"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: validate_certs
+      - metavariable-pattern:
+          metavariable: $VALUE
+          pattern-either:
+            - pattern: "false"

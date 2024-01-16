@@ -1,0 +1,14 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.dnf:
+        # ruleid: dnf-unencrypted-url
+        name: http://example.com/example.rpm
+        state: present
+    - name: Negative test
+      ansible.builtin.dnf:
+        # ok: dnf-unencrypted-url
+        name: https://example.com/example.rpm
+        state: present
