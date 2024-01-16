@@ -26,8 +26,8 @@ rules:
       - pattern: docker ... --security-opt apparmor=unconfined
       - pattern: podman ... --privileged
       - pattern: podman ... --cap-add=ALL
-      - pattern: podman ... --cap-add= SYS_ADMIN
-      - pattern: podman ... --cap-add= SYS_MODULE
+      - pattern: podman ... --cap-add=SYS_ADMIN
+      - pattern: podman ... --cap-add=SYS_MODULE
       - pattern: podman ... --net=host
       - pattern: podman ... --userns=host
       - pattern: podman ... --pid=host

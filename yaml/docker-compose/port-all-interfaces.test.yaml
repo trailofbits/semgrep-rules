@@ -20,6 +20,10 @@ services:
       # ok: port-all-interfaces
       - "127.0.0.1:8001:8001"
       # ok: port-all-interfaces
+      - "127.0.0.2:8001:8001"
+      # ok: port-all-interfaces
+      - "127.255.255.255:8001:8001"
+      # ok: port-all-interfaces
       - "127.0.0.1:5000-5010:5000-5010"
   redis:
     image: "redis:alpine"
