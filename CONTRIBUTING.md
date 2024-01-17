@@ -82,6 +82,7 @@ Before publishing a new rule, or updating an existing one, make sure to review t
     - [ ] Use `>-` for multiline messages
     - [ ] Use backticks in messages e.g., `$VAR`, `$FUNC`, `some.method()`
     - The `languages` field in `[go, java]` format are preferable (not `- go \n -java`)
+    - [ ] Run prettier (see [Linting](#linting))
 
 - [ ] Check amount of false-positives on some large public repositories
 
