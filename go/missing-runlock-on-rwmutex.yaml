@@ -34,3 +34,9 @@ rules:
           $FOO(..., ..., func(...) { 
               ... 
           })
+      - pattern-not-inside: |
+          return func(...) {
+              ...
+              $T.RUnlock()
+              ...
+          }

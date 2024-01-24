@@ -13,7 +13,7 @@ type Engineer struct {
 }
 
 func (e *Engineer) String() string {
-    return e.FName + " " + e.LName
+	return e.FName + " " + e.LName
 }
 
 type Address struct {
@@ -45,7 +45,7 @@ func main() {
 	}
 
 	var eng12 *Engineer
-    // ruleid: invalid-usage-of-modified-variable
+	// ruleid: invalid-usage-of-modified-variable
 	eng12, err = getEngineerAtIndex(engineers, 5)
 	if err != nil {
 		fmt.Printf("Unable to obtain engineer with FName %s\n", eng12.FName)
@@ -113,7 +113,6 @@ func main() {
 		fmt.Printf("Something")
 	}
 
-
 	// FALSE POSITIVES
 	eng3 := Engineer{4, "Lee", "Renaldo", 50, nil}
 	// ok: invalid-usage-of-modified-variable
@@ -170,7 +169,6 @@ func main() {
 		fmt.Printf("Something")
 	}
 
-
 	var eng8 *Engineer
 	// ok: invalid-usage-of-modified-variable
 	eng8, err = getEngineerAtIndex(engineers, 7)
@@ -210,13 +208,26 @@ func main() {
 		fmt.Printf("Something")
 	}
 
-    // ok: invalid-usage-of-modified-variable
+	// ok: invalid-usage-of-modified-variable
 	eng93, err := getEngineerAtIndex(engineers, 8)
-    if err != nil {
-        eng93 = &Engineer{0, "N/A", "N/A", 0, nil}
-        eng93 = &Engineer{eng93.Id, "N/A", "N/A", 0, nil}
-    }
+	if err != nil {
+		eng93 = &Engineer{0, "N/A", "N/A", 0, nil}
+		eng93 = &Engineer{eng93.Id, "N/A", "N/A", 0, nil}
+	}
 
+	// ok: invalid-usage-of-modified-variable
+	eng94, err := getEngineerAtOrDefault(engineers, 8)
+	if err != nil {
+		if eng94 != nil {
+			fmt.Printf("Got engineer %s %s\n", eng94.FName, eng94.LName)
+		}
+	}
+
+	// ok: invalid-usage-of-modified-variable
+	eng95, err := getEngineerAtOrDefault(engineers, 8)
+	if err != nil && eng95.FName == "Doe" {
+		fmt.Println("Got a generic engineer")
+	}
 
 	// TRUE POSITIVES
 
@@ -226,11 +237,11 @@ func main() {
 		eng11.Address = nil
 	}
 
-    // ruleid: invalid-usage-of-modified-variable
+	// ruleid: invalid-usage-of-modified-variable
 	eng12, err = getEngineerAtIndex(engineers, 8)
-    if err != nil {
-        eng12 = &Engineer{eng12.Id, "N/A", "N/A", 0, nil}
-    }
+	if err != nil {
+		eng12 = &Engineer{eng12.Id, "N/A", "N/A", 0, nil}
+	}
 
 	// The following test case should match, but I was unable to find a way to
 	// match it without causing some of the false positives to match. This is
@@ -283,6 +294,26 @@ func getEngineerAndAddressByIndex(slice []Engineer, idx int) (*Engineer, *Addres
 		return nil, nil, fmt.Errorf("invalid index")
 	}
 	return &slice[idx], slice[idx].Address, nil
+}
+
+func getEngineerAtOrDefault(slice []Engineer, idx int) (*Engineer, error) {
+	if idx >= len(slice) {
+		return nil, fmt.Errorf("invalid index")
+	}
+	return &slice[idx], nil
+}
+
+func defaultEngineer() Engineer {
+	return Engineer{
+		1,
+		"Jane",
+		"Doe",
+		24,
+		&Address{
+			"San Marcos",
+			"California",
+		},
+	}
 }
 
 func getEngineers() []Engineer {
