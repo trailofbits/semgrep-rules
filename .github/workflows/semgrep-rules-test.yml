@@ -23,7 +23,7 @@ jobs:
         run: |
           config_args=$(
             for dir in $(
-              find . -type directory -maxdepth 1 -mindepth 1 -not -path '*/.*'
+              find . -type d -maxdepth 1 -mindepth 1 -not -path '*/.*'
             );
             do
               echo -n " --config $dir";
