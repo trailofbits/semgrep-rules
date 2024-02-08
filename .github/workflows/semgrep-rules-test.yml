@@ -20,7 +20,17 @@ jobs:
           python3 -m pip install semgrep
           python3 -m pip install jsonschema pyyaml
       - name: validations
-        run: semgrep --validate --config .
+        run: |
+          config_args=$(
+            for dir in $(
+              find . -type d -maxdepth 1 -mindepth 1 -not -path '*/.*'
+            );
+            do
+              echo -n " --config $dir";
+            done
+          )
+          echo "Semgrep config arguments: $config_args"
+          semgrep scan --validate $config_args
       - name: tests
         run: semgrep --test --test-ignore-todo
       - name: metadata-tests
@@ -29,4 +39,4 @@ jobs:
           wget https://raw.githubusercontent.com/returntocorp/semgrep-rules/develop/metadata-schema.yaml.schm
           python ./validate-metadata.py -s ./metadata-schema.yaml.schm -f .
       - name: rules-tests
-        run: semgrep --config="r/yaml.semgrep" --severity ERROR .
+        run: semgrep scan --config="r/yaml.semgrep" --severity ERROR .
