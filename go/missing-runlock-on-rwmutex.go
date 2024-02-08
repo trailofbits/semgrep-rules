@@ -83,7 +83,7 @@ func (c *RWContainer) inc4FP(name string) RUnlocker {
 	c.mu.Lock()
 	c.counters[name]++
 	return func() {
-		// ok: missing-unlock-before-return
+		// ok: missing-runlock-before-return
 		c.mu.Unlock()
 	}
 }
