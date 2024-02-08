@@ -13,6 +13,8 @@ rules:
       impact: HIGH
       references:
         - https://man7.org/linux/man-pages/man1/tar.1.html
+    options:
+      generic_ellipsis_max_span: 0
     pattern-either:
       # A space character was left at the end of some patterns to help ensure
       # that the intended flag was used, and minimize the chance that another,
