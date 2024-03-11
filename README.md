@@ -49,7 +49,6 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 
 | ID | Playground | Impact | Confidence | Description |
 | -- | :--------: | :----: | :--------: | ----------- |
-| [anonymous-race-condition](go/anonymous-race-condition.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.anonymous-race-condition.anonymous-race-condition) | 🟧 | 🌗 | Race conditions within anonymous goroutines |
 | [hanging-goroutine](go/hanging-goroutine.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.hanging-goroutine.hanging-goroutine) | 🟩 | 🌗 | Goroutine leaks |
 | [invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.invalid-usage-of-modified-variable.invalid-usage-of-modified-variable) | 🟧 | 🌘 | Possible unintentional assignment when an error occurs |
 | [iterate-over-empty-map](go/iterate-over-empty-map.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.iterate-over-empty-map.iterate-over-empty-map) | 🟩 | 🌗 | Probably redundant iteration over an empty map |
