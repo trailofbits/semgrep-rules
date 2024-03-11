@@ -9,6 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: update staging.semgrep.dev
-        run: curl --fail -X POST -L https://staging.semgrep.dev/api/admin/update-registry
+        run: curl --fail -X POST -L https://staging.semgrep.dev/api/admin/update-registry?rule_type=sast
       - name: update semgrep.dev
-        run: curl --fail -X POST -L https://semgrep.dev/api/admin/update-registry
+        run: curl --fail -X POST -L https://semgrep.dev/api/admin/update-registry?rule_type=sast
