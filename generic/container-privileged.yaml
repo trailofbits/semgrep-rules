@@ -1,6 +1,6 @@
 rules:
   - id: container-privileged
-    message: Found container command with extended privileges
+    message: Found container command (docker, podman) with extended privileges
     languages: [generic]
     severity: WARNING
     metadata:
