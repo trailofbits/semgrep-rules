@@ -15,7 +15,7 @@ rules:
         - https://curl.se/docs/manpage.html
     patterns:
       - pattern-either:
-        - pattern: curl ... http://
-        - pattern: curl ... ftp://
+          - pattern: curl ... http://
+          - pattern: curl ... ftp://
       - pattern-not-inside: curl ... http://127.0.0.1
       - pattern-not-inside: curl ... http://localhost
