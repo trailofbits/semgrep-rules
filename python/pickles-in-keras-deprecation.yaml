@@ -31,6 +31,6 @@ rules:
                 - pattern: tensorflow.keras.models.load_model($FILE)
                 - pattern: keras.saving.load_model($FILE)
                 - pattern: tensorflow.keras.saving.load_model($FILE)
-            - metavariable-comparison:
+            - metavariable-regex:
                 metavariable: $FILE
-                comparison: re.match(".*\.keras", $FILE)
+                regex: .*\.keras
