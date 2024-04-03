@@ -1,0 +1,16 @@
+rules:
+  - id: mongo-hostname-verification-disabled
+    message: Found MongoDB client with SSL hostname verification disabled
+    languages: [java, kotlin]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [java, kotlin, mongodb]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://www.mongodb.com/docs/drivers/java/sync/current/fundamentals/connection/tls/#disable-hostname-verification
+    pattern: $SETTINGS.invalidHostNameAllowed(true)

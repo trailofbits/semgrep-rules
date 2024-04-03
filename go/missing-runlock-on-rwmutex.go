@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+type RUnlocker func()
+
 type RWContainer struct {
 	mu       sync.RWMutex
 	counters map[string]int
@@ -75,4 +77,13 @@ func (c *RWContainer) inc_FP(name string) error {
 	}
 	c.mu.RUnlock()
 	return nil
+}
+
+func (c *RWContainer) inc4FP(name string) RUnlocker {
+	c.mu.Lock()
+	c.counters[name]++
+	return func() {
+		// ok: missing-runlock-on-rwmutex
+		c.mu.Unlock()
+	}
 }

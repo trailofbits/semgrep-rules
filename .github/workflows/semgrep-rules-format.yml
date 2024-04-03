@@ -1,0 +1,21 @@
+name: semgrep-rules-format
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+jobs:
+  semgrep-rules-format:
+    name: run semgrep rules format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+          # Use this file as the cache-dependency-path because the dependencies
+          # are manually specified below, and not in a package-lock.json
+          cache-dependency-path: .github/workflows/semgrep-rules-format.yml
+      - run: npm install --global prettier
+      - run: prettier --check './**/*.{yaml,yml}'

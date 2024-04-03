@@ -1,0 +1,4 @@
+---
+- name: Positive test
+  # ruleid: wrm-cert-validation-ignore
+  ansible_winrm_server_cert_validation: ignore

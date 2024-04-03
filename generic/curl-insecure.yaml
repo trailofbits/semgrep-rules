@@ -1,0 +1,22 @@
+rules:
+  - id: curl-insecure
+    message: Found `curl` command disabling SSL verification
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      references:
+        - https://curl.se/docs/manpage.html
+    pattern-either:
+      # A space character was left at the end of some patterns to help ensure
+      # that the intended flag was used, and minimize the chance that another,
+      # longer flag that _starts with_ the intended flag results in a false
+      # positive
+      - pattern: "curl ... -k "
+      - pattern: "curl ... --insecure"

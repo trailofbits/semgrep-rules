@@ -1,0 +1,14 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.apt_key:
+        # ruleid: apt-key-unencrypted-url
+        url: http://example.com/example-key.asc
+        state: present
+    - name: Negative test
+      ansible.builtin.apt_key:
+        # ok: apt-key-unencrypted-url
+        url: https://example.com/example-key.asc
+        state: present

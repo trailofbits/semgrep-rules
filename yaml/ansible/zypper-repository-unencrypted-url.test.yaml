@@ -1,0 +1,14 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      community.general.zypper_repository:
+        # ruleid: zypper-repository-unencrypted-url
+        repo: "http://example.com/repo/"
+        auto_import_keys: true
+    - name: Negative test
+      community.general.zypper_repository:
+        # ok: zypper-repository-unencrypted-url
+        repo: "https://example.com/repo/"
+        auto_import_keys: true

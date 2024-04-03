@@ -1,41 +1,41 @@
 rules:
-- id: racy-write-to-map
-  message: >-
-    Writing `$MAP` from multiple goroutines is not concurrency safe
-  languages: [go]
-  severity: ERROR
-  metadata:
-    category: security
-    cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
-    subcategory: [vuln]
-    confidence: MEDIUM
-    likelihood: HIGH
-    impact: MEDIUM
-    technology: [--no-technology--]
-    description: "Concurrent writes to the same map in multiple goroutines"
-    references:
-      - https://go.dev/blog/maps#concurrency
+  - id: racy-write-to-map
+    message: >-
+      Writing `$MAP` from multiple goroutines is not concurrency safe
+    languages: [go]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "Concurrent writes to the same map in multiple goroutines"
+      references:
+        - https://go.dev/blog/maps#concurrency
 
-  patterns:
-    - pattern: |
+    patterns:
+      - pattern: |
           $MAP[$KEY] = $VALUE
-    - pattern-inside: |
-        $MAP = make(map[$KTYPE]$VTYPE)
-        ...
-        for ... {
+      - pattern-inside: |
+          $MAP = make(map[$KTYPE]$VTYPE)
           ...
-          go func(...) {
+          for ... {
             ...
-            $MAP[$KEY] = $VALUE
+            go func(...) {
+              ...
+              $MAP[$KEY] = $VALUE
+              ...
+            }(...)
             ...
-          }(...)
-          ...
-        }
-    - pattern-not-inside: |
+          }
+      - pattern-not-inside: |
           $MUTEX.Lock()
           ...
           $MUTEX.Unlock()
-    - pattern-not-inside: |
+      - pattern-not-inside: |
           $MUTEX.Lock()
           ...
           defer $MUTEX.Unlock()

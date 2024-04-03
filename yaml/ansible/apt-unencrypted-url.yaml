@@ -1,0 +1,32 @@
+rules:
+  - id: apt-unencrypted-url
+    message: Found apt deb with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      subcategory: [audit]
+      technology: [ansible, apt]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html#parameter-deb
+    patterns:
+      - pattern-inside: |
+          $APT:
+            ...
+      - metavariable-pattern:
+          metavariable: $APT
+          pattern-either:
+            - pattern: apt
+            - pattern: ansible.builtin.apt
+      - pattern: "$KEY: '$VALUE'"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: deb
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: "(?i)^(http|ftp):\/\/.*"

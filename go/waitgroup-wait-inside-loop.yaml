@@ -1,76 +1,76 @@
 rules:
-- id: waitgroup-wait-inside-loop
-  message: >-
-    Calling `$WG.Wait()` inside a loop blocks the call to `$WG.Done()`
-  languages: [go]
-  severity: WARNING
-  metadata:
-    category: security
-    cwe: "CWE-667: Improper Locking"
-    subcategory: [vuln]
-    confidence: MEDIUM
-    likelihood: MEDIUM
-    impact: MEDIUM
-    technology: [--no-technology--]
-    description: "Calls to `sync.WaitGroup.Wait` inside a loop"
-    references:
-      - https://go101.org/article/concurrent-common-mistakes.html
+  - id: waitgroup-wait-inside-loop
+    message: >-
+      Calling `$WG.Wait()` inside a loop blocks the call to `$WG.Done()`
+    languages: [go]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-667: Improper Locking"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "Calls to `sync.WaitGroup.Wait` inside a loop"
+      references:
+        - https://go101.org/article/concurrent-common-mistakes.html
 
-  patterns:
-    - pattern-either: 
-      - pattern: |
-          var $WG sync.WaitGroup
-          ...
-          for ... {
-            ...
-            go func(...){
+    patterns:
+      - pattern-either:
+          - pattern: |
+              var $WG sync.WaitGroup
               ...
-              defer $WG.Done()
+              for ... {
+                ...
+                go func(...){
+                  ...
+                  defer $WG.Done()
+                  ...
+                }()
+                ...
+                $WG.Wait()
+                ...
+              }
+          - pattern: |
+              $WG := &sync.WaitGroup{}
               ...
-            }()
-            ...
-            $WG.Wait()
-            ...
-          }
-      - pattern: |
-          $WG := &sync.WaitGroup{}
-          ...
-          for ... {
-            ...
-            go func(...){
+              for ... {
+                ...
+                go func(...){
+                  ...
+                  defer $WG.Done()
+                  ...
+                }()
+                ...
+                $WG.Wait()
+                ...
+              }
+          - pattern: |
+              var $WG sync.WaitGroup
               ...
-              defer $WG.Done()
+              for ... {
+                ...
+                go func(...){
+                  ...
+                  $WG.Done()
+                  ...
+                }()
+                ...
+                $WG.Wait()
+                ...
+              }
+          - pattern: |
+              $WG := &sync.WaitGroup{}
               ...
-            }()
-            ...
-            $WG.Wait()
-            ...
-          }
-      - pattern: |
-          var $WG sync.WaitGroup
-          ...
-          for ... {
-            ...
-            go func(...){
-              ...
-              $WG.Done()
-              ...
-            }()
-            ...
-            $WG.Wait()
-            ...
-          }
-      - pattern: |
-          $WG := &sync.WaitGroup{}
-          ...
-          for ... {
-            ...
-            go func(...){
-              ...
-              $WG.Done()
-              ...
-            }()
-            ...
-            $WG.Wait()
-            ...
-          }
+              for ... {
+                ...
+                go func(...){
+                  ...
+                  $WG.Done()
+                  ...
+                }()
+                ...
+                $WG.Wait()
+                ...
+              }

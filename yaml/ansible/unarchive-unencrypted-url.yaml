@@ -1,0 +1,32 @@
+rules:
+  - id: unarchive-unencrypted-url
+    message: Found unarchive download with unencrypted URL (e.g. HTTP, FTP, etc.)
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      subcategory: [audit]
+      technology: [ansible]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/collections/ansible/builtin/unarchive_module.html#parameter-src
+    patterns:
+      - pattern-inside: |
+          $UNARCHIVE:
+            ...
+      - metavariable-pattern:
+          metavariable: $UNARCHIVE
+          pattern-either:
+            - pattern: unarchive
+            - pattern: ansible.builtin.unarchive
+      - pattern: "$KEY: '$VALUE'"
+      - metavariable-pattern:
+          metavariable: $KEY
+          pattern-either:
+            - pattern: src
+      - metavariable-regex:
+          metavariable: $VALUE
+          regex: "(?i)^(http|ftp):\/\/.*"

@@ -1,0 +1,27 @@
+rules:
+  - id: gpg-insecure-flags
+    message: Found `gpg` command using insecure flags
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      references:
+        - https://www.gnupg.org/gph/de/manual/r1023.html
+    pattern-either:
+      - pattern: gpg ... --allow-non-selfsigned-uid
+      - pattern: gpg ... --allow-freeform-uid
+      - pattern: gpg ... --allow-old-cipher-algos
+      - pattern: gpg ... --allow-weak-digest-algos
+      - pattern: gpg ... --allow-weak-key-signatures
+      - pattern: gpg ... --ignore-time-conflict
+      - pattern: gpg ... --ignore-valid-from
+      - pattern: gpg ... --ignore-crc-error
+      - pattern: gpg ... --ignore-mdc-error
+      - pattern: gpg ... --skip-verify
+      - pattern: gpg ... --no-require-cross-certification

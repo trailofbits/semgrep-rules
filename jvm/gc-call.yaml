@@ -1,0 +1,21 @@
+rules:
+  - id: gc-call
+    message: |
+      Calling `gc` suggests to the JVM that the garbage collector should be
+      run, and memory should be reclaimed. This is only a suggestion, and there
+      is no guarantee that anything will happen. Relying on this behavior for
+      correctness or memory management is an anti-pattern.
+    languages: [java, kotlin]
+    severity: WARNING
+    metadata:
+      category: best-practice
+      subcategory: [audit]
+      technology: [java, kotlin]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: LOW
+      references:
+        - https://stackoverflow.com/questions/2414105/why-is-it-bad-practice-to-call-system-gc
+    pattern-either:
+      - pattern: System.gc()
+      - pattern: Runtime.getRuntime().gc()

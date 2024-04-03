@@ -1,0 +1,40 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.get_url:
+        url: https://example.com/file.txt
+        # ruleid: get-url-validate-certs-disabled
+        validate_certs: false
+        dest: /etc/file.txt
+    - name: Positive test
+      ansible.windows.win_get_url:
+        url: https://example.com/file.txt
+        # ruleid: get-url-validate-certs-disabled
+        validate_certs: false
+        dest: C:\Users\ExampleUser\file.txt
+    - name: Negative test
+      ansible.builtin.get_url:
+        # ok: get-url-validate-certs-disabled
+        url: https://example.com/file.txt
+        dest: /etc/file.txt
+    - name: Negative test
+      ansible.windows.win_get_url:
+        # ok: get-url-validate-certs-disabled
+        url: https://example.com/file.txt
+        dest: C:\Users\ExampleUser\file.txt
+    - name: Negative test
+      ansible.builtin.get_url:
+        url: http://example.com/file.txt
+        # ok: get-url-validate-certs-disabled
+        validate_certs: false
+        dest: /etc/file.txt
+        checksum: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+    - name: Negative test
+      ansible.windows.win_get_url:
+        url: http://example.com/file.txt
+        # ok: get-url-validate-certs-disabled
+        validate_certs: false
+        dest: C:\Users\ExampleUser\file.txt
+        checksum: sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa

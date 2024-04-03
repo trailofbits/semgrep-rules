@@ -1,0 +1,16 @@
+rules:
+  - id: wrm-cert-validation-ignore
+    message: Found Windows Remote Management connection with certificate validation disabled
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      technology: [ansible]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.ansible.com/ansible/latest/os_guide/windows_winrm.html#https-certificate-validation
+    pattern: "ansible_winrm_server_cert_validation: ignore"

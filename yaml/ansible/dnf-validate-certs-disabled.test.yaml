@@ -1,0 +1,15 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.dnf:
+        name: https://example.com/example.rpm
+        state: present
+        # ruleid: dnf-validate-certs-disabled
+        validate_certs: false
+    - name: Negative test (dnf-unencrypted-url and dnf-validate-certs-disabled)
+      ansible.builtin.dnf:
+        # ok: dnf-validate-certs-disabled
+        name: https://example.com/example.rpm
+        state: present

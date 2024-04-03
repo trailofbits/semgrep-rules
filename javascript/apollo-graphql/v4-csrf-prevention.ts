@@ -1,4 +1,4 @@
-// OK: Lacks 'csrfPrevention: true', but on v4 this option is false by default
+// OK: Lacks 'csrfPrevention: true', but on v4 this option is true by default
 //ok: v4-csrf-prevention
 const apollo_server_1 = new ApolloServer({
     typeDefs,

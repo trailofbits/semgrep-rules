@@ -7,6 +7,8 @@ import (
 	"sync"
 )
 
+type Unlocker func()
+
 type Container struct {
 	mu       sync.Mutex
 	counters map[string]int
@@ -101,4 +103,13 @@ func (c *Container) inc3(name string) error {
 	}
 	// ruleid: missing-unlock-before-return
 	return nil
+}
+
+func (c *Container) inc4FP(name string) Unlocker {
+	c.mu.Lock()
+	c.counters[name]++
+	return func() {
+		// ok: missing-unlock-before-return
+		c.mu.Unlock()
+	}
 }

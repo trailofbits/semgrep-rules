@@ -1,0 +1,17 @@
+---
+- name: Semgrep tests
+  hosts: all
+  tasks:
+    - name: Positive test
+      ansible.builtin.unarchive:
+        src: https://example.com/example.zip
+        dest: /usr/local/bin
+        remote_src: yes
+        # ruleid: unarchive-validate-certs-disabled
+        validate_certs: false
+    - name: Negative test (unarchive-unencrypted-url and unarchive-validate-certs-disabled)
+      ansible.builtin.unarchive:
+        # ok: unarchive-validate-certs-disabled
+        src: https://example.com/example.zip
+        dest: /usr/local/bin
+        remote_src: yes

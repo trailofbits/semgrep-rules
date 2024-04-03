@@ -1,0 +1,26 @@
+rules:
+  - id: tar-insecure-flags
+    message: Found `tar` command using insecure flags
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      cwe: "CWE-73: External Control of File Name or Path"
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      references:
+        - https://man7.org/linux/man-pages/man1/tar.1.html
+    options:
+      generic_ellipsis_max_span: 0
+    pattern-either:
+      # A space character was left at the end of some patterns to help ensure
+      # that the intended flag was used, and minimize the chance that another,
+      # longer flag that _starts with_ the intended flag results in a false
+      # positive
+      - pattern: "tar ... -P "
+      - pattern: "tar ... --absolute-paths"
+      - pattern: "tar ... --absolute-names"
+      - pattern: "tar ... --passphrase "
