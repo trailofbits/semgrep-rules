@@ -16,6 +16,8 @@ r12 = df1.eval(expr)
 r13 = df1.eval(f"A + B")
 # ruleid: pandas-eval
 r14 = df1.eval(f"A + {colB}")
+# ok: pandas-eval
+r15 = df1.eval(f"")
 
 df2 = pd.DataFrame({"animal": ["dog", "pig"], "age": [10, 20]})
 # ok: pandas-eval
