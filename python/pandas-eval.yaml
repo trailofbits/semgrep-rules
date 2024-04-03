@@ -15,7 +15,10 @@ rules:
       confidence: LOW
       likelihood: LOW
       impact: HIGH
+      technology: [pandas]
       description: "Potential arbitrary code execution from `pandas` functions that evaluate user-provided expressions"
+      references:
+        - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
 
     patterns:
       - pattern-inside: |
