@@ -1,7 +1,7 @@
 rules:
   - id: missing-unlock-before-return
     message: >-
-      Missing mutex unlock before returning from a function. 
+      Missing mutex unlock (`$T` variable) before returning from a function. 
       This could result in panics resulting from double lock operations
     languages: [go]
     severity: ERROR
@@ -22,6 +22,11 @@ rules:
       - pattern-either:
           - pattern: panic(...)
           - pattern: return ...
+      - metavariable-pattern:
+          metavariable: $T
+          patterns:
+            - pattern: |
+                ($T : sync.Mutex)
       - pattern-inside: |
           $T.Lock()
           ...
@@ -30,6 +35,13 @@ rules:
           ...
       - pattern-not-inside: |
           defer $T.Unlock()
+          ...
+      - pattern-not-inside: |
+          defer func(...) {
+            ...
+            $T.Unlock()
+            ...
+          }(...)
           ...
       - pattern-not-inside: |
           $FOO(..., ..., func(...) { 

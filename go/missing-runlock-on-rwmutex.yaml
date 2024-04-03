@@ -1,7 +1,7 @@
 rules:
   - id: missing-runlock-on-rwmutex
     message: >-
-      Missing `RUnlock` on an `RWMutex` lock before returning from a function
+      Missing `RUnlock` on an `RWMutex` (`$T` variable) lock before returning from a function
     languages: [go]
     severity: ERROR
     metadata:
@@ -21,6 +21,11 @@ rules:
       - pattern-either:
           - pattern: panic(...)
           - pattern: return ...
+      - metavariable-pattern:
+          metavariable: $T
+          patterns:
+            - pattern: |
+                ($T : sync.RWMutex)
       - pattern-inside: |
           $T.RLock()
           ...
@@ -29,6 +34,13 @@ rules:
           ...
       - pattern-not-inside: |
           defer $T.RUnlock()
+          ...
+      - pattern-not-inside: |
+          defer func(...) {
+            ...
+            $T.RUnlock()
+            ...
+          }(...)
           ...
       - pattern-not-inside: |
           $FOO(..., ..., func(...) { 
