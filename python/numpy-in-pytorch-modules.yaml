@@ -17,7 +17,7 @@ rules:
     patterns:
       - pattern-either:
           - pattern: numpy.$FN(...)
-          - pattern: numpy.$MOD.$FN(...)
+          - pattern: numpy. ... .$FN(...)
       - pattern-inside: |
           class $MODULE(torch.nn.Module):
               ...
