@@ -13,9 +13,19 @@ x_enc2 = msgpack.packb(x)
 # ok: msgpack-numpy
 x_rec2 = msgpack.unpackb(x_enc2)
 
+# ok: msgpack-numpy
+x_enc3 = msgpack.load(x)
+# ok: msgpack-numpy
+x_rec3 = msgpack.loads(x_enc2)
+
 m.patch()
 
 # ruleid: msgpack-numpy
 x_enc3 = msgpack.packb(x)
 # ruleid: msgpack-numpy
 x_rec3 = msgpack.unpackb(x_enc2)
+
+# ruleid: msgpack-numpy
+x_enc3 = msgpack.load(x)
+# ruleid: msgpack-numpy
+x_rec3 = msgpack.loads(x_enc2)

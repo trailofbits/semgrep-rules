@@ -39,3 +39,10 @@ r32 = df3.query(expr)
 r33 = df3.query(f'A > B')
 # ruleid: pandas-eval
 r34 = df3.query(f'A > {colB}')
+
+class X:
+    def query(self, x):
+        pass
+
+# ok: pandas-eval
+X().query(expr)
