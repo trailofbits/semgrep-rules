@@ -14,6 +14,14 @@ type Container struct {
 	counters map[string]int
 }
 
+type Fridge struct {
+	food int
+}
+
+func (f *Fridge) Lock() {
+	fmt.Println(f.food)
+}
+
 func main() {
 	c := Container{
 		counters: map[string]int{"a": 0, "b": 0},
@@ -113,3 +121,12 @@ func (c *Container) inc4FP(name string) Unlocker {
 		c.mu.Unlock()
 	}
 }
+
+func (c *Container) inc5(name string) error {
+	f := Fridge{food: 11}
+	f.Lock()
+	// ok: missing-unlock-before-return
+	return nil
+}
+
+

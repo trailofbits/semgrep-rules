@@ -14,6 +14,14 @@ type RWContainer struct {
 	counters map[string]int
 }
 
+type Fridge struct {
+	food int
+}
+
+func (f *Fridge) RLock() {
+	fmt.Println(f.food)
+}
+
 func main() {
 	c := RWContainer{
 		counters: map[string]int{"a": 0, "b": 0},
@@ -86,4 +94,11 @@ func (c *RWContainer) inc4FP(name string) RUnlocker {
 		// ok: missing-runlock-on-rwmutex
 		c.mu.Unlock()
 	}
+}
+
+func (c *RWContainer) inc5(name string) error {
+	f := Fridge{food: 11}
+	f.RLock()
+	// ok: missing-runlock-on-rwmutex
+	return nil
 }
