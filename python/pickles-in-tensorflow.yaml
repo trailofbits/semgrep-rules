@@ -1,0 +1,21 @@
+rules:
+  - id: pickles-in-tensorflow
+    message: >-
+      Tensorflow's low-level load function may result in arbitrary code execution.
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [keras]
+      description: "Potential arbitrary code execution from tensorflow's load function"
+      references:
+        - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+    patterns:
+      - pattern: tensorflow.saved_model.load(...)
+      - pattern-not: tensorflow.saved_model.load("...", ...)

@@ -15,7 +15,9 @@ rules:
         - https://tanelp.github.io/posts/a-bug-that-plagues-thousands-of-open-source-ml-projects
 
     patterns:
-      - pattern: $RESULT = numpy.$FUNCTION(...)
+      - pattern-either:
+          - pattern: numpy.$FN(...)
+          - pattern: numpy. ... .$FN(...)
       - pattern-inside: |
           class $MODULE(torch.nn.Module):
               ...

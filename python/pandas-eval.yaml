@@ -1,0 +1,48 @@
+rules:
+  - id: pandas-eval
+    message: >-
+      Pandas eval() and query() may be dangerous if used to evaluate
+      dynamic content. If this content can be input from outside the program, this
+      may be a code injection vulnerability. Ensure evaluated content is not definable
+      by external sources.
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"
+      subcategory:
+        - audit
+      confidence: LOW
+      likelihood: LOW
+      impact: HIGH
+      technology: [pandas]
+      description: "Potential arbitrary code execution from `pandas` functions that evaluate user-provided expressions"
+      references:
+        - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+    patterns:
+      - pattern-inside: |
+          import pandas
+          ...
+      - pattern-either:
+          - patterns:
+              - pattern: pandas.DataFrame.$FN(...)
+              - pattern-not: pandas.DataFrame.$FN("...", ...)
+              - pattern-not: pandas.DataFrame.$FN(f"", ...)
+
+          - patterns:
+              - pattern: pandas.$FN(...)
+              - pattern-not: pandas.$FN("...", ...)
+              - pattern-not: pandas.$FN(f"", ...)
+
+          - patterns:
+              - pattern-inside: |
+                  $DF = pandas.DataFrame(...)
+                  ...
+              - pattern: $DF.$FN(...)
+              - pattern-not: $DF.$FN("...", ...)
+              - pattern-not: $DF.$FN(f"", ...)
+
+      - metavariable-regex:
+          metavariable: $FN
+          regex: (eval|query)

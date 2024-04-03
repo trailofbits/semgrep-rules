@@ -1,0 +1,41 @@
+rules:
+  - id: msgpack-numpy
+    message: >-
+      Found usage of msgpack-numpy unpacking, which relies on pickle to deserialize numpy arrays containing objects.
+      Functions reliant on pickle can result in arbitrary code execution. 
+      Consider switching to a safer serialization method.
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [numpy]
+      description: "Potential arbitrary code execution from functions reliant on pickling"
+      references:
+        - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+    pattern-either:
+      - patterns:
+          - pattern: msgpack.$FN(...)
+          - metavariable-regex:
+              metavariable: $FN
+              regex: (loads?|dumps?|packb?|unpackb?)
+          - pattern-inside: |
+              msgpack_numpy.patch()
+              ...
+
+      - patterns:
+          - pattern: msgpack.$FN(..., object_hook=msgpack_numpy.decode, ...)
+          - metavariable-regex:
+              metavariable: $FN
+              regex: unpackb?
+
+      - patterns:
+          - pattern: msgpack.$FN(..., default=msgpack_numpy.encode, ...)
+          - metavariable-regex:
+              metavariable: $FN
+              regex: packb?

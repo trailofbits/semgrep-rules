@@ -1,0 +1,36 @@
+rules:
+  - id: pickles-in-keras
+    message: >-
+      Keras' load_model function may result in arbitrary code execution:
+      - It can load vulnerable pickled models
+      - It can load an hdf5 model that contains a lambda layer with arbitrary code
+        that will be executed every time the model is used (loading, training, eval)
+      Note: Keras loading with the built-in file format should be safe as long as checks are not disabled.
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [keras]
+      description: "Potential arbitrary code execution from Keras' load_model function"
+      references:
+        - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+    patterns:
+      - pattern-either:
+          - patterns:
+              - pattern: keras.models.load_model(...)
+              - pattern-not: keras.models.load_model("...", ...)
+          - patterns:
+              - pattern: tensorflow.keras.models.load_model(...)
+              - pattern-not: tensorflow.keras.models.load_model("...", ...)
+          - patterns:
+              - pattern: keras.saving.load_model(...)
+              - pattern-not: keras.saving.load_model("...", ...)
+          - patterns:
+              - pattern: tensorflow.keras.saving.load_model(...)
+              - pattern-not: tensorflow.keras.saving.load_model("...", ...)

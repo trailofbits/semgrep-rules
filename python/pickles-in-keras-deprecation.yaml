@@ -1,0 +1,36 @@
+rules:
+  - id: pickles-in-keras-deprecation
+    message: >-
+      The usage of pickle and hdf5 formats for model files are deprecated in Keras.
+      The keras.models.load_model function is deprecated as well. Keras is now
+      embedded in Tensorflow 2 under tensorflow.keras.
+    languages: [python]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [keras]
+      description: "Potential arbitrary code execution from Keras' load_model function"
+      references:
+        - https://blog.trailofbits.com/2021/03/15/never-a-dill-moment-exploiting-machine-learning-pickle-files/
+
+    patterns:
+      - pattern-either:
+          - pattern: keras.models.load_model(...)
+          - pattern: tensorflow.keras.models.load_model(...)
+          - pattern: keras.saving.load_model(...)
+          - pattern: tensorflow.keras.saving.load_model(...)
+      - pattern-not:
+          patterns:
+            - pattern-either:
+                - pattern: keras.models.load_model($FILE)
+                - pattern: tensorflow.keras.models.load_model($FILE)
+                - pattern: keras.saving.load_model($FILE)
+                - pattern: tensorflow.keras.saving.load_model($FILE)
+            - metavariable-regex:
+                metavariable: $FILE
+                regex: .*\.keras

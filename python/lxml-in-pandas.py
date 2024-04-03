@@ -24,3 +24,7 @@ pd.read_html(touch, flavor="html5lib")
 kwargs2 = {"io": touch, "flavor":"html5lib"}
 # ok: lxml-in-pandas
 pd.read_html(**kwargs2)
+
+def test(**kwargs):
+    # ruleid: lxml-in-pandas
+    pd.read_html(**kwargs)
