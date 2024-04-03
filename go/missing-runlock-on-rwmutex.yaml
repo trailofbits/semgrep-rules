@@ -21,6 +21,11 @@ rules:
       - pattern-either:
           - pattern: panic(...)
           - pattern: return ...
+      - metavariable-pattern:
+          metavariable: $T
+          patterns:
+            - pattern: |
+                ($T : sync.RWMutex)
       - pattern-inside: |
           $T.RLock()
           ...

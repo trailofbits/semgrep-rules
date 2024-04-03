@@ -22,6 +22,11 @@ rules:
       - pattern-either:
           - pattern: panic(...)
           - pattern: return ...
+      - metavariable-pattern:
+          metavariable: $T
+          patterns:
+            - pattern: |
+                ($T : sync.Mutex)
       - pattern-inside: |
           $T.Lock()
           ...
