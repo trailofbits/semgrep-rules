@@ -1,7 +1,7 @@
 rules:
   - id: missing-runlock-on-rwmutex
     message: >-
-      Missing `RUnlock` on an `RWMutex` lock before returning from a function
+      Missing `RUnlock` on an `RWMutex` (`$T` variable) lock before returning from a function
     languages: [go]
     severity: ERROR
     metadata:
