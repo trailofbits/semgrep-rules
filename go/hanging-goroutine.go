@@ -11,9 +11,9 @@ var (
 )
 
 func main() {
-	req3(1)
-	fmt.Println(result)
-	fmt.Println(runtime.NumGoroutine())
+	req5_FP(1)
+	fmt.Println("Result: ", result)
+	fmt.Println("Goroutines (must be 1 for FPs):", runtime.NumGoroutine())
 }
 
 func req1(timeout time.Duration) string {
@@ -109,6 +109,49 @@ func req3_FP(timeout time.Duration) {
 	result = <- ch
 	fmt.Println("finished req3")
 }
+
+func req4_FP(timeout time.Duration) string {
+	ch := make(chan string)
+	// ok: hanging-goroutine
+	go func() {
+		newData := test()
+		ch <- newData // block
+	}()
+	select {
+	case result = <- ch:
+		fmt.Println("case result")
+		return result
+	case <- time.After(timeout):
+		result = <- ch
+		fmt.Println("case time.Afer")
+		return ""
+	}
+}
+
+func req5_FP(timeout time.Duration) {
+	ch := make(chan string)
+	tick := time.Tick(100 * time.Millisecond)
+	quit := time.After(2 * time.Second)
+	// ok: hanging-goroutine
+	go func() {
+		newData := test()
+		ch <- newData // block
+	}()
+	for {
+		select {
+			case <-tick:
+				fmt.Print("|")
+			case <-quit:
+				result = <- ch
+				fmt.Println("\nquit")
+				return
+			default:
+				fmt.Print(".")
+				time.Sleep(50 * time.Millisecond)
+		}
+	}
+}
+
 
 func test() string {
 	time.Sleep(time.Second * 2)
