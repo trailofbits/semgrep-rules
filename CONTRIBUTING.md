@@ -58,6 +58,8 @@ semgrep --test --test-ignore-todo --metrics=off --config ./go/iterate-over-empty
 
 Before publishing a new rule, or updating an existing one, make sure to review the checklist below:
 
+- [ ] Check if the rule does not already exists. Review this repository and [Semgrep registry](https://semgrep.dev/r). If there already is a rule that finds the vulnerability your new rule is targeting, consider making updates to this rule instead of creating a new one.
+
 - [ ] Add metadata. Semgrep [defines which metadata fields are required](https://semgrep.dev/docs/contributing/contributing-to-semgrep-rules-repository/#writing-a-rule-for-semgrep-registry)
     - [ ] Add a non-standard `metadata.description` field. It will be used as a description in the `semgrep-rules` README table.
     - For `metadata.references` provide a link to official documentation, Trail of Bits blogpost, GitHub issue, or some reputable website. Avoid linking to websites that may disappear in the future.
