@@ -11,7 +11,7 @@ var (
 )
 
 func main() {
-	req5_FP(1)
+	req6(1, false)
 	fmt.Println("Result: ", result)
 	fmt.Println("Goroutines (must be 1 for FPs):", runtime.NumGoroutine())
 }
@@ -143,6 +143,32 @@ func req5_FP(timeout time.Duration) {
 				fmt.Print("|")
 			case <-quit:
 				result = <- ch
+				fmt.Println("\nquit")
+				return
+			default:
+				fmt.Print(".")
+				time.Sleep(50 * time.Millisecond)
+		}
+	}
+}
+
+func req6(timeout time.Duration, doclose bool) {
+	ch := make(chan string)
+	tick := time.Tick(100 * time.Millisecond)
+	quit := time.After(2 * time.Second)
+	// todoruleid: hanging-goroutine
+	go func() {
+		newData := test()
+		ch <- newData // block
+	}()
+	for {
+		select {
+			case <-tick:
+				fmt.Print("|")
+			case <-quit:
+				if doclose {
+					result = <- ch
+				}
 				fmt.Println("\nquit")
 				return
 			default:
