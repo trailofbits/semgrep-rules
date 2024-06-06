@@ -12,6 +12,7 @@ func main() {
 	iter1_FP_2()
 	iter1_FP_3()
 	iter1_FP_4()
+	iter1_FP_5()
 }
 
 func iter1(){
@@ -70,5 +71,20 @@ func iter1_FP_4(){
 
 	for v := range m {
 		fmt.Println("map item: ", v)
+	}
+}
+
+func iter1_FP_5() {
+	// https://github.com/semgrep/semgrep/issues/9558
+	// todook: iterate-over-empty-map
+	testMap := map[string]int{
+		"foo": 1,
+		"bar": 2,
+	}
+
+	keys := make([]string, 0, len(testMap))
+
+	for k := range testMap {
+		keys = append(keys, k)
 	}
 }
