@@ -2,6 +2,8 @@
 
 This repository contains Semgrep rules developed by Trail of Bits and made available to the public. They are part of our ongoing development efforts and are used in our security audits, vulnerability reseach, and internal projects. They will evolve over time as we identify new techniques.
 
+Visit [Testing Handbook](https://appsec.guide/docs/static-analysis/semgrep/) for Semgrep guidance.
+
 ## Using Semgrep
 
 The easiest way to run the rules is to run them from the [Semgrep registry](https://semgrep.dev/p/trailofbits). To do so, navigate to the root folder of your project and run the following:
@@ -71,16 +73,21 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 | -- | :--------: | :----: | :--------: | ----------- |
 | [automatic-memory-pinning](python/automatic-memory-pinning.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.automatic-memory-pinning.automatic-memory-pinning) | 🟩 | 🌘 | `PyTorch` memory not automatically pinned |
 | [lxml-in-pandas](python/lxml-in-pandas.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.lxml-in-pandas.lxml-in-pandas) | 🟧 | 🌘 | Potential XXE attacks from loading `lxml` in pandas |
+| [msgpack-numpy](python/msgpack-numpy.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.msgpack-numpy.msgpack-numpy) | 🟥 | 🌗 | Potential arbitrary code execution from functions reliant on pickling |
 | [numpy-distutils](python/numpy-distutils.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-distutils.numpy-distutils) | 🟩 | 🌘 | Use of deprecated `numpy.distutils` |
 | [numpy-f2py-compile](python/numpy-f2py-compile.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-f2py-compile.numpy-f2py-compile) | 🟥 | 🌗 | Potential arbitrary code execution from `NumPy` `f2py` compilation |
 | [numpy-in-pytorch-datasets](python/numpy-in-pytorch-datasets.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-in-pytorch-datasets.numpy-in-pytorch-datasets) | 🟩 | 🌘 | Calls to the `NumPy` RNG inside of a `Torch` dataset |
 | [numpy-in-pytorch-modules](python/numpy-in-pytorch-modules.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-in-pytorch-modules.numpy-in-pytorch-modules) | 🌫️ | 🌗 | Uses of `NumPy` functions inside `PyTorch` modules |
 | [numpy-load-library](python/numpy-load-library.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.numpy-load-library.numpy-load-library) | 🟥 | 🌗 | Potential arbitrary code execution from `NumPy` library loading |
 | [onnx-session-options](python/onnx-session-options.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.onnx-session-options.onnx-session-options) | 🟥 | 🌗 | Potential arbitrary code execution from `ONNX` library loading |
+| [pandas-eval](python/pandas-eval.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pandas-eval.pandas-eval) | 🟥 | 🌕 | Potential arbitrary code execution from `pandas` functions that evaluate user-provided expressions |
+| [pickles-in-keras-deprecation](python/pickles-in-keras-deprecation.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-keras-deprecation.pickles-in-keras-deprecation) | 🟥 | 🌗 | Potential arbitrary code execution from Keras' load_model function |
+| [pickles-in-keras](python/pickles-in-keras.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-keras.pickles-in-keras) | 🟥 | 🌗 | Potential arbitrary code execution from Keras' load_model function |
 | [pickles-in-numpy](python/pickles-in-numpy.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-numpy.pickles-in-numpy) | 🟥 | 🌗 | Potential arbitrary code execution from `NumPy` functions reliant on pickling |
 | [pickles-in-pandas](python/pickles-in-pandas.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-pandas.pickles-in-pandas) | 🟥 | 🌗 | Potential arbitrary code execution from `Pandas` functions reliant on pickling |
 | [pickles-in-pytorch-distributed](python/pickles-in-pytorch-distributed.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-pytorch-distributed.pickles-in-pytorch-distributed) | 🟥 | 🌗 | Potential arbitrary code execution from `PyTorch.Distributed` functions reliant on pickling |
 | [pickles-in-pytorch](python/pickles-in-pytorch.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-pytorch.pickles-in-pytorch) | 🟥 | 🌗 | Potential arbitrary code execution from `PyTorch` functions reliant on pickling |
+| [pickles-in-tensorflow](python/pickles-in-tensorflow.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pickles-in-tensorflow.pickles-in-tensorflow) | 🟥 | 🌗 | Potential arbitrary code execution from tensorflow's load function |
 | [pytorch-classes-load-library](python/pytorch-classes-load-library.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pytorch-classes-load-library.pytorch-classes-load-library) | 🟥 | 🌗 | Potential arbitrary code execution from `PyTorch` library loading |
 | [pytorch-package](python/pytorch-package.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pytorch-package.pytorch-package) | 🟥 | 🌕 | Potential arbitrary code execution from `torch.package` |
 | [pytorch-tensor](python/pytorch-tensor.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.python.pytorch-tensor.pytorch-tensor) | 🌫️ | 🌘 | Possible parsing issues and inefficiency from improper tensor creation |
