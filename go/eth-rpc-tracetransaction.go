@@ -12,4 +12,8 @@ func Test() {
 	// ruleid: eth-rpc-tracetransaction
 	data, err := client.TraceChain(ctx, 5, nil)
 
+	// ok: eth-rpc-tracetransaction
+	data, err := client.TraceSomething(ctx, 5, nil)
+	// ok: eth-rpc-tracetransaction
+	data, err := client.TraceTransaction(ctx, "hash")
 }
