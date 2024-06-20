@@ -51,6 +51,8 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 
 | ID | Playground | Impact | Confidence | Description |
 | -- | :--------: | :----: | :--------: | ----------- |
+| [eth-rpc-tracetransaction](go/eth-rpc-tracetransaction.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.eth-rpc-tracetransaction.eth-rpc-tracetransaction) | 🟥 | 🌕 | Detects attempts to extract trace information from an EVM transaction or block |
+| [eth-txreceipt-status](go/eth-txreceipt-status.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.eth-txreceipt-status.eth-txreceipt-status) | 🟥 | 🌕 | Detects when a transaction receipt's status is read |
 | [hanging-goroutine](go/hanging-goroutine.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.hanging-goroutine.hanging-goroutine) | 🟩 | 🌗 | Goroutine leaks |
 | [invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.invalid-usage-of-modified-variable.invalid-usage-of-modified-variable) | 🟧 | 🌘 | Possible unintentional assignment when an error occurs |
 | [iterate-over-empty-map](go/iterate-over-empty-map.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.iterate-over-empty-map.iterate-over-empty-map) | 🟩 | 🌗 | Probably redundant iteration over an empty map |
