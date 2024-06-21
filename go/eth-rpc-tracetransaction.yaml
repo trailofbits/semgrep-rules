@@ -41,4 +41,3 @@ rules:
       - pattern-regex: .*trace_call.*
       - pattern-regex: .*trace_callMany.*
       - pattern-regex: .*trace_get.*
-    
