@@ -7,14 +7,11 @@ rules:
     severity: WARNING
     languages: [go]
     patterns:
-      - pattern: |
+      - pattern-inside: |
           import "github.com/ethereum/go-ethereum/core/types"
           ...
-          $RECEIVER.$FUNCTION
-      - metavariable-pattern:
-          metavariable: $FUNCTION
-          pattern: Status
-      - focus-metavariable: $FUNCTION
+      - pattern: |
+          $RECEIVER.Status
     metadata:
       category: security
       confidence: LOW
