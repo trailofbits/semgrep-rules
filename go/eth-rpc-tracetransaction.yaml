@@ -1,0 +1,43 @@
+rules:
+  - id: eth-rpc-tracetransaction
+    message: >-
+      Using built-in transaction tracers can be dangerous if measures are not taken to filter out reverted call frames. 
+      Review the related code to ensure the following properties: 
+      1. Reverted call frames and their associated subtraces are filtered out from any analysis.  
+      2. The transaction being traced is from a finalized block.
+    severity: WARNING
+    languages: [go]
+    metadata:
+      category: security
+      technology: [ethereum, blockchain, geth]
+      subcategory: [audit]
+      cwe: "CWE-1284: Improper Validation of Specified Quantity in Input"
+      confidence: LOW
+      impact: HIGH
+      likelihood: MEDIUM
+      description: Detects attempts to extract trace information from an EVM transaction or block. In exchange or bridge applications, extra logic must be implemented encapsulating these endpoints to prevent the values transferred during reverted call frames from being counted.
+      references:
+        - https://blog.trailofbits.com/2023/08/23/the-engineers-guide-to-blockchain-finality/
+
+    pattern-either:
+      # Calls directly into Geth's API
+      - pattern: $RECEIVER.TraceTransaction($CTX, $FILTER, $TRACECONF)
+      - pattern: $RECEIVER.TraceBlockByNumber($CTX, $FILTER, $TRACECONF)
+      - pattern: $RECEIVER.TraceBlockByHash($CTX, $FILTER, $TRACECONF)
+      - pattern: $RECEIVER.TraceBlock($CTX, $FILTER, $TRACECONF)
+      - pattern: $RECEIVER.TraceChain($CTX, ...)
+      # RPC calls over HTTP API to geth/node provider
+      - pattern-regex: .*debug_traceBlock.*
+      - pattern-regex: .*debug_traceTransaction.*
+      - pattern-regex: .*debug_traceCall.*
+      - pattern-regex: .*debug_traceBlockByNumber.*
+      - pattern-regex: .*debug_traceBlockByHash.*
+      # RPC calls over HTTP API to non-geth client/node provider
+      - pattern-regex: .*trace_block.*
+      - pattern-regex: .*trace_transaction.*
+      - pattern-regex: .*trace_replayBlockTransactions.*
+      - pattern-regex: .*trace_replayTransaction.*
+      - pattern-regex: .*trace_filter.*
+      - pattern-regex: .*trace_call.*
+      - pattern-regex: .*trace_callMany.*
+      - pattern-regex: .*trace_get.*
