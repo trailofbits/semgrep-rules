@@ -26,12 +26,14 @@ func Main() {
 	// ruleid: eth-rpc-get-block-by-number-non-final
 	currentBlock, err := client.BlockByNumber(context.Background(), nil)
 
+	// ruleid: eth-rpc-get-block-by-number-non-final
+	currentBlock, err := client.BlockByNumber(context.Background(), 5000000)
+
 	// ok: eth-rpc-get-block-by-number-non-final
 	currentBlock, err := client.BlockByNumber(context.Background(), types.FinalizedBlockNumber)
 
 	// ok: eth-rpc-get-block-by-number-non-final
 	currentBlock, err := client.BlockByNumber(context.Background(), types.SafeBlockNumber)
 
-	// ok: eth-rpc-get-block-by-number-non-final
-	currentBlock, err := client.BlockByNumber(context.Background(), 5000000)
+
 }

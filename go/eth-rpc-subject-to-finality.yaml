@@ -1,0 +1,64 @@
+
+rules:
+  - id: eth-rpc-subject-to-finality
+    message: >-
+      This Ethereum API can return results that are subject to change due to re-orgs, leading to double-spend attacks. 
+      Sensitive applications such as exchanges and bridges should ensure these functions are only called against finalized block numbers, hashes, and transaction hashes.
+      For these applications, reviewers should verify the following properties:
+      1. If using the Ethereum Go client, ensure the targetting parameter '$TARGET' is a finalized block number or block hash.
+         Functions that accept a block number may be passed the FinalizedBlock enum to automatically query the latest finalized block.
+      2. If querying an Ethereum API using a home-rolled client (ex: eth_funcname), you can pass -3 as the block number to query the latest finalized block.
+      See the references for more details.
+    severity:  INFO
+    languages: [go]
+    metadata:
+      category: security
+      confidence: LOW
+      impact: MEDIUM
+      likelihood: MEDIUM
+      technology: [ethereum, blockchain, geth]
+      subcategory: [audit]
+      cwe: "CWE-676: Use of Potentially Dangerous Function"
+      description: Flags potentially dangerous uses of the Ethereum API; the functions flagged may return results that are subject to re-orgs, leading to double-spend attacks in exchange and bridge applications.
+      references:
+        - https://blog.trailofbits.com/2023/08/23/the-engineers-guide-to-blockchain-finality/
+        - https://github.com/ethereum/go-ethereum/blob/a71f6f91fdb2fcccdd0c1e336267951d45932f26/rpc/types.go#L65-L71
+
+    pattern-either:
+      # Match against direct calls against the eth client api
+      - patterns:
+        - pattern-inside: |
+            import "github.com/ethereum/go-ethereum/ethclient"
+            ...
+        - pattern-either: 
+          - pattern: $CLIENT.BalanceAt($CTX, $ACCOUNT, $TARGET)
+          - pattern: $CLIENT.BlockByNumber($CTX, $TARGET)
+          - pattern: $CLIENT.BlockByHash($CTX, $TARGET)
+          - pattern: $CLIENT.BlockReceipts($CTX, $TARGET)
+          - pattern: $CLIENT.FilterLogs($CTX, $TARGET)
+          - pattern: $CLIENT.SubscribeFilterLogs($CTX, $TARGET, $CH)
+          - pattern: $CLIENT.TransactionByHash($CTX, $TARGET)
+          - pattern: $CLIENT.TransactionReceipt($CTX, $TARGET)
+          # Literally nobody uses this rpc endpoint. I checked Github. It's included here for completeness.
+          # - pattern: $CLIENT.BalanceAtHash($CTX, $ACCOUNT, $TARGET)
+
+      # Match against home-rolled eth client apis
+      - pattern-either:
+        - patterns:
+          - pattern-not-inside: |
+              package ethclient
+              ...
+          - pattern-not-inside: |
+              package client
+              ...
+          - pattern-either:
+            - pattern: $CLIENT.EthSubscribe(..., "logs", ...)
+            - pattern: $CLIENT.EthSubscribe(..., "newHeads", ...)
+            - patterns:
+              - pattern-regex: ("(eth_getBalance|eth_getBlockByHash|eth_getBlockReceipts|eth_getBlockByNumber|eth_blockNumber|eth_getLogs|eth_getTransactionByHash|eth_getTransactionReceipt)("|\\"))
+              - pattern-inside: |
+                  $FUNC(...)
+              - metavariable-regex:
+                  metavariable: $FUNC
+                  regex: ^((?!log).)*$ # negative lookaround, remove instances of these strings being logged using logger.log.
+

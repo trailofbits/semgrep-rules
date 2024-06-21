@@ -2,12 +2,12 @@ rules:
   - id: eth-rpc-get-block-by-number-non-final
     message: >-
       Results returned from $X.BlockByNumber($CTX, $NUMBER) may be re-orged, leading to double-spend attacks. 
-      Query for finalized block instead using $ETHCLIENT.FinalizedBlockNumber
+      Query for finalized block instead using $TYPES.FinalizedBlockNumber or $TYPES.SafeBlockNumber
     severity:  ERROR
     languages: [go]
     metadata:
       category: security
-      confidence: HIGH
+      confidence: MEDIUM
       impact: MEDIUM
       likelihood: HIGH
       technology: [ethereum, blockchain, geth]
@@ -21,8 +21,6 @@ rules:
       - pattern: $X.BlockByNumber($CTX, $NUMBER)
       - metavariable-pattern:
           metavariable: $NUMBER
-          pattern-either:
-          - pattern: $ETHCLIENT.LatestBlockNumber
-          - pattern: $ETHCLIENT.PendingBlockNumber
-          - pattern: $ETHCLIENT.EarliestBlockNumber
-          - pattern: nil
+          pattern-not:
+          - pattern: $TYPES.SafeBlockNumber
+          - pattern: $TYPES.FinalizedBlockNumber
