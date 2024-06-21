@@ -1,0 +1,28 @@
+rules:
+  - id: eth-rpc-get-block-by-number-non-final
+    message: >-
+      Results returned from $X.BlockByNumber($CTX, $NUMBER) may be re-orged, leading to double-spend attacks. 
+      Query for finalized block instead using $ETHCLIENT.FinalizedBlockNumber
+    severity:  ERROR
+    languages: [go]
+    metadata:
+      category: security
+      confidence: HIGH
+      impact: MEDIUM
+      likelihood: HIGH
+      technology: [ethereum, blockchain, geth]
+      subcategory: [audit]
+      cwe: "CWE-676: Use of Potentially Dangerous Function"
+      description: Flags uses of the BlockByNumber API that do not check for finality.
+      references:
+        - https://blog.trailofbits.com/2023/08/23/the-engineers-guide-to-blockchain-finality/
+
+    patterns:
+      - pattern: $X.BlockByNumber($CTX, $NUMBER)
+      - metavariable-pattern:
+          metavariable: $NUMBER
+          pattern-either:
+          - pattern: $ETHCLIENT.LatestBlockNumber
+          - pattern: $ETHCLIENT.PendingBlockNumber
+          - pattern: $ETHCLIENT.EarliestBlockNumber
+          - pattern: nil
