@@ -23,4 +23,4 @@ rules:
           import "github.com/ethereum/go-ethereum/core/types"
           ...
       - pattern: |
-          $RECEIVER.Status
+          ($RECEIVER : Receipt).Status

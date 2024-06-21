@@ -15,7 +15,7 @@ rules:
       confidence: LOW
       impact: HIGH
       likelihood: MEDIUM
-      description: Detects attempts to extract trace information from an EVM transaction or block
+      description: Detects attempts to extract trace information from an EVM transaction or block. In exchange or bridge applications, extra logic must be implemented encapsulating these endpoints to prevent the values transferred during reverted call frames from being counted.
       references:
         - https://blog.trailofbits.com/2023/08/23/the-engineers-guide-to-blockchain-finality/
 
