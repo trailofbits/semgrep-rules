@@ -14,7 +14,7 @@ rules:
       technology: [ethereum, blockchain, geth]
       subcategory: [audit]
       cwe: "CWE-437: Incomplete Model of Endpoint Features"
-      description: Detects when a transaction receipt's status is read
+      description: Detects when a transaction receipt's status is read. Provides guidance on ways this endpoint may be misused.
       references:
         - https://blog.trailofbits.com/2023/08/23/the-engineers-guide-to-blockchain-finality/
 

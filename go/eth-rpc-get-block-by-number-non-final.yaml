@@ -3,7 +3,7 @@ rules:
     message: >-
       Results returned from $X.BlockByNumber($CTX, $NUMBER) may be re-orged, leading to double-spend attacks. 
       Query for finalized block instead using $TYPES.FinalizedBlockNumber or $TYPES.SafeBlockNumber
-    severity:  ERROR
+    severity: ERROR
     languages: [go]
     metadata:
       category: security
@@ -19,8 +19,6 @@ rules:
 
     patterns:
       - pattern: $X.BlockByNumber($CTX, $NUMBER)
-      - metavariable-pattern:
+      - metavariable-regex:
           metavariable: $NUMBER
-          pattern-not:
-          - pattern: $TYPES.SafeBlockNumber
-          - pattern: $TYPES.FinalizedBlockNumber
+          regex: ^((?!(FinalizedBlockNumber|SafeBlockNumber)).)*$ # negative lookaround

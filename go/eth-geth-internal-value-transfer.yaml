@@ -13,7 +13,7 @@ rules:
       confidence: LOW
       impact: MEDIUM
       likelihood: MEDIUM
-      technology: [ethereum, blockchain, geth, geth-fork]
+      technology: [ethereum, blockchain, geth]
       subcategory: [audit]
       cwe: "CWE-676: Use of Potentially Dangerous Function"
       description: Detects when a direct call is made to the Geth's EVM's Transfer function. Callers to this function must be authorized to make the transfer, have the required balance, and the amount must not be negative.

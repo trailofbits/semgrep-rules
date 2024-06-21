@@ -124,6 +124,9 @@ func handRolledClient() {
 
 	// ok: eth-rpc-subject-to-finality
 	payload := strings.NewReader("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"blockNumber\"}")
+
+	// ok: eth-rpc-subject-to-finality
+	logger.log("{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"blockNumber\"}")
 }
 
 
