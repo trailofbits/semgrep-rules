@@ -1,0 +1,29 @@
+rules:
+  - id: eth-geth-snap-protocol-name-unmodified
+    message: >-
+      The protocol name used for snap sync is 'snap', potentially conflicting with Ethereum mainnet nodes operating snap sync. 
+      This may lead to the fork network nodes peering with Ethereum mainnet snap sync nodes, including unintended consequences such as wasting resources syncing the wrong chain.
+      Change this to a different name to prevent accidential peering.
+    severity: ERROR
+    languages: [go]
+
+    metadata:
+      category: security
+      confidence: HIGH
+      impact: LOW
+      likelihood: MEDIUM
+      technology: [ethereum, blockchain, geth, geth-fork]
+      subcategory: [audit]
+      cwe: "CWE-441: Unintended Proxy or Intermediary ('Confused Deputy')"
+      description: Detects when a geth fork doesn't change the snap sync protocol id/version, causing the forked network to peer with Ethereum mainnet. This can lead to unintended consequences, such as wasting resources syncing the wrong chain.
+      references:
+        - https://github.com/ethereum/go-ethereum/blob/a71f6f91fdb2fcccdd0c1e336267951d45932f26/eth/protocols/snap/protocol.go#L28-L35
+
+    patterns:
+      - pattern: ProtocolName = "snap"
+      - pattern-inside: |
+          package snap
+          ...
+      - pattern-not-inside: |
+          import "github.com/ethereum/go-ethereum/common"
+          ...
