@@ -1,0 +1,28 @@
+rules:
+  - id: eth-geth-internal-value-transfer
+    message: >-
+      Code calls low-level EVM Transfer using $RECEIVER.Transfer($DB, $SENDER, $RECIPIENT, $AMOUNT. Verify the following properties:
+       1. '$SENDER' is authorized to make this transfer (allows theft of funds)
+       2. '$SENDER' has the required balance to send amount $AMOUNT (causes a panic)
+       3. '$AMOUNT' can never be negative (allows theft of funds)
+    severity: INFO
+    languages: [go]
+
+    metadata:
+      category: security
+      confidence: LOW
+      impact: MEDIUM
+      likelihood: MEDIUM
+      technology: [ethereum, blockchain, geth, geth-fork]
+      subcategory: [audit]
+      cwe: "CWE-676: Use of Potentially Dangerous Function"
+      description: Detects when a direct call is made to the Geth's EVM's Transfer function. Callers to this function must be authorized to make the transfer, have the required balance, and the amount must not be negative.
+      references:
+        - https://github.com/ethereum/go-ethereum/blob/a71f6f91fdb2fcccdd0c1e336267951d45932f26/core/evm.go#L138-L142
+        - https://usmannkhan.com/bug%20reports/2024/06/17/sei-bug-report.html
+
+    pattern-either:
+      - pattern: |
+          ($RECEIVER : core).Transfer($DB, $SENDER, $RECIPIENT, $AMOUNT)
+      - pattern: |
+          ($RECEIVER : BlockContext).Transfer($DB, $SENDER, $RECIPIENT, $AMOUNT)
