@@ -5,7 +5,7 @@ from urllib.parse import quote
 import yaml
 import sys
 
-LANGUAGES = ['go', 'python', 'rs', 'javascript']
+LANGUAGES = ['go', 'python', 'rs', 'javascript', 'swift']
 IMPACT_MAP = {
     'LOW': "🟩",
     'MEDIUM': "🟧",

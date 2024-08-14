@@ -1,0 +1,33 @@
+rules:
+  - id: assign-nil-to-implicitly-unwrapped-optional
+    message: >
+      An implicitly unwrapped optional was assigned the value nil. If the
+      variable is dereferenced before it is assigned a non-nil value, a fatal
+      error will occur.
+    languages: [swift]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory:
+        - audit
+      technology:
+        - shell
+      cwe: "CWE-250: Execution with Unnecessary Privileges"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      references:
+        - https://docs.swift.org/swift-book/documentation/the-swift-programming-language/thebasics/#Implicitly-Unwrapped-Optionals
+      description: Implicitly unwrapped optionals are always unwrapped whenever they are dereferenced. Such a variable should never be assigned the value nil after initialization.
+    patterns:
+      - pattern-inside:
+          pattern-either:
+            - pattern: |
+                var $VAR: Int! = nil
+                (...)
+            - pattern: |
+                var $VAR: Int!
+                (...)
+      - pattern: $VAR = nil
+      - pattern-not: "var $VAR: Int! = nil"
+      - pattern-not-inside: "var $VAR: Int! = nil"
