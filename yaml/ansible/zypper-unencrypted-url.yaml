@@ -30,4 +30,4 @@ rules:
             - pattern: community.general.zypper
       - metavariable-regex:
           metavariable: $VALUE
-          regex: "(?i)^(http|ftp):\/\/.*"
+          regex: "(?i)^(http|ftp)://.*"
