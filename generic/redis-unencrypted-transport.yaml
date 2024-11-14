@@ -1,0 +1,19 @@
+rules:
+  - id: redis-unencrypted-transport
+    message: |
+      Found unencrypted Redis connection, prefer TLS encrypted `rediss://` transport
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [redis]
+      references:
+        - https://redis.io/docs/latest/develop/connect/cli/#host-port-password-and-database
+    options:
+      generic_ellipsis_max_span: 0
+    pattern: redis://...

@@ -1,0 +1,19 @@
+rules:
+  - id: vault-skip-tls-verify
+    message: |
+      Found Terraform Vault instance with TLS verification disabled
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [terraform]
+      references:
+        - https://registry.terraform.io/providers/hashicorp/vault/latest/docs#skip_tls_verify
+    patterns:
+      - pattern-inside: provider "vault" { ... }
+      - pattern: skip_tls_verify = true

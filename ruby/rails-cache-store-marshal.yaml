@@ -1,0 +1,56 @@
+rules:
+  - id: rails-cache-store-marshal
+    message: |
+      Found Rails cache store configured to allow Marshaling. As of Rails 7.1
+      the default serializer is `:marshal_7_1`. If an attacker can inject
+      data into the cache store (SSRF, etc.), then they can achieve code
+      execution when the object is later deserialized. Consider using a
+      custom serializer like JSON or MessagePack that does not fallback on
+      Marshal.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [audit]
+      confidence: MEDIUM
+      likelihood: LOW
+      impact: LOW
+      technology: [rails]
+      references:
+        - https://github.com/rails/rails/blob/v7.1.4/activesupport/lib/active_support/cache.rb#L327
+        - https://github.com/rails/rails/blob/v7.1.4/activesupport/lib/active_support/cache/serializer_with_fallback.rb#L166-L172
+        - https://api.rubyonrails.org/v7.1.3.4/classes/ActiveSupport/Cache/MemCacheStore.html
+        - https://api.rubyonrails.org/v7.1.3.4/classes/ActiveSupport/Cache/Store.html
+    patterns:
+      - pattern-inside: |
+          Rails.application.configure do
+          ...
+          end
+      - pattern-either:
+          - patterns:
+              # These patterns must use two different metavariable names.
+              # In Ruby, $STORE will match the entire line here, so these two
+              # patterns effectively cancel each other out if they share a
+              # metavariable name. To avoid that, use separate names.
+              - pattern: "config.cache_store = $STORE"
+              - pattern-not: "config.cache_store = $STORE2, ..., { ... }"
+          - patterns:
+              - pattern: "config.cache_store = $STORE, ..., { ... }"
+              - pattern-not: "config.cache_store = $STORE, ..., { ..., serializer: ..., ... }"
+          - patterns:
+              - pattern: "config.cache_store = $STORE, ..., $OPTIONS"
+              - metavariable-pattern:
+                  metavariable: $OPTIONS
+                  patterns:
+                    - pattern: "{ ..., serializer: :passthrough, ... }"
+                    - pattern: "{ ..., serializer: :marshal_6_1, ... }"
+                    - pattern: "{ ..., serializer: :marshal_7_0, ... }"
+                    - pattern: "{ ..., serializer: :marshal_7_1, ... }"
+                    - pattern: "{ ..., serializer: :message_pack, ... }"
+      - metavariable-pattern:
+          metavariable: $STORE
+          pattern-either:
+            - pattern: ":file_store"
+            - pattern: ":mem_cache_store"
+            - pattern: ":redis_cache_store"

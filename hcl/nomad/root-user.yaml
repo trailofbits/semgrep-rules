@@ -1,0 +1,22 @@
+rules:
+  - id: root-user
+    message: |
+      Found Nomad task using root user
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-250: Execution with Unnecessary Privileges"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: LOW
+      technology: [nomad]
+      references:
+        - https://developer.hashicorp.com/nomad/docs/job-specification/task#user
+        - https://developer.hashicorp.com/nomad/docs/configuration/client#user-denylist
+    patterns:
+      - pattern-inside: task "..." { ... }
+      - pattern-either:
+          - pattern: user = "root"
+          - pattern: user = "Administrator"

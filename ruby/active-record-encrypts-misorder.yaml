@@ -1,0 +1,27 @@
+rules:
+  - id: active-record-encrypts-misorder
+    message: |
+      Found an ActiveRecord value with encryption before serialization. The
+      declaration of the serialized attribute should go before the encryption
+      declaration.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-311: Missing Encryption of Sensitive Data"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [rails, activerecord]
+      references:
+        - https://guides.rubyonrails.org/active_record_encryption.html#supported-types
+    patterns:
+      - pattern-inside: |
+          class $CLS < ApplicationRecord
+            ...
+          end
+      - pattern: |
+          encrypts($SYM, ...)
+          ...
+          serialize($SYM, ...)

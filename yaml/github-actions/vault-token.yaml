@@ -1,0 +1,35 @@
+rules:
+  - id: vault-token
+    message: |
+      Found long-term access key. Instead prefer Vault role assumption and
+      temporary OIDC security credentials.
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: MEDIUM
+      technology: [vault, github-actions]
+      references:
+        - https://developer.hashicorp.com/vault/docs/platform/github-actions
+        - https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-hashicorp-vault
+        - https://github.com/hashicorp/vault-action
+    patterns:
+      - pattern-inside: |
+          uses: $ACTION
+          ...
+      - metavariable-regex:
+          metavariable: $ACTION
+          regex: ^hashicorp/vault-action
+      - pattern-either:
+          - pattern: |
+              with:
+                ...
+                token: ...
+          - pattern: |
+              env:
+                ...
+                VAULT_TOKEN: ...

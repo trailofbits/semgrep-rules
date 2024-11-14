@@ -1,0 +1,20 @@
+rules:
+  - id: insecure-rails-cookie-session-store
+    message: |
+      Found Rails session cookie missing SameSite=Secure. As of Rails 7.2,
+      session cookies default to SameSite=Lax.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-345: Insufficient Verification of Data Authenticity"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: LOW
+      technology: [rails]
+      references:
+        - https://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html
+    patterns:
+      - pattern: "Rails.application.config.session_store(:cookie_store, ...)"
+      - pattern-not: "Rails.application.config.session_store(:cookie_store, ..., same_site: :secure, ...)"

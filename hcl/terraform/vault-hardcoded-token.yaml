@@ -1,0 +1,19 @@
+rules:
+  - id: vault-hardcoded-token
+    message: |
+      Found Terraform Vault instance with hardcoded token
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [terraform]
+      references:
+        - https://registry.terraform.io/providers/hashicorp/vault/latest/docs#token
+    patterns:
+      - pattern-inside: provider "vault" { ... }
+      - pattern: token = "..."

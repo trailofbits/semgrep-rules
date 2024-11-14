@@ -1,0 +1,46 @@
+rules:
+  - id: ruby-saml-skip-validation
+    message: |
+      SAML response validation disabled for $KEY.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-345: Insufficient Verification of Data Authenticity"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology: [saml]
+      references:
+        - https://github.com/SAML-Toolkits/ruby-saml/blob/v1.16.0/lib/onelogin/ruby-saml/response.rb
+    pattern-either:
+      - pattern: "OneLogin::RubySaml::Response.new($RESPONSE, {..., skip_audience: true, ...})"
+      - pattern: "OneLogin::RubySaml::Response.new($RESPONSE, {..., skip_authnstatement: true, ...})"
+      - pattern: "OneLogin::RubySaml::Response.new($RESPONSE, {..., skip_conditions: true, ...})"
+      - pattern: "OneLogin::RubySaml::Response.new($RESPONSE, {..., skip_destination: true, ...})"
+      - pattern: "OneLogin::RubySaml::Response.new($RESPONSE, {..., skip_recipient_check: true, ...})"
+      - pattern: "OneLogin::RubySaml::Response.new($RESPONSE, {..., skip_subject_confirmation: true, ...})"
+      - patterns:
+          - pattern-either:
+              # https://github.com/semgrep/semgrep/issues/10284
+              # - pattern: |
+              #     OneLogin::RubySaml::Response.new($RESPONSE, {..., $KEY: true, ...})
+              - pattern: |
+                  $SETTINGS = OneLogin::RubySaml::Settings.new(...)
+                  ...
+                  $SETTINGS.$KEY = true
+              - pattern: |
+                  $SETTINGS = OneLogin::RubySaml::Settings.new
+                  ...
+                  $SETTINGS.$KEY = true
+          - focus-metavariable: $KEY
+          - metavariable-pattern:
+              metavariable: $KEY
+              pattern-either:
+                - pattern: skip_audience
+                - pattern: skip_authnstatement
+                - pattern: skip_conditions
+                - pattern: skip_destination
+                - pattern: skip_recipient_check
+                - pattern: skip_subject_confirmation

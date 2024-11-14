@@ -1,0 +1,20 @@
+rules:
+  - id: faraday-disable-verification
+    message: |
+      Found Faraday HTTP request disabling SSL/TLS verification.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [faraday]
+      references:
+        - https://lostisland.github.io/faraday/#/customization/ssl-options
+    pattern-either:
+      - pattern: "Faraday.new(..., ssl: { ..., verify: false, ... }, ...)"
+      - pattern: "Faraday.new(..., ssl: { ..., verify_hostname: false, ... }, ...)"
+      - pattern: "Faraday.new(..., ssl: { ..., verify_mode: OpenSSL::SSL::VERIFY_NONE, ... }, ...)"

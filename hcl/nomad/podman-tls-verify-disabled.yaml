@@ -1,0 +1,32 @@
+rules:
+  - id: podman-tls-verify-disabled
+    message: |
+      Found Nomad task using Podman with registry TLS verification disabled
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: LOW
+      technology: [nomad, podman]
+      references:
+        - https://developer.hashicorp.com/nomad/plugins/drivers/podman#auth
+    patterns:
+      - pattern-inside: |
+          task "..." {
+            ...
+            driver = "podman"
+            ...
+            config {
+              ...
+              auth {
+                ...
+              }
+              ...
+            }
+            ...
+          }
+      - pattern: tlsVerify = false

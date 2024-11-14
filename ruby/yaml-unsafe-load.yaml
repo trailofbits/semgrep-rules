@@ -1,0 +1,24 @@
+rules:
+  - id: yaml-unsafe-load
+    message: |
+      Found YAML call to `unsafe_load`. This can lead to deserialization bugs and RCE.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [yaml]
+      references:
+        - https://bishopfox.com/blog/ruby-vulnerabilities-exploits
+        - https://github.com/semgrep/semgrep-rules/blob/develop/ruby/lang/security/bad-deserialization-yaml.yaml
+    patterns:
+      - pattern-either:
+          - pattern: YAML.unsafe_load(...)
+          - pattern: Psych.unsafe_load(...)
+          - pattern: "serialize(..., yaml: { ..., unsafe_load: true, ... }, ...)"
+      - pattern-not: YAML.unsafe_load("...")
+      - pattern-not: Psych.unsafe_load("...")

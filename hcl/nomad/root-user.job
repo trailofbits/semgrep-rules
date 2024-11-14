@@ -1,0 +1,31 @@
+task "server" {
+  driver = "docker"
+
+  # ruleid: root-user
+  user = "root"
+
+  config {
+    image = "hashicorp/http-echo"
+    args  = ["-text", "hello world"]
+  }
+
+  resources {
+    cpu = 20
+  }
+}
+
+task "server" {
+  driver = "docker"
+
+  # ok: root-user
+  user = "ubuntu"
+
+  config {
+    image = "hashicorp/http-echo"
+    args  = ["-text", "hello world"]
+  }
+
+  resources {
+    cpu = 20
+  }
+}

@@ -1,0 +1,41 @@
+rules:
+  - id: docker-privileged-mode
+    message: |
+      Found Nomad task using Docker containers in privileged mode
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-250: Execution with Unnecessary Privileges"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: LOW
+      technology: [nomad, docker, podman]
+      references:
+        - https://developer.hashicorp.com/nomad/docs/drivers/docker#privileged
+        - https://developer.hashicorp.com/nomad/docs/drivers/docker#allow_privileged
+    pattern-either:
+      - patterns:
+          - pattern-inside: |
+              task "..." {
+                ...
+                config {
+                  ...
+                }
+                ...
+              }
+          - pattern: privileged = true
+      - patterns:
+          - pattern-inside: |
+              plugin "$RUNTIME" {
+                ...
+                config {
+                  ...
+                }
+                ...
+              }
+          - pattern: allow_privileged = true
+          - metavariable-regex:
+              metavariable: $RUNTIME
+              regex: (docker|podman)

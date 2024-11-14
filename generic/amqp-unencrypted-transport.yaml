@@ -1,0 +1,19 @@
+rules:
+  - id: amqp-unencrypted-transport
+    message: |
+      Found unencrypted AMQP connection, prefer TLS encrypted `amqps://` transport
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [amqp, rabbitmq]
+      references:
+        - https://www.rabbitmq.com/docs/uri-spec#the-amqps-uri-scheme
+    options:
+      generic_ellipsis_max_span: 0
+    pattern: amqp://...
