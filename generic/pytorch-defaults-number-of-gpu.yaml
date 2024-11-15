@@ -1,0 +1,21 @@
+rules:
+  - id: pytorch-defaults-number-of-gpu
+    message: No GPU usage limits in Pytorch config (defaults to all available)
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: MEDIUM
+      references:
+        - https://pytorch.org/serve/configuration.html
+    paths:
+      include:
+        - 'config.properties'
+    patterns:
+      - pattern-regex: |
+          (?s)(.*)
+      - pattern-not-regex: .*number_of_gpu=

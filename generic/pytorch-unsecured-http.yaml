@@ -1,0 +1,19 @@
+rules:
+  - id: pytorch-unsecured-http
+    message: Pytorch interface is exposed without TLS
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: HIGH
+      references:
+        - https://pytorch.org/serve/configuration.html
+    paths:
+      include:
+        - 'config.properties'
+    pattern-either:
+      - pattern-regex: (grpc_)?(inference|management|metrics)_address=http://
