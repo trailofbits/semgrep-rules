@@ -124,6 +124,7 @@ func (c *RWContainer) inc6b(name string) error {
 	defer func() {
 		fmt.Println("before runlock")
 		unlocker()
+		// todook: missing-runlock-on-rwmutex
 		fmt.Println("after runlock")
 	}()
 	// todook: missing-runlock-on-rwmutex

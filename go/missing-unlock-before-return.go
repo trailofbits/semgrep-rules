@@ -152,6 +152,7 @@ func (c *Container) inc6b(name string) error {
 	defer func() {
 		fmt.Println("before unlock")
 		unlocker()
+		// todook: missing-unlock-before-return
 		fmt.Println("after unlock")
 	}()
 	// todook: missing-unlock-before-return
