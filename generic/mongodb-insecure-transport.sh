@@ -21,10 +21,10 @@ mongo "mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=
 mongo "mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=truebutbug"
 
 # ruleid: mongodb-insecure-transport
-mongo "mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=truebutbug&something=else"
+mongo 'mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=truebutbug&something=else'
 
 # ok: mongodb-insecure-transport
-mongo "mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=true"
+mongo 'mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=true'
 
 # ok: mongodb-insecure-transport
 mongo "mongodb://user:pass@db0.example.com,db1.example.com,db2.example.com/?tls=true&something=else"
