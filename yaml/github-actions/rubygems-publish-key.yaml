@@ -10,7 +10,7 @@ rules:
       cwe: "CWE-798: Use of Hard-coded Credentials"
       subcategory: [audit]
       confidence: HIGH
-      likelihood: HIGH
+      likelihood: LOW
       impact: MEDIUM
       technology: [rubygems, github-actions]
       references:

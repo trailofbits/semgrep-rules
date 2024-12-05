@@ -7,20 +7,17 @@ rules:
     metadata:
       category: security
       subcategory: [audit]
-      cwe: "CWE-319: Cleartext Transmission of Sensitive Information"
+      cwe: "CWE-295: Improper Certificate Validation"
       confidence: HIGH
       likelihood: HIGH
       impact: HIGH
       technology: [postgresql]
       references:
         - https://www.postgresql.org/docs/current/libpq-connect.html
-    # pattern-regex: "[?&]sslmode=(disable|allow|prefer)"
     pattern-either:
-      - patterns:
-          - pattern-regex: postgresql://.+$
-          - pattern-not-regex: (?:(.)?)?postgresql://.+[?&]sslmode=(require|verify-ca|verify-full)(?:\g{1}|$|&).*
-          - pattern-not-regex: (?:(.)?)?postgresql://.+[?&]requiressl=1(?:\g{1}|$|&).*
-          - pattern-not-regex: (?:(.)?)?postgresql://.+[?&]ssl=true(?:\g{1}|$|&).*
-      - pattern-regex: postgresql://.+[?&]sslmode=(disable|allow|prefer).*$
-      - pattern-regex: postgresql://.+[?&]requiressl=0.*$
-      - pattern-regex: postgresql://.+[?&]ssl=false.*$
+      - pattern-regex: (?i)postgresql://.+[?&]sslmode=(disable|allow|prefer).*$
+      - pattern-regex: (?i)postgresql://.+[?&]requiressl=0.*$
+      - pattern-regex: (?i)postgresql://.+[?&]ssl=false.*$
+      - pattern-regex: (?i)postgres://.+[?&]sslmode=(disable|allow|prefer).*$
+      - pattern-regex: (?i)postgres://.+[?&]requiressl=0.*$
+      - pattern-regex: (?i)postgres://.+[?&]ssl=false.*$

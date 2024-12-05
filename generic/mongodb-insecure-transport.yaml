@@ -17,9 +17,9 @@ rules:
         - https://www.mongodb.com/docs/manual/reference/connection-string/#connection-options
     pattern-either:
       - patterns:
-          - pattern-regex: mongodb://.+$
-          - pattern-not-regex: (?:(.)?)?mongodb://.+[?&]tls=true(?:\g{1}|$|&).*
-          - pattern-not-regex: (?:(.)?)?mongodb://.+[?&]ssl=true(?:\g{1}|$|&).*
-      - pattern-regex: mongodb://.+[?&]tlsAllowInvalidCertificates=true.*$
-      - pattern-regex: mongodb://.+[?&]tlsAllowInvalidHostnames=true.*$
-      - pattern-regex: mongodb://.+[?&]tlsInsecure=true.*$
+          - pattern-regex: (?i)mongodb://.+$
+          - pattern-not-regex: (?i)(?:(.)?)?mongodb://.+[?&]tls=true(?:\g{1}|$|&).*
+          - pattern-not-regex: (?i)(?:(.)?)?mongodb://.+[?&]ssl=true(?:\g{1}|$|&).*
+      - pattern-regex: (?i)mongodb://.+[?&]tlsAllowInvalidCertificates=true.*$
+      - pattern-regex: (?i)mongodb://.+[?&]tlsAllowInvalidHostnames=true.*$
+      - pattern-regex: (?i)mongodb://.+[?&]tlsInsecure=true.*$

@@ -1,14 +1,10 @@
 #!/bin/bash
 
-# default sslmode is only "prefer"
-# ruleid: postgres-insecure-sslmode
-psql postgresql://myapplicationuser:mypass@myhost:1234/applicationdb
-
-# ruleid: postgres-insecure-sslmode
-psql "postgresql://myapplicationuser:mypass@myhost:1234/applicationdb?something=else"
-
 # ruleid: postgres-insecure-sslmode
 psql postgresql://myapplicationuser:mypass@myhost:1234/applicationdb?sslmode=disable
+
+# ruleid: postgres-insecure-sslmode
+psql postgres://myapplicationuser:mypass@myhost:1234/applicationdb?sslmode=disable
 
 # ruleid: postgres-insecure-sslmode
 psql postgresql://myapplicationuser:mypass@myhost:1234/applicationdb?sslmode=PREfered
