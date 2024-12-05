@@ -1,0 +1,20 @@
+rules:
+  - id: rubygems-publish-key
+    message: |
+      Found long-term access key. Instead prefer RubyGems trusted publishing and
+      temporary OIDC security credentials.
+    languages: [yaml]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: LOW
+      impact: MEDIUM
+      technology: [rubygems, github-actions]
+      references:
+        - https://guides.rubygems.org/trusted-publishing/
+        - https://guides.rubygems.org/api-key-scopes/#usage-with-gem-cli
+        - https://github.com/rubygems/release-gem
+    pattern: GEM_HOST_API_KEY

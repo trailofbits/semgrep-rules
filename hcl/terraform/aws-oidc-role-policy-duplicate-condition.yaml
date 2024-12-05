@@ -1,0 +1,79 @@
+rules:
+  - id: aws-oidc-role-policy-duplicate-condition
+    message: |
+      Found AWS role policy for GitHub Actions with duplicate condition.
+      This overrides previous conditions, and the last condition with the
+      duplicated key "wins." This likely breaks access controls and allows
+      unauthorized access.
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-284: Improper Access Control"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [terraform, aws]
+      references:
+        - https://securitylabs.datadoghq.com/articles/exploring-github-to-aws-keyless-authentication-flaws/
+        - https://www.rezonate.io/blog/github-misconfigurations-put-gcp-aws-in-account-takeover-risk
+        - https://github.com/Rezonate-io/github-oidc-checker/
+    patterns:
+      - pattern-inside: |
+          {
+            ...
+            Statement = [...]
+            ...
+          }
+      - pattern-inside: |
+          {
+            ...,
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            ...
+          }
+      - pattern-either:
+          - pattern: |
+              {
+                ...
+                "Condition": {
+                    ...
+                    "$KEY": {...}
+                    ...
+                    "$KEY": {...}
+                    ...
+                }
+                ...
+              }
+          - pattern: |
+              {
+                ...
+                "Condition": {
+                    ...
+                    "StringEquals": {
+                        ...
+                        "$KEY": ...,
+                        ...
+                        "$KEY": ...,
+                        ...
+                    }
+                    ...
+                }
+                ...
+              }
+          - pattern: |
+              {
+                ...
+                "Condition": {
+                    ...
+                    "StringLike": {
+                        ...
+                        "$KEY": ...,
+                        ...
+                        "$KEY": ...,
+                        ...
+                    }
+                    ...
+                }
+                ...
+              }

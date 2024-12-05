@@ -1,0 +1,62 @@
+task "server" {
+  driver = "docker"
+
+  user = "root"
+
+  config {
+    image = "hashicorp/http-echo"
+    args  = ["-text", "hello world"]
+
+    # ruleid: docker-privileged-mode
+    privileged = true
+  }
+
+  resources {
+    cpu = 20
+  }
+}
+
+task "server" {
+  driver = "docker"
+
+  user = "ubuntu"
+
+  # ok: docker-privileged-mode
+  config {
+    image = "hashicorp/http-echo"
+    args  = ["-text", "hello world"]
+  }
+
+  resources {
+    cpu = 20
+  }
+}
+
+plugin "docker" {
+  config {
+    endpoint = "unix:///var/run/docker.sock"
+
+    auth {
+      config = "/etc/docker-auth.json"
+      helper = "ecr-login"
+    }
+
+    # ruleid: docker-privileged-mode
+    allow_privileged = true
+    allow_caps       = ["chown", "net_raw"]
+  }
+}
+
+plugin "docker" {
+  # ok: docker-privileged-mode
+  config {
+    endpoint = "unix:///var/run/docker.sock"
+
+    auth {
+      config = "/etc/docker-auth.json"
+      helper = "ecr-login"
+    }
+
+    allow_caps       = ["chown", "net_raw"]
+  }
+}

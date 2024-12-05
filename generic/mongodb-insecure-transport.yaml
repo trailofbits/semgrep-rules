@@ -1,0 +1,25 @@
+rules:
+  - id: mongodb-insecure-transport
+    message: |
+      Found insecure MongoDB connection, prefer TLS encrypted transport by
+      setting the `tls=true` connection option and ensuring proper verification
+    languages: [regex]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [mongodb]
+      references:
+        - https://www.mongodb.com/docs/manual/reference/connection-string/#connection-options
+    pattern-either:
+      - patterns:
+          - pattern-regex: (?i)mongodb://.+$
+          - pattern-not-regex: (?i)(?:(.)?)?mongodb://.+[?&]tls=true(?:\g{1}|$|&).*
+          - pattern-not-regex: (?i)(?:(.)?)?mongodb://.+[?&]ssl=true(?:\g{1}|$|&).*
+      - pattern-regex: (?i)mongodb://.+[?&]tlsAllowInvalidCertificates=true.*$
+      - pattern-regex: (?i)mongodb://.+[?&]tlsAllowInvalidHostnames=true.*$
+      - pattern-regex: (?i)mongodb://.+[?&]tlsInsecure=true.*$

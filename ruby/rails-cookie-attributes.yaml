@@ -1,0 +1,26 @@
+rules:
+  - id: rails-cookie-attributes
+    message: |
+      Found Rails cookie set with insecure attribute.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-345: Insufficient Verification of Data Authenticity"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: LOW
+      technology: [rails]
+      references:
+        - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie
+        - https://api.rubyonrails.org/classes/ActionDispatch/Session/CookieStore.html
+    patterns:
+      - pattern-either:
+          - pattern-inside: cookies[$ANY] = ...
+          - pattern-inside: cookies. ... .$ATTR[$ANY] = ...
+      - pattern-either:
+          - pattern: "{..., same_site: :none, ...}"
+          - pattern: "{..., same_site: :lax, ...}"
+          - pattern: "{..., httponly: false, ...}"
+          - pattern: "{..., secure: false, ...}"

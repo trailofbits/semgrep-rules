@@ -1,0 +1,26 @@
+rules:
+  - id: rest-client-disable-verification
+    message: |
+      Found RestClient HTTP request disabling SSL/TLS verification.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [restclient]
+      references:
+        - https://github.com/rest-client/rest-client#ssl-client-certificates
+    patterns:
+      - pattern-either:
+          - pattern: "$FUNC(..., :verify_ssl => false, ...)"
+          - pattern: "$FUNC(..., :verify_ssl => OpenSSL::SSL::VERIFY_NONE, ...)"
+      - metavariable-pattern:
+          metavariable: $FUNC
+          pattern-either:
+            - pattern: "RestClient::Resource.new"
+            - pattern: "RestClient::Request.new"
+            - pattern: "RestClient::Request.execute"

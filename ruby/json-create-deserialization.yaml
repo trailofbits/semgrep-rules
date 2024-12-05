@@ -1,0 +1,29 @@
+rules:
+  - id: json-create-deserialization
+    message: |
+      Found `json_create` class method. This implies custom JSON deserialization
+      is occuring. This can lead to RCE and other deserialization-type bugs.
+      Usage should be audited and, at least, fuzzed.
+    languages: [ruby]
+    severity: INFO
+    metadata:
+      category: security
+      cwe: "CWE-502: Deserialization of Untrusted Data"
+      subcategory: [audit]
+      confidence: LOW
+      likelihood: LOW
+      impact: HIGH
+      technology: [ruby]
+      references:
+        - https://github.blog/2024-06-20-execute-commands-by-sending-json-learn-how-unsafe-deserialization-vulnerabilities-work-in-ruby-projects/
+        - https://github.com/github/codeql/blob/main/ruby/ql/lib/codeql/ruby/security/UnsafeDeserializationCustomizations.qll
+        - https://stackoverflow.com/questions/17226402/whats-the-difference-between-json-load-and-json-parse-methods-of-ruby-lib
+    patterns:
+      - pattern-inside: |
+          class $CLS
+            ...
+          end
+      - pattern: |
+          def self.json_create($OBJ)
+            ...
+          end

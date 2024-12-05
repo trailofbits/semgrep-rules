@@ -1,0 +1,26 @@
+task "example" {
+  driver = "podman"
+
+  config {
+    image = "secret/service"
+
+    auth {
+      # ruleid: podman-tls-verify-disabled
+      tlsVerify = false
+    }
+  }
+}
+
+task "example" {
+  driver = "podman"
+
+  config {
+    image = "secret/service"
+
+    # ok: podman-tls-verify-disabled
+    auth {
+      username = "dockerhub_user"
+      password = "${PASSWORD}"
+    }
+  }
+}

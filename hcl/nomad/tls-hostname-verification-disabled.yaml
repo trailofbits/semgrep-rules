@@ -1,0 +1,50 @@
+rules:
+  - id: tls-hostname-verification-disabled
+    message: |
+      Found Nomad `tls` block with server hostname verification disabled
+    languages: [hcl]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [terraform]
+      references:
+        - https://developer.hashicorp.com/nomad/docs/configuration/tls
+        - https://github.com/hashicorp/nomad/blob/v1.8.0/nomad/structs/config/tls.go#L25-L31
+    patterns:
+      - pattern-inside: |
+          tls {
+            ...
+            ca_file = ...
+            ...
+          }
+      - pattern-inside: |
+          tls {
+            ...
+            cert_file = ...
+            ...
+          }
+      - pattern-inside: |
+          tls {
+            ...
+            key_file = ...
+            ...
+          }
+      - pattern-either:
+          - patterns:
+              - pattern-inside: tls { ... }
+              - pattern: verify_server_hostname = false
+          - patterns:
+              # verify_server_hostname defaults to false,
+              # so find instances where it's not set at all
+              - pattern: tls { ... }
+              - pattern-not: |
+                  tls {
+                    ...
+                    verify_server_hostname = $ANY
+                    ...
+                  }

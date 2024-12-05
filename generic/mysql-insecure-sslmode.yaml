@@ -1,0 +1,21 @@
+rules:
+  - id: mysql-insecure-sslmode
+    message: |
+      Found MySQL connection string disabling SSL verification
+    languages: [regex]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: HIGH
+      technology: [mysql]
+      references:
+        - https://dev.mysql.com/doc/connector-net/en/connector-net-8-0-connection-options.html
+        - https://dev.mysql.com/doc/connector-j/en/connector-j-connp-props-security.html
+    pattern-either:
+      - pattern-regex: "(?i)Ssl[ -]?Mode=(Disabled|None|Preferred)"
+      - pattern-regex: "(?i)sslMode=(DISABLED|PREFERRED)"
+      - pattern-regex: "(?i)useSSL=false"

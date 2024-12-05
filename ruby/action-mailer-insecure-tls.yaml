@@ -1,0 +1,23 @@
+rules:
+  - id: action-mailer-insecure-tls
+    message: |
+      Found ActionMailer SMTP configuration with insecure TLS setting. These
+      settings do not require a successful, encrypted, verified TLS connection
+      is made. Set `enable_starttls: true` and `openssl_verify_mode` to verify
+      peer
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [rails, actionmailer]
+      references:
+        - https://guides.rubyonrails.org/action_mailer_basics.html#action-mailer-configuration
+    pattern-either:
+      - pattern: "ActionMailer::Base.smtp_settings = { ..., openssl_verify_mode: OpenSSL::SSL::VERIFY_NONE, ... }"
+      - pattern: "ActionMailer::Base.smtp_settings = { ..., openssl_verify_mode: 'none', ... }"
+      - pattern: "ActionMailer::Base.smtp_settings = { ..., enable_starttls_auto: true, ... }"

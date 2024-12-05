@@ -1,0 +1,23 @@
+rules:
+  - id: postgres-insecure-sslmode
+    message: |
+      Found PostgreSQL connection string disabling SSL verification
+    languages: [regex]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [postgresql]
+      references:
+        - https://www.postgresql.org/docs/current/libpq-connect.html
+    pattern-either:
+      - pattern-regex: (?i)postgresql://.+[?&]sslmode=(disable|allow|prefer).*$
+      - pattern-regex: (?i)postgresql://.+[?&]requiressl=0.*$
+      - pattern-regex: (?i)postgresql://.+[?&]ssl=false.*$
+      - pattern-regex: (?i)postgres://.+[?&]sslmode=(disable|allow|prefer).*$
+      - pattern-regex: (?i)postgres://.+[?&]requiressl=0.*$
+      - pattern-regex: (?i)postgres://.+[?&]ssl=false.*$

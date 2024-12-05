@@ -1,0 +1,22 @@
+rules:
+  - id: node-disable-certificate-validation
+    message: |
+      Setting this environment variable disables TLS certificate validation.
+      This makes TLS, and HTTPS by extension, insecure. The use of this
+      environment variable is strongly discouraged.
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      cwe: "CWE-295: Improper Certificate Validation"
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [nodejs]
+      references:
+        - https://nodejs.org/api/cli.html#node_tls_reject_unauthorizedvalue
+    pattern-either:
+      - pattern: NODE_TLS_REJECT_UNAUTHORIZED=0
+      - pattern: NODE_TLS_REJECT_UNAUTHORIZED='0'
+      - pattern: NODE_TLS_REJECT_UNAUTHORIZED="0"

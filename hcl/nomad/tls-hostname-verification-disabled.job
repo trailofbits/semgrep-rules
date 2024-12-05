@@ -1,0 +1,28 @@
+# ruleid: tls-hostname-verification-disabled
+tls {
+  http = true
+  rpc  = true
+  ca_file   = "/etc/certs/ca.crt"
+  cert_file = "/etc/certs/nomad.crt"
+  key_file  = "/etc/certs/nomad.key"
+}
+
+tls {
+  http = true
+  rpc  = true
+  ca_file   = "/etc/certs/ca.crt"
+  cert_file = "/etc/certs/nomad.crt"
+  key_file  = "/etc/certs/nomad.key"
+  # ruleid: tls-hostname-verification-disabled
+  verify_server_hostname = false
+}
+
+# ok: tls-hostname-verification-disabled
+tls {
+  http = true
+  rpc  = true
+  ca_file   = "/etc/certs/ca.crt"
+  cert_file = "/etc/certs/nomad.crt"
+  key_file  = "/etc/certs/nomad.key"
+  verify_server_hostname = true
+}

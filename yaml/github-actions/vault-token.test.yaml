@@ -1,0 +1,48 @@
+name: Gather Vault tokens
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        # ruleid: vault-token
+        with:
+          url: https://vault.example.com:8200
+          token: ${{ secrets.VAULT_TOKEN }}
+          caCertificate: ${{ secrets.VAULT_CA_CERT }}
+          secrets: |
+            secret/data/ci/aws accessKey | AWS_ACCESS_KEY_ID ;
+            secret/data/ci/aws secretKey | AWS_SECRET_ACCESS_KEY ;
+            secret/data/ci npm_token
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        with:
+          url: https://vault.example.com:8200
+          caCertificate: ${{ secrets.VAULT_CA_CERT }}
+          secrets: |
+            secret/data/ci/aws accessKey | AWS_ACCESS_KEY_ID ;
+            secret/data/ci/aws secretKey | AWS_SECRET_ACCESS_KEY ;
+            secret/data/ci npm_token
+        # ruleid: vault-token
+        env:
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
+      - name: Import Secrets
+        uses: hashicorp/vault-action@v2.4.0
+        # ok: vault-token
+        with:
+          url: https://vault.example.com:8200
+          role: vault-role-name
+          method: jwt
+          caCertificate: ${{ secrets.VAULT_CA_CERT }}
+          secrets: |
+            secret/data/ci/aws accessKey | AWS_ACCESS_KEY_ID ;
+            secret/data/ci/aws secretKey | AWS_SECRET_ACCESS_KEY ;
+            secret/data/ci npm_token

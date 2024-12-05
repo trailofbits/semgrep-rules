@@ -1,0 +1,26 @@
+rules:
+  - id: action-dispatch-insecure-ssl
+    message: |
+      Found Rails application with insecure SSL setting.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-295: Improper Certificate Validation"
+      subcategory: [audit]
+      confidence: HIGH
+      likelihood: HIGH
+      impact: HIGH
+      technology: [rails]
+      references:
+        - https://api.rubyonrails.org/v7.1.3.4/classes/ActionDispatch/SSL.html
+    patterns:
+      - pattern-inside: |
+          Rails.application.configure do
+            ...
+          end
+      - pattern-either:
+          - pattern: "config.force_ssl = false"
+          - pattern: "config.ssl_options = { ..., secure_cookies: false, ... }"
+          - pattern: "config.ssl_options = { ..., hsts: false, ... }"
+          - pattern: "config.ssl_options = { ..., hsts: { ..., subdomains: false, ... }, ... }"
