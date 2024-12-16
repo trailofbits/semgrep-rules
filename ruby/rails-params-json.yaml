@@ -19,8 +19,13 @@ rules:
       references:
         - https://nastystereo.com/security/rails-_json-juggling-attack.html
         - https://api.rubyonrails.org/v5.1.7/classes/ActionDispatch/Http/Parameters.html
+        - https://api.rubyonrails.org/classes/ActionController/Parameters.html
     pattern-either:
       - pattern: "params[:_json]"
       - pattern: "params['_json']"
       - pattern: "params.require(:_json)"
       - pattern: "params.require('_json')"
+      - pattern: "params.fetch(:_json, ...)"
+      - pattern: "params.fetch('_json', ...)"
+      - pattern: "params.dig(:_json, ...)"
+      - pattern: "params.dig('_json', ...)"
