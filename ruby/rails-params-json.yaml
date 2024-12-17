@@ -1,0 +1,31 @@
+rules:
+  - id: rails-params-json
+    message: |
+      Found Rails parameters (`params`) using the `_json` parameter. This
+      parameter is subject to parser juggling. This may allow an attacker to
+      exploit differences in parameter processing at different points in the
+      request processing lifecycle. For example, object ID processing during
+      the authentication/authorization phase and action execution phase.
+    languages: [ruby]
+    severity: WARNING
+    metadata:
+      category: security
+      cwe: "CWE-843: Access of Resource Using Incompatible Type ('Type Confusion')"
+      subcategory: [audit]
+      confidence: LOW
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [rails]
+      references:
+        - https://nastystereo.com/security/rails-_json-juggling-attack.html
+        - https://api.rubyonrails.org/v5.1.7/classes/ActionDispatch/Http/Parameters.html
+        - https://api.rubyonrails.org/classes/ActionController/Parameters.html
+    pattern-either:
+      - pattern: "params[:_json]"
+      - pattern: "params['_json']"
+      - pattern: "params.require(:_json)"
+      - pattern: "params.require('_json')"
+      - pattern: "params.fetch(:_json, ...)"
+      - pattern: "params.fetch('_json', ...)"
+      - pattern: "params.dig(:_json, ...)"
+      - pattern: "params.dig('_json', ...)"
