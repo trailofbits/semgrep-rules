@@ -39,3 +39,13 @@ rules:
           $TAR = tarfile.open(...)
           ...
           $TAR.extractall(..., members=$MEMBERS, ...)
+      - pattern-not: |
+          with tarfile.open(...) as $TAR:
+              ...
+              $TAR.extractall(..., filter=$FILTER, ...)
+      - pattern-not: |
+          tarfile.open(...).extractall(..., filter=$FILTER, ...)
+      - pattern-not: |
+          $TAR = tarfile.open(...)
+          ...
+          $TAR.extractall(..., filter=$FILTER, ...)
