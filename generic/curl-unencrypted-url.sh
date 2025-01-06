@@ -17,6 +17,9 @@ curl http://127.0.0.1 > /dev/null
 
 # ok: curl-unencrypted-url
 curl http://169.254.169.254 > /dev/null
+#
+# ok: curl-unencrypted-url
+curl http://[fd00:ec2::254] > /dev/null
 
 # ok: curl-unencrypted-url
 curl http://metadata.google.internal > /dev/null

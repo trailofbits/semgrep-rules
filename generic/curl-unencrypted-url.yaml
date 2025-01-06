@@ -20,4 +20,5 @@ rules:
       - pattern-not-inside: curl ... http://127.0.0.1
       - pattern-not-inside: curl ... http://localhost
       - pattern-not-inside: curl ... http://169.254.169.254
+      - pattern-not-inside: curl ... http://[fd00:ec2::254]
       - pattern-not-inside: curl ... http://metadata.google.internal
