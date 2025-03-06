@@ -19,7 +19,7 @@ rules:
         - https://github.com/hashicorp/vault-action
     patterns:
       - pattern-inside: |
-          uses: $ACTION
+          uses: "$ACTION"
           ...
       - metavariable-regex:
           metavariable: $ACTION
