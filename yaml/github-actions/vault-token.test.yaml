@@ -23,6 +23,17 @@ jobs:
             secret/data/ci/aws secretKey | AWS_SECRET_ACCESS_KEY ;
             secret/data/ci npm_token
       - name: Import Secrets
+        uses: "hashicorp/vault-action@v2.4.0"
+        # ruleid: vault-token
+        with:
+          url: https://vault.example.com:8200
+          token: ${{ secrets.VAULT_TOKEN }}
+          caCertificate: ${{ secrets.VAULT_CA_CERT }}
+          secrets: |
+            secret/data/ci/aws accessKey | AWS_ACCESS_KEY_ID ;
+            secret/data/ci/aws secretKey | AWS_SECRET_ACCESS_KEY ;
+            secret/data/ci npm_token
+      - name: Import Secrets
         uses: hashicorp/vault-action@v2.4.0
         with:
           url: https://vault.example.com:8200
