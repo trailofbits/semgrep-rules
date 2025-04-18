@@ -51,3 +51,19 @@ rules:
                       fn $FUNC(...) -> $RETTYPE {
                           ...
                       }
+      - pattern-not-inside: |
+          #[test]
+          fn $TESTFUNC(...) -> Result<$A, $B> {
+              ...
+          }
+      - pattern-not-inside: |
+          #[cfg(test)]
+          mod tests {
+              ...
+              #[test]
+              fn $TESTFUNC(...) -> Result<$A, $B> {
+                  ...
+              }
+              ...
+          }
+
