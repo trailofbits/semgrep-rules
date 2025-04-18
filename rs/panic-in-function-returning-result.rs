@@ -74,6 +74,7 @@ fn get_file_content_4(path: &str) -> io::Result<()> {
 #[cfg(test)]
 mod tests {
 
+    #[test]
     fn test_get_file_content(path: &str) -> Result<String, std::io::Error> {
         // ok: panic-in-function-returning-result
         let mut f = File::open(path).unwrap();
@@ -83,6 +84,7 @@ mod tests {
         return Ok(s);
     }
 
+    #[test]
     fn test_get_file_content_2(path: &str) -> io::Result<()> {
         // ok: panic-in-function-returning-result
         let mut f = File::open(path).expect("uh");
@@ -100,6 +102,7 @@ mod tests {
         (0..10).collect::<Vec<i32>>().try_into().unwrap()
     });
 
+    #[test]
     fn test_get_file_content_3(path: &str) -> CustomResult {
         // ok: panic-in-function-returning-result
         let mut f = File::open(path).unwrap();
@@ -110,6 +113,7 @@ mod tests {
         return Ok(1.);
     }
 
+    #[test]
     fn test_get_file_content_4(path: &str) -> io::Result<()> {
         // ok: panic-in-function-returning-result
         let mut f = File::open(path)?;
