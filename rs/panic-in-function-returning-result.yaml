@@ -52,8 +52,13 @@ rules:
                           ...
                       }
       - pattern-not-inside: |
-          #[test]
-          fn $TESTFUNC(...) -> Result<$A, $B> {
+          #[cfg(test)]
+          mod tests {
+              ...
+              #[test]
+              fn $TESTFUNC(...) -> Result<$T1, $T2> {
+                  ...
+              }
               ...
           }
       - pattern-not-inside: |
@@ -61,9 +66,20 @@ rules:
           mod tests {
               ...
               #[test]
-              fn $TESTFUNC(...) -> Result<$A, $B> {
+              fn $TESTFUNC(...) -> Result<$T> {
                   ...
               }
               ...
           }
-
+      - pattern-not-inside: |
+          #[cfg(test)]
+          mod tests {
+              ...
+              type $CUSTOMRESULT = Result<$T1, $T2>;
+              ...
+              #[test]
+              fn $TESTFUNC(...) -> $CUSTOMRESULT {
+                  ...
+              }
+              ...
+          }
