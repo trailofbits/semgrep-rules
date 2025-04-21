@@ -51,7 +51,7 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 
 | ID | Playground | Impact | Confidence | Description |
 | -- | :--------: | :----: | :--------: | ----------- |
-| [eth-rpc-tracetransaction](go/eth-rpc-tracetransaction.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.eth-rpc-tracetransaction.eth-rpc-tracetransaction) | 🟥 | 🌕 | Detects attempts to extract trace information from an EVM transaction or block |
+| [eth-rpc-tracetransaction](go/eth-rpc-tracetransaction.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.eth-rpc-tracetransaction.eth-rpc-tracetransaction) | 🟥 | 🌕 | Detects attempts to extract trace information from an EVM transaction or block. In exchange or bridge applications, extra logic must be implemented encapsulating these endpoints to prevent the values transferred during reverted call frames from being counted. |
 | [eth-txreceipt-status](go/eth-txreceipt-status.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.eth-txreceipt-status.eth-txreceipt-status) | 🟥 | 🌕 | Detects when a transaction receipt's status is read |
 | [hanging-goroutine](go/hanging-goroutine.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.hanging-goroutine.hanging-goroutine) | 🟩 | 🌗 | Goroutine leaks |
 | [invalid-usage-of-modified-variable](go/invalid-usage-of-modified-variable.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.invalid-usage-of-modified-variable.invalid-usage-of-modified-variable) | 🟧 | 🌘 | Possible unintentional assignment when an error occurs |
@@ -64,6 +64,8 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 | [servercodec-readrequestbody-unhandled-nil](go/servercodec-readrequestbody-unhandled-nil.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.servercodec-readrequestbody-unhandled-nil.servercodec-readrequestbody-unhandled-nil) | 🟩 | 🌘 | Possible incorrect `ServerCodec` interface implementation |
 | [string-to-int-signedness-cast](go/string-to-int-signedness-cast.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.string-to-int-signedness-cast.string-to-int-signedness-cast) | 🟧 | 🌘 | Integer underflows |
 | [sync-mutex-value-copied](go/sync-mutex-value-copied.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.sync-mutex-value-copied.sync-mutex-value-copied) | 🟩 | 🌘 | Copying of `sync.Mutex` via value receivers |
+| [unmarshal-tag-is-dash](go/unmarshal_tag_is_dash.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.unmarshal_tag_is_dash.unmarshal-tag-is-dash) | 🟧 | 🌘 |  |
+| [unmarshal-tag-is-omitempty](go/unmarshal_tag_is_omitempty.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.unmarshal_tag_is_omitempty.unmarshal-tag-is-omitempty) | 🟩 | 🌘 |  |
 | [unsafe-dll-loading](go/unsafe-dll-loading.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.unsafe-dll-loading.unsafe-dll-loading) | 🟥 | 🌘 | Use of function vulnerable to DLL hijacking attacks |
 | [waitgroup-add-called-inside-goroutine](go/waitgroup-add-called-inside-goroutine.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.waitgroup-add-called-inside-goroutine.waitgroup-add-called-inside-goroutine) | 🟧 | 🌗 | Calls to `sync.WaitGroup.Add` inside of anonymous goroutines |
 | [waitgroup-wait-inside-loop](go/waitgroup-wait-inside-loop.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.go.waitgroup-wait-inside-loop.waitgroup-wait-inside-loop) | 🟧 | 🌗 | Calls to `sync.WaitGroup.Wait` inside a loop |
@@ -119,6 +121,102 @@ $ semgrep --config /path/to/semgrep-rules/hanging-goroutine.yml -o leaks.txt'
 | [v3-no-cors](javascript/apollo-graphql/v3-cors.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-cors.v3-no-cors) | 🟩 | 🌘 | Lack of CORS policy |
 | [v3-csrf-prevention](javascript/apollo-graphql/v3-csrf-prevention.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v3-csrf-prevention.v3-csrf-prevention) | 🟧 | 🌘 | Lack of CSRF prevention |
 | [v4-csrf-prevention](javascript/apollo-graphql/v4-csrf-prevention.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.javascript.apollo-graphql.v4-csrf-prevention.v4-csrf-prevention) | 🟧 | 🌘 | CSRF protection disabled |
+
+
+### ruby
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [action-dispatch-insecure-ssl](ruby/action-dispatch-insecure-ssl.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.action-dispatch-insecure-ssl.action-dispatch-insecure-ssl) | 🟥 | 🌘 |  |
+| [action-mailer-insecure-tls](ruby/action-mailer-insecure-tls.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.action-mailer-insecure-tls.action-mailer-insecure-tls) | 🟥 | 🌘 |  |
+| [active-record-encrypts-misorder](ruby/active-record-encrypts-misorder.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.active-record-encrypts-misorder.active-record-encrypts-misorder) | 🟥 | 🌘 |  |
+| [active-record-hardcoded-encryption-key](ruby/active-record-hardcoded-encryption-key.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.active-record-hardcoded-encryption-key.active-record-hardcoded-encryption-key) | 🟥 | 🌘 |  |
+| [faraday-disable-verification](ruby/faraday-disable-verification.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.faraday-disable-verification.faraday-disable-verification) | 🟥 | 🌘 |  |
+| [global-timeout](ruby/global-timeout.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.global-timeout.global-timeout) | 🟩 | 🌘 |  |
+| [insecure-rails-cookie-session-store](ruby/insecure-rails-cookie-session-store.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.insecure-rails-cookie-session-store.insecure-rails-cookie-session-store) | 🟩 | 🌘 |  |
+| [json-create-deserialization](ruby/json-create-deserialization.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.json-create-deserialization.json-create-deserialization) | 🟥 | 🌕 |  |
+| [rails-cache-store-marshal](ruby/rails-cache-store-marshal.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.rails-cache-store-marshal.rails-cache-store-marshal) | 🟩 | 🌗 |  |
+| [rails-cookie-attributes](ruby/rails-cookie-attributes.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.rails-cookie-attributes.rails-cookie-attributes) | 🟩 | 🌘 |  |
+| [rails-params-json](ruby/rails-params-json.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.rails-params-json.rails-params-json) | 🟥 | 🌕 |  |
+| [rest-client-disable-verification](ruby/rest-client-disable-verification.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.rest-client-disable-verification.rest-client-disable-verification) | 🟥 | 🌘 |  |
+| [ruby-saml-skip-validation](ruby/ruby-saml-skip-validation.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.ruby-saml-skip-validation.ruby-saml-skip-validation) | 🟧 | 🌘 |  |
+| [yaml-unsafe-load](ruby/yaml-unsafe-load.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.ruby.yaml-unsafe-load.yaml-unsafe-load) | 🟥 | 🌘 |  |
+
+
+### hcl
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [docker-hardcoded-password](hcl/nomad/docker-hardcoded-password.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.nomad.docker-hardcoded-password.docker-hardcoded-password) | 🟥 | 🌘 |  |
+| [docker-privileged-mode](hcl/nomad/docker-privileged-mode.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.nomad.docker-privileged-mode.docker-privileged-mode) | 🟩 | 🌘 |  |
+| [podman-tls-verify-disabled](hcl/nomad/podman-tls-verify-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.nomad.podman-tls-verify-disabled.podman-tls-verify-disabled) | 🟩 | 🌘 |  |
+| [root-user](hcl/nomad/root-user.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.nomad.root-user.root-user) | 🟩 | 🌘 |  |
+| [tls-hostname-verification-disabled](hcl/nomad/tls-hostname-verification-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.nomad.tls-hostname-verification-disabled.tls-hostname-verification-disabled) | 🟥 | 🌘 |  |
+| [aws-oidc-role-policy-duplicate-condition](hcl/terraform/aws-oidc-role-policy-duplicate-condition.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.terraform.aws-oidc-role-policy-duplicate-condition.aws-oidc-role-policy-duplicate-condition) | 🟥 | 🌘 |  |
+| [aws-oidc-role-policy-missing-sub](hcl/terraform/aws-oidc-role-policy-missing-sub.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.terraform.aws-oidc-role-policy-missing-sub.aws-oidc-role-policy-missing-sub) | 🟥 | 🌘 |  |
+| [vault-hardcoded-token](hcl/terraform/vault-hardcoded-token.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.terraform.vault-hardcoded-token.vault-hardcoded-token) | 🟥 | 🌘 |  |
+| [vault-skip-tls-verify](hcl/terraform/vault-skip-tls-verify.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.hcl.terraform.vault-skip-tls-verify.vault-skip-tls-verify) | 🟥 | 🌘 |  |
+
+
+### jvm
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [gc-call](jvm/gc-call.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.jvm.gc-call.gc-call) | 🟩 | 🌘 |  |
+| [mongo-hostname-verification-disabled](jvm/mongo-hostname-verification-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.jvm.mongo-hostname-verification-disabled.mongo-hostname-verification-disabled) | 🟥 | 🌘 |  |
+
+
+### yaml
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [apt-key-unencrypted-url](yaml/ansible/apt-key-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.apt-key-unencrypted-url.apt-key-unencrypted-url) | 🟥 | 🌘 |  |
+| [apt-key-validate-certs-disabled](yaml/ansible/apt-key-validate-certs-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.apt-key-validate-certs-disabled.apt-key-validate-certs-disabled) | 🟥 | 🌘 |  |
+| [apt-unencrypted-url](yaml/ansible/apt-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.apt-unencrypted-url.apt-unencrypted-url) | 🟥 | 🌘 |  |
+| [dnf-unencrypted-url](yaml/ansible/dnf-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.dnf-unencrypted-url.dnf-unencrypted-url) | 🟥 | 🌘 |  |
+| [dnf-validate-certs-disabled](yaml/ansible/dnf-validate-certs-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.dnf-validate-certs-disabled.dnf-validate-certs-disabled) | 🟥 | 🌘 |  |
+| [get-url-unencrypted-url](yaml/ansible/get-url-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.get-url-unencrypted-url.get-url-unencrypted-url) | 🟥 | 🌘 |  |
+| [get-url-validate-certs-disabled](yaml/ansible/get-url-validate-certs-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.get-url-validate-certs-disabled.get-url-validate-certs-disabled) | 🟥 | 🌘 |  |
+| [rpm-key-unencrypted-url](yaml/ansible/rpm-key-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.rpm-key-unencrypted-url.rpm-key-unencrypted-url) | 🟥 | 🌘 |  |
+| [rpm-key-validate-certs-disabled](yaml/ansible/rpm-key-validate-certs-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.rpm-key-validate-certs-disabled.rpm-key-validate-certs-disabled) | 🟥 | 🌘 |  |
+| [unarchive-unencrypted-url](yaml/ansible/unarchive-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.unarchive-unencrypted-url.unarchive-unencrypted-url) | 🟥 | 🌘 |  |
+| [unarchive-validate-certs-disabled](yaml/ansible/unarchive-validate-certs-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.unarchive-validate-certs-disabled.unarchive-validate-certs-disabled) | 🟥 | 🌘 |  |
+| [wrm-cert-validation-ignore](yaml/ansible/wrm-cert-validation-ignore.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.wrm-cert-validation-ignore.wrm-cert-validation-ignore) | 🟥 | 🌘 |  |
+| [yum-unencrypted-url](yaml/ansible/yum-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.yum-unencrypted-url.yum-unencrypted-url) | 🟥 | 🌘 |  |
+| [yum-validate-certs-disabled](yaml/ansible/yum-validate-certs-disabled.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.yum-validate-certs-disabled.yum-validate-certs-disabled) | 🟥 | 🌘 |  |
+| [zypper-repository-unencrypted-url](yaml/ansible/zypper-repository-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.zypper-repository-unencrypted-url.zypper-repository-unencrypted-url) | 🟥 | 🌘 |  |
+| [zypper-unencrypted-url](yaml/ansible/zypper-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.ansible.zypper-unencrypted-url.zypper-unencrypted-url) | 🟥 | 🌘 |  |
+| [port-all-interfaces](yaml/docker-compose/port-all-interfaces.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.docker-compose.port-all-interfaces.port-all-interfaces) | 🟩 | 🌕 |  |
+| [aws-secret-key](yaml/github-actions/aws-secret-key.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.aws-secret-key.aws-secret-key) | 🟧 | 🌘 |  |
+| [azure-principal-secret](yaml/github-actions/azure-principal-secret.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.azure-principal-secret.azure-principal-secret) | 🟧 | 🌘 |  |
+| [gcp-credentials-json](yaml/github-actions/gcp-credentials-json.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.gcp-credentials-json.gcp-credentials-json) | 🟧 | 🌘 |  |
+| [jfrog-hardcoded-credential](yaml/github-actions/jfrog-hardcoded-credential.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.jfrog-hardcoded-credential.jfrog-hardcoded-credential) | 🟧 | 🌘 |  |
+| [pypi-publish-password](yaml/github-actions/pypi-publish-password.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.pypi-publish-password.pypi-publish-password) | 🟧 | 🌘 |  |
+| [rubygems-publish-key](yaml/github-actions/rubygems-publish-key.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.rubygems-publish-key.rubygems-publish-key) | 🟧 | 🌘 |  |
+| [vault-token](yaml/github-actions/vault-token.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.yaml.github-actions.vault-token.vault-token) | 🟧 | 🌘 |  |
+
+
+### generic
+
+| ID | Playground | Impact | Confidence | Description |
+| -- | :--------: | :----: | :--------: | ----------- |
+| [amqp-unencrypted-transport](generic/amqp-unencrypted-transport.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.amqp-unencrypted-transport.amqp-unencrypted-transport) | 🟥 | 🌘 |  |
+| [container-privileged](generic/container-privileged.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.container-privileged.container-privileged) | 🟥 | 🌗 |  |
+| [container-user-root](generic/container-user-root.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.container-user-root.container-user-root) | 🟥 | 🌗 |  |
+| [curl-insecure](generic/curl-insecure.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.curl-insecure.curl-insecure) | 🟥 | 🌗 |  |
+| [curl-unencrypted-url](generic/curl-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.curl-unencrypted-url.curl-unencrypted-url) | 🟥 | 🌗 |  |
+| [gpg-insecure-flags](generic/gpg-insecure-flags.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.gpg-insecure-flags.gpg-insecure-flags) | 🟥 | 🌗 |  |
+| [installer-allow-untrusted](generic/installer-allow-untrusted.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.installer-allow-untrusted.installer-allow-untrusted) | 🟥 | 🌘 |  |
+| [mongodb-insecure-transport](generic/mongodb-insecure-transport.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.mongodb-insecure-transport.mongodb-insecure-transport) | 🟥 | 🌘 |  |
+| [mysql-insecure-sslmode](generic/mysql-insecure-sslmode.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.mysql-insecure-sslmode.mysql-insecure-sslmode) | 🟥 | 🌗 |  |
+| [node-disable-certificate-validation](generic/node-disable-certificate-validation.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.node-disable-certificate-validation.node-disable-certificate-validation) | 🟥 | 🌘 |  |
+| [openssl-insecure-flags](generic/openssl-insecure-flags.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.openssl-insecure-flags.openssl-insecure-flags) | 🟥 | 🌗 |  |
+| [postgres-insecure-sslmode](generic/postgres-insecure-sslmode.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.postgres-insecure-sslmode.postgres-insecure-sslmode) | 🟥 | 🌘 |  |
+| [redis-unencrypted-transport](generic/redis-unencrypted-transport.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.redis-unencrypted-transport.redis-unencrypted-transport) | 🟥 | 🌘 |  |
+| [ssh-disable-host-key-checking](generic/ssh-disable-host-key-checking.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.ssh-disable-host-key-checking.ssh-disable-host-key-checking) | 🟥 | 🌗 |  |
+| [tar-insecure-flags](generic/tar-insecure-flags.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.tar-insecure-flags.tar-insecure-flags) | 🟥 | 🌗 |  |
+| [wget-no-check-certificate](generic/wget-no-check-certificate.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.wget-no-check-certificate.wget-no-check-certificate) | 🟥 | 🌗 |  |
+| [wget-unencrypted-url](generic/wget-unencrypted-url.yaml) | [🛝🔗](https://semgrep.dev/playground/r/trailofbits.generic.wget-unencrypted-url.wget-unencrypted-url) | 🟥 | 🌗 |  |
 
 
 ## Contributing
