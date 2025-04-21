@@ -23,4 +23,3 @@ rules:
           metavariable: $TAG
           regex: >-
             .*(json|yaml|xml):"-,[^"]*"
-
