@@ -11,6 +11,9 @@ rules:
       confidence: HIGH
       likelihood: MEDIUM
       impact: LOW
+      technology: [--no-technology--]
+      references:
+        - https://blog.trailofbits.com/
     patterns:
       - pattern: |
           type $T1 struct {
