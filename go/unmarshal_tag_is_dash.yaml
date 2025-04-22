@@ -1,0 +1,28 @@
+rules:
+  - id: unmarshal-tag-is-dash
+    message: >-
+      Struct field can be decoded with the `-` key because the JSON tag starts with a `-` but is followed by a comma.
+    languages: [go]
+    severity: WARNING
+    metadata:
+      cwe: "CWE-172: Encoding Error"
+      category: security
+      subcategory: [vuln]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology: [--no-technology--]
+      references:
+        - https://blog.trailofbits.com/
+    patterns:
+      - pattern: |
+          type $T1 struct {
+            ...
+            $X $T2 `$TAG`
+            ...
+          }
+      - focus-metavariable: $TAG
+      - metavariable-regex:
+          metavariable: $TAG
+          regex: >-
+            .*(json|yaml|xml):"-,[^"]*"

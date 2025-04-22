@@ -5,7 +5,7 @@ from urllib.parse import quote
 import yaml
 import sys
 
-LANGUAGES = ['go', 'python', 'rs', 'javascript']
+LANGUAGES = ['go', 'python', 'rs', 'javascript', 'ruby', 'hcl', 'jvm', 'yaml', 'generic']
 IMPACT_MAP = {
     'LOW': "🟩",
     'MEDIUM': "🟧",
@@ -24,6 +24,9 @@ def main():
     for language in LANGUAGES:
         rules_for_lang = []
         for rule_path in Path(language).rglob('*.yaml'):
+            if rule_path.name.endswith(".test.yaml"):
+                continue
+
             try:
                 rules_data = yaml.safe_load(rule_path.open())
             except yaml.YAMLError as err:
