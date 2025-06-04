@@ -88,3 +88,22 @@ func iter1_FP_5() {
 		keys = append(keys, k)
 	}
 }
+
+
+func emptyMapIter() {
+  // ruleid: iterate-over-empty-map
+  c := make(map[string]string)
+  for k := range c {
+    // do stuff
+  }
+}
+
+func notEmptyMapIter() {
+   // ok: iterate-over-empty-map
+  c := map[string]string {
+    "foo": "bar"
+  }
+  for k := range c {
+    // do stuff
+  }
+}

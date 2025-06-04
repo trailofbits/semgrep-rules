@@ -18,7 +18,7 @@ rules:
 
     patterns:
       - pattern: |
-          $C = make(map[$T1] $T2, ...)
+          $C = make(map[$T1] $T2)
           ...
           for $K := range $C { ... }
       - pattern-not: |
