@@ -1,0 +1,21 @@
+rules:
+  - id: pytorch-defaults-max-response-size
+    message: No specified maximum response size in Pytorch config
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: MEDIUM
+      references:
+        - https://pytorch.org/serve/configuration.html
+    paths:
+      include:
+        - 'config.properties'
+    patterns:
+      - pattern-regex: |
+          (?s)(.*)
+      - pattern-not-regex: .*max_response_size=

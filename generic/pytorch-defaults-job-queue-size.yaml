@@ -1,0 +1,21 @@
+rules:
+  - id: pytorch-defaults-job-queue-size
+    message: No specified job queue size in Pytorch config (default 100)
+    languages: [generic]
+    severity: WARNING
+    metadata:
+      category: security
+      subcategory: [audit]
+      technology: [shell]
+      confidence: HIGH
+      likelihood: MEDIUM
+      impact: MEDIUM
+      references:
+        - https://pytorch.org/serve/configuration.html
+    paths:
+      include:
+        - 'config.properties'
+    patterns:
+      - pattern-regex: |
+          (?s)(.*)
+      - pattern-not-regex: .*job_queue_size=
