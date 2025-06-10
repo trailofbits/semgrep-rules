@@ -28,12 +28,10 @@ rules:
           - patterns:
               - pattern: pandas.DataFrame.$FN(...)
               - pattern-not: pandas.DataFrame.$FN("...", ...)
-              - pattern-not: pandas.DataFrame.$FN(f"", ...)
 
           - patterns:
               - pattern: pandas.$FN(...)
               - pattern-not: pandas.$FN("...", ...)
-              - pattern-not: pandas.$FN(f"", ...)
 
           - patterns:
               - pattern-inside: |
@@ -41,7 +39,6 @@ rules:
                   ...
               - pattern: $DF.$FN(...)
               - pattern-not: $DF.$FN("...", ...)
-              - pattern-not: $DF.$FN(f"", ...)
 
       - metavariable-regex:
           metavariable: $FN
