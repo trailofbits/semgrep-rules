@@ -17,6 +17,8 @@ rules:
       impact: MEDIUM
       technology: [--no-technology--]
       description: "Shadowed error variable: declared `err` is not the one checked against `nil`"
+      references:
+        - https://temporal.io/blog/go-shadowing-bad-choices#the-bug
     patterns:
       # Match any `if <decl> := <expr>; <check> <op> nil { ... }` where the
       # declared variable and the variable in the check are both error-like.
