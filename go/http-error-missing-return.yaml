@@ -40,7 +40,7 @@ rules:
                   $NEXT
           - metavariable-regex:
               metavariable: $ERR
-              regex: &http_error '^http\.Error\('
+              regex: '^http\.Error\('
           - pattern-not:
               patterns:
                 - pattern-either:
@@ -60,7 +60,7 @@ rules:
                         $NEXT
                 - metavariable-regex:
                     metavariable: $TERM
-                    regex: &terminator '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
           - pattern-not:
               patterns:
                 - pattern-either:
@@ -76,7 +76,7 @@ rules:
                         $NEXTTERM
                 - metavariable-regex:
                     metavariable: $NEXTTERM
-                    regex: *terminator
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
           - focus-metavariable: $ERR
 
       # Case A' — http.Error is the last statement of an `else`-body.
@@ -100,7 +100,7 @@ rules:
                   $NEXT
           - metavariable-regex:
               metavariable: $ERR
-              regex: *http_error
+              regex: '^http\.Error\('
           - pattern-not:
               patterns:
                 - pattern-either:
@@ -124,7 +124,7 @@ rules:
                         $NEXT
                 - metavariable-regex:
                     metavariable: $TERM
-                    regex: *terminator
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
           - pattern-not:
               patterns:
                 - pattern-either:
@@ -140,7 +140,7 @@ rules:
                         $NEXTTERM
                 - metavariable-regex:
                     metavariable: $NEXTTERM
-                    regex: *terminator
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
           - focus-metavariable: $ERR
 
       # Case B — http.Error is immediately followed by a non-terminator
@@ -156,4 +156,4 @@ rules:
                     $TERM
                 - metavariable-regex:
                     metavariable: $TERM
-                    regex: *terminator
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
