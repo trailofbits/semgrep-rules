@@ -42,13 +42,16 @@ rules:
       # Both the declared variable and the variable being checked must look
       # like error variables. This focuses the rule on the real bug class
       # (shadowed/typo'd error checks) and avoids false positives from
-      # legitimate uses such as `if v, ok := m[k]; ok { ... }`.
+      # legitimate uses such as `if v, ok := m[k]; ok { ... }`. The regex
+      # matches `e`, `err`, `err\d*`, `errFoo` (err prefix + CamelCase),
+      # and `xErr` / `parseError` style names while rejecting accidental
+      # substring matches like `terraform`.
       - metavariable-regex:
           metavariable: $LOCAL
-          regex: ^(e|err|.*[Ee]rr.*)$
+          regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
       - metavariable-regex:
           metavariable: $CHECK
-          regex: ^(e|err|.*[Ee]rr.*)$
+          regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
       # Subtract the correct case: when the declared variable IS the variable
       # being checked. `pattern-not` enforces this via metavariable
       # unification — `$SAME` must be identical on both sides.

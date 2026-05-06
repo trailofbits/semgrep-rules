@@ -132,3 +132,12 @@ func okConditionUsesOtherBoolean() {
 		_ = err
 	}
 }
+
+// Variable names that merely contain `err` as a substring (e.g.
+// `terraform`, `cherry`) must not be treated as error variables.
+func okSubstringNotErrLike(cherry int) {
+	// ok: shadowed-err-check
+	if terraform := compute(); cherry > 0 {
+		_ = terraform
+	}
+}

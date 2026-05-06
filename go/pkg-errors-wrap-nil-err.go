@@ -2,6 +2,8 @@ package testdata
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/pkg/errors"
 )
 
@@ -602,6 +604,63 @@ func tn22(cond bool) error {
 		return errors.Wrap(err, "after err==nil reverse guard")
 	}
 	return nil
+}
+
+// TP18: guard body has a logging stmt before `return` — `err` is still
+// provably nil after the guard, so the wrap inside the trailing
+// non-err `if` is the bug.
+func tp18() error {
+	err := anotherCall()
+	if err != nil {
+		log.Print("init failed: ", err)
+		return err
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after multi-stmt guard")
+	}
+	return nil
+}
+
+// TP19: assignment-form wrap inside the else of `if err != nil { ... } else { ... }`.
+// Wrap returns nil for nil input, so `err` stays nil.
+func tp19() error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else {
+		// ruleid: pkg-errors-wrap-nil-err
+		err = errors.Wrap(err, "assignment-form")
+		return err
+	}
+}
+
+// TN24: assignment-form wrap in else preceded by a single-LHS reassign
+// — `err` is no longer provably nil, so the wrap is intentional.
+func tn24() error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else {
+		err = anotherCall()
+		// ok: pkg-errors-wrap-nil-err
+		err = errors.Wrap(err, "single reassign in else")
+		return err
+	}
+}
+
+// TN25: assignment-form wrap in else preceded by a tuple reassign.
+func tn25() error {
+	_, err := mayFail()
+	if err != nil {
+		return err
+	} else {
+		_, err = mayFail()
+		// ok: pkg-errors-wrap-nil-err
+		err = errors.Wrap(err, "tuple reassign in else")
+		return err
+	}
 }
 
 // TN23: reverse guard inside a deferred closure — the wrap runs only

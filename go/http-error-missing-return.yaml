@@ -143,17 +143,116 @@ rules:
                     regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
           - focus-metavariable: $ERR
 
+      # Case A'' — http.Error is the last stmt of an `else if` branch.
+      # `else if` parses as `else { if ... }`, so the inner if's
+      # surrounding-scope `$NEXT` must be at the level of the outer
+      # if-stmt (after the whole chain), not within the else block.
+      - patterns:
+          - pattern-either:
+              - pattern: |
+                  if $COND1 {
+                      ...
+                  } else if $COND2 {
+                      ...
+                      $ERR
+                  }
+                  $NEXT
+              - pattern: |
+                  if $INIT; $COND1 {
+                      ...
+                  } else if $COND2 {
+                      ...
+                      $ERR
+                  }
+                  $NEXT
+              - pattern: |
+                  if $COND1 {
+                      ...
+                  } else if $INIT2; $COND2 {
+                      ...
+                      $ERR
+                  }
+                  $NEXT
+          - metavariable-regex:
+              metavariable: $ERR
+              regex: '^http\.Error\('
+          - pattern-not:
+              patterns:
+                - pattern-either:
+                    - pattern: |
+                        if $COND1 {
+                            ...
+                        } else if $COND2 {
+                            ...
+                            $TERM
+                            ...
+                        }
+                        $NEXT
+                    - pattern: |
+                        if $INIT; $COND1 {
+                            ...
+                        } else if $COND2 {
+                            ...
+                            $TERM
+                            ...
+                        }
+                        $NEXT
+                    - pattern: |
+                        if $COND1 {
+                            ...
+                        } else if $INIT2; $COND2 {
+                            ...
+                            $TERM
+                            ...
+                        }
+                        $NEXT
+                - metavariable-regex:
+                    metavariable: $TERM
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
+          - pattern-not:
+              patterns:
+                - pattern-either:
+                    - pattern: |
+                        if $COND1 {
+                            ...
+                        } else if $COND2 {
+                            ...
+                        }
+                        $NEXTTERM
+                    - pattern: |
+                        if $INIT; $COND1 {
+                            ...
+                        } else if $COND2 {
+                            ...
+                        }
+                        $NEXTTERM
+                    - pattern: |
+                        if $COND1 {
+                            ...
+                        } else if $INIT2; $COND2 {
+                            ...
+                        }
+                        $NEXTTERM
+                - metavariable-regex:
+                    metavariable: $NEXTTERM
+                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
+          - focus-metavariable: $ERR
+
       # Case B — http.Error is immediately followed by a non-terminator
       # statement in the same block.
       - patterns:
           - pattern: |
-              http.Error(...)
+              $ERR
               $STMT
+          - metavariable-regex:
+              metavariable: $ERR
+              regex: '^http\.Error\('
           - pattern-not:
               patterns:
                 - pattern: |
-                    http.Error(...)
+                    $ERR
                     $TERM
                 - metavariable-regex:
                     metavariable: $TERM
                     regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
+          - focus-metavariable: $ERR

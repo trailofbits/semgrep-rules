@@ -205,6 +205,45 @@ func handlerReturnPrefixIsNotTerminator(w http.ResponseWriter, r *http.Request) 
 
 func returnedSomething() {}
 
+// http.Error in the middle branch of an `else if` chain — handler
+// keeps running past the if-else and reaches the trailing write.
+func handlerElseIfMissingReturn(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("get"))
+	} else if r.Method == "POST" {
+		// ruleid: http-error-missing-return
+		http.Error(w, "no post", http.StatusMethodNotAllowed)
+	}
+
+	w.Write([]byte("done"))
+}
+
+// `else if` middle branch with a `return` is fine.
+func handlerElseIfWithReturn(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("get"))
+	} else if r.Method == "POST" {
+		// ok: http-error-missing-return
+		http.Error(w, "no post", http.StatusMethodNotAllowed)
+		return
+	}
+
+	w.Write([]byte("done"))
+}
+
+// `else if` middle branch where a terminator follows the entire
+// if-else chain — no fall-through, so no bug.
+func handlerElseIfNextTerm(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("get"))
+	} else if r.Method == "POST" {
+		// ok: http-error-missing-return
+		http.Error(w, "no post", http.StatusMethodNotAllowed)
+	}
+
+	log.Fatal("downstream did not run")
+}
+
 func handlerNestedNoInnerReturn(w http.ResponseWriter, r *http.Request) {
 	if err := doSomething(r); err != nil {
 		if errors.Is(err, errSentinel) {
