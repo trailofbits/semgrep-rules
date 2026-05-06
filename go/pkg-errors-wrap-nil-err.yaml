@@ -1,0 +1,69 @@
+rules:
+  - id: pkg-errors-wrap-nil-err
+    languages: [go]
+    severity: ERROR
+    message: >-
+      $FN is being called with an error variable that is provably `nil`.
+      This method returns `nil` when their input is `nil`, so this
+      silently swallows the error path: callers see success when the
+      surrounding condition was meant to surface a failure.
+    metadata:
+      category: correctness
+      cwe: "CWE-754: Improper Check for Unusual or Exceptional Conditions"
+      subcategory: [audit]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "`pkg/errors.Wrap`/`Wrapf`/`WithMessage`/`WithMessagef`/`WithStack` called where the error argument is provably nil — wraps to nil, swallowing the failure path"
+      references:
+        - https://pkg.go.dev/github.com/pkg/errors#Wrap
+        - https://pkg.go.dev/github.com/pkg/errors#WithMessage
+        - https://pkg.go.dev/github.com/pkg/errors#WithStack
+    patterns:
+      # Restrict $FN to the pkg/errors helpers that return nil when their
+      # error input is nil.
+      - metavariable-regex:
+          metavariable: $FN
+          regex: ^(Wrap|Wrapf|WithMessage|WithMessagef|WithStack)$
+      # Restrict $ERR to identifiers that look like error variables.
+      - metavariable-regex:
+          metavariable: $ERR
+          regex: ^(e|err|.*[Ee]rr.*)$
+      - pattern-either:
+          # Case A: wrap inside a non-err `if $COND { ... }` block,
+          # after a preceding `if $ERR != nil { return ... }` guard
+          - patterns:
+              - pattern: errors.$FN($ERR, ...)
+              - pattern-inside: |
+                  if $ERR != nil {
+                      return ...
+                  }
+                  ...
+              - pattern-inside: |
+                  if $COND {
+                      ...
+                  }
+              - metavariable-pattern:
+                  metavariable: $COND
+                  patterns:
+                    - pattern-not: $ERR != nil
+                    - pattern-not: $ERR == nil
+              - pattern-not-inside: |
+                  if $ERR != nil {
+                      ...
+                  }
+          # Case B: wrap inside the ELSE body of `if $ERR != nil { ... } else { ... }`
+          - patterns:
+              - pattern: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      $RET
+                      ...
+                  }
+              - metavariable-pattern:
+                  metavariable: $RET
+                  pattern: return errors.$FN($ERR, ...)
+              - focus-metavariable: $RET

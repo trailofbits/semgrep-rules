@@ -1,0 +1,68 @@
+rules:
+  - id: shadowed-err-check
+    languages: [go]
+    severity: ERROR
+    message: >-
+      The `if` statement declares an error-like variable but then checks a
+      different variable against `nil`. This is almost always a copy-paste /
+      typo bug: the error returned by the function call in the init clause is
+      silently ignored, while a stale variable from an outer scope is checked
+      instead.
+    metadata:
+      category: security
+      cwe: "CWE-754: Improper Check for Unusual or Exceptional Conditions"
+      subcategory: [audit]
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "Shadowed error variable: declared `err` is not the one checked against `nil`"
+    patterns:
+      # Match any `if <decl> := <expr>; <check> <op> nil { ... }` where the
+      # declared variable and the variable in the check are both error-like.
+      - pattern-either:
+          - pattern: |
+              if $LOCAL := $EXPR; $CHECK != nil {
+                ...
+              }
+          - pattern: |
+              if $LOCAL := $EXPR; $CHECK == nil {
+                ...
+              }
+          - pattern: |
+              if ..., $LOCAL := $EXPR; $CHECK != nil {
+                ...
+              }
+          - pattern: |
+              if ..., $LOCAL := $EXPR; $CHECK == nil {
+                ...
+              }
+      # Both the declared variable and the variable being checked must look
+      # like error variables. This focuses the rule on the real bug class
+      # (shadowed/typo'd error checks) and avoids false positives from
+      # legitimate uses such as `if v, ok := m[k]; ok { ... }`.
+      - metavariable-regex:
+          metavariable: $LOCAL
+          regex: ^(e|err|.*[Ee]rr.*)$
+      - metavariable-regex:
+          metavariable: $CHECK
+          regex: ^(e|err|.*[Ee]rr.*)$
+      # Subtract the correct case: when the declared variable IS the variable
+      # being checked. `pattern-not` enforces this via metavariable
+      # unification — `$SAME` must be identical on both sides.
+      - pattern-not: |
+          if $SAME := $E; $SAME != nil {
+            ...
+          }
+      - pattern-not: |
+          if $SAME := $E; $SAME == nil {
+            ...
+          }
+      - pattern-not: |
+          if ..., $SAME := $E; $SAME != nil {
+            ...
+          }
+      - pattern-not: |
+          if ..., $SAME := $E; $SAME == nil {
+            ...
+          }
