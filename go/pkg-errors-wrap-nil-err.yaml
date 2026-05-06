@@ -31,8 +31,11 @@ rules:
           metavariable: $ERR
           regex: ^(e|err|.*[Ee]rr.*)$
       - pattern-either:
-          # Case A: wrap inside a non-err `if $COND { ... }` block,
-          # after a preceding `if $ERR != nil { return ... }` guard
+          # Case A: wrap inside an `if $COND { ... }` block, after a
+          # preceding `if $ERR != nil { return ... }` guard. The wrap is
+          # excluded if the surrounding `if` is itself an err-check
+          # (compound `&&` allowed) or if $ERR is reassigned right
+          # before the wrap return.
           - patterns:
               - pattern: errors.$FN($ERR, ...)
               - pattern-inside: |
@@ -44,15 +47,47 @@ rules:
                   if $COND {
                       ...
                   }
-              - metavariable-pattern:
-                  metavariable: $COND
-                  patterns:
-                    - pattern-not: $ERR != nil
-                    - pattern-not: $ERR == nil
+              # The wrap is intentional when the surrounding `if`
+              # already constrains $ERR (directly or as one conjunct of
+              # an `&&` chain).
               - pattern-not-inside: |
                   if $ERR != nil {
                       ...
                   }
+              - pattern-not-inside: |
+                  if $ERR != nil && ... {
+                      ...
+                  }
+              - pattern-not-inside: |
+                  if ... && $ERR != nil {
+                      ...
+                  }
+              - pattern-not-inside: |
+                  if ... && $ERR != nil && ... {
+                      ...
+                  }
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                  }
+              # Reverse guard: an earlier `if $ERR == nil { return ... }`
+              # establishes that $ERR is NON-nil at the wrap site.
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      return ...
+                  }
+                  ...
+              # $ERR reassigned IMMEDIATELY before the wrap return — we
+              # can no longer prove $ERR is nil at the wrap. Tight
+              # adjacent shape only, so a reassignment followed by a
+              # fresh `if $ERR != nil { return ... }` guard (which DOES
+              # restore nil-ness at the wrap) still flags.
+              - pattern-not-inside: |
+                  $ERR = ...
+                  return errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  ..., $ERR = ...
+                  return errors.$FN($ERR, ...)
           # Case B: wrap inside the ELSE body of `if $ERR != nil { ... } else { ... }`
           - patterns:
               - pattern: |
@@ -66,4 +101,22 @@ rules:
               - metavariable-pattern:
                   metavariable: $RET
                   pattern: return errors.$FN($ERR, ...)
+              # $ERR reassigned IMMEDIATELY before the wrap return inside
+              # the else body.
+              - pattern-not: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      $ERR = ...
+                      return errors.$FN($ERR, ...)
+                  }
+              - pattern-not: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      ..., $ERR = ...
+                      return errors.$FN($ERR, ...)
+                  }
               - focus-metavariable: $RET

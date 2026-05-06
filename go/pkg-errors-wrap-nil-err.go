@@ -380,3 +380,252 @@ func tn10() error {
 	}
 	return nil
 }
+
+// TP17: chained calls — each call uses `:=` (re)binding `err` and is
+// followed by its own `if err != nil { return ... }` guard. After both
+// guards, `err` is provably nil, so the wrap inside the trailing
+// non-err `if $COND { ... }` is the bug.
+func tp17(threshold int) error {
+	id, err := someCall()
+	if err != nil {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "lookup %q", id)
+	}
+
+	count, err := mayFail()
+	if err != nil {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "count %q", id)
+	}
+
+	if count < threshold {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "below threshold %d", threshold)
+	}
+	return nil
+}
+
+// TN11: classic FP shape — `err` is reassigned via tuple-assign between
+// the guard and the wrap, so the wrap site is on a freshly-assigned
+// (potentially non-nil) err, not the proven-nil one.
+func tn11(cond bool) error {
+	res, err := mayFail()
+	if err != nil {
+		return errors.Wrap(err, "first call")
+	}
+
+	if res > 0 {
+		return nil
+	}
+
+	if cond {
+		_, err = mayFail()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "second call")
+	}
+	return nil
+}
+
+// TN12: same as TN11 but the reassignment lives in the surrounding
+// function scope (not inside the `if cond` block). The wrap is the last
+// statement of an enclosing `if cond { ... }` block.
+func tn12(cond bool) error {
+	res, err := mayFail()
+	if err != nil {
+		return errors.Wrap(err, "first call")
+	}
+
+	if cond {
+		if res > 0 {
+			return nil
+		}
+
+		_, err = mayFail()
+
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "second call")
+	}
+	return nil
+}
+
+// TN13: single-LHS reassignment between guard and wrap.
+func tn13(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if cond {
+		err = anotherCall()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "single reassign")
+	}
+	return nil
+}
+
+// TN14: reassignment happens inside an else branch before the wrap —
+// Case B FP shape.
+func tn14() error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else {
+		_, err = mayFail()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "reassigned in else")
+	}
+}
+
+// TN15: alt-named err reassigned between guard and wrap.
+func tn15(cond bool) error {
+	parseErr := anotherCall()
+	if parseErr != nil {
+		return parseErr
+	}
+
+	if cond {
+		parseErr = anotherCall()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.WithMessage(parseErr, "after reassign")
+	}
+	return nil
+}
+
+// TN16: multiple reassignments before the wrap — still a TN because the
+// last value of err is not provably nil.
+func tn16(cond bool) error {
+	_, err := mayFail()
+	if err != nil {
+		return err
+	}
+
+	if cond {
+		_, err = mayFail()
+		_, err = mayFail()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after multiple reassigns")
+	}
+	return nil
+}
+
+func threeVals() (int, string, error) { return 0, "", nil }
+
+// TN17: 3-value tuple reassignment between guard and wrap (err is last,
+// per Go convention).
+func tn17(cond bool) error {
+	_, _, err := threeVals()
+	if err != nil {
+		return err
+	}
+
+	if cond {
+		_, _, err = threeVals()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "three-tuple reassign")
+	}
+	return nil
+}
+
+// TN18: 3-value tuple reassignment inside an else branch.
+func tn18() error {
+	_, _, err := threeVals()
+	if err != nil {
+		return err
+	} else {
+		_, _, err = threeVals()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "three-tuple else reassign")
+	}
+}
+
+var ErrSentinelA = errors.New("sentinel a")
+var ErrSentinelB = errors.New("sentinel b")
+
+// TN19: compound `if $ERR != nil && ...` — `&&` guarantees err is
+// non-nil inside the body, so the wrap is intentional.
+func tn19() error {
+	_, err := mayFail()
+	if err != nil {
+		return err
+	}
+
+	if err != nil && !errors.Is(err, ErrSentinelA) {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "compound err first")
+	}
+	return nil
+}
+
+// TN20: compound condition with `$ERR != nil` as the LAST conjunct.
+func tn20(extra bool) error {
+	_, err := mayFail()
+	if err != nil {
+		return err
+	}
+
+	if extra && err != nil {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "compound err last")
+	}
+	return nil
+}
+
+// TN21: compound condition with `$ERR != nil` in the MIDDLE position
+// of a 3-conjunct `&&` chain.
+func tn21() error {
+	_, err := mayFail()
+	if err != nil {
+		return err
+	}
+
+	if err != nil && !errors.Is(err, ErrSentinelA) && !errors.Is(err, ErrSentinelB) {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "compound err middle")
+	}
+	return nil
+}
+
+// TN22: reverse guard `if $ERR == nil { return ... }` followed by a
+// wrap on the err-non-nil path.
+func tn22(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if err == nil {
+		return nil
+	}
+
+	if cond {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after err==nil reverse guard")
+	}
+	return nil
+}
+
+// TN23: reverse guard inside a deferred closure — the wrap runs only
+// when the captured err is non-nil.
+func tn23() (err error) {
+	err = anotherCall()
+	if err != nil {
+		return err
+	}
+
+	defer func() {
+		if err == nil {
+			return
+		}
+
+		if cleanupErr := anotherCall(); cleanupErr != nil {
+			if err == nil {
+				err = cleanupErr
+				return
+			}
+			// ok: pkg-errors-wrap-nil-err
+			err = errors.Wrap(err, "with cleanup failure")
+		}
+	}()
+
+	return nil
+}
