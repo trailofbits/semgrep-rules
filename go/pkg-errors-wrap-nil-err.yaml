@@ -3,7 +3,7 @@ rules:
     languages: [go]
     severity: ERROR
     message: >-
-      `errors.$FN` is being called with an error variable that is likely
+      `errors.$FN` is being called with an error variable that is provably
       `nil` at this point. These functions return `nil` when their error
       input is `nil`, so this silently swallows the error path: callers
       see success when the surrounding condition was meant to surface a
@@ -16,7 +16,7 @@ rules:
       likelihood: MEDIUM
       impact: MEDIUM
       technology: [--no-technology--]
-      description: "`pkg/errors` wrap-family call where the error argument is likely nil — wraps to nil, swallowing the failure path"
+      description: "`pkg/errors` wrap-family call on a provably-nil error — silently swallows the failure path"
       references:
         - https://pkg.go.dev/github.com/pkg/errors#Wrap
         - https://pkg.go.dev/github.com/pkg/errors#WithMessage
@@ -223,7 +223,7 @@ rules:
               # assignment-shape so we don't fire on the broader span.
               - metavariable-regex:
                   metavariable: $RET
-                  regex: '^(return |[a-zA-Z_][a-zA-Z0-9_]*\s*=[^=])'
+                  regex: '^(return\b|[a-zA-Z_][a-zA-Z0-9_]*\s*=(?!=))'
               # $ERR reassigned (or shadowed via `:=`) IMMEDIATELY before
               # the wrap (return-form) inside the else body. Tight
               # adjacent shape only — `...` between would traverse

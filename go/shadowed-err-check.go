@@ -141,3 +141,85 @@ func okSubstringNotErrLike(cherry int) {
 		_ = terraform
 	}
 }
+
+// Same substring-rejection rule applied to the CHECK side: LOCAL is
+// err-like, but the variable being compared to nil is not.
+func okCheckSideSubstringNotErrLike() {
+	var terraform error
+	// ok: shadowed-err-check
+	if xErr := someFunc(); terraform != nil {
+		_ = xErr
+	}
+}
+
+// Single-letter `e` LOCAL — exercises the `e` branch of the regex.
+func bugSingleLetterLocal(err error) error {
+	// ruleid: shadowed-err-check
+	if e := someFunc(); err != nil {
+		return e
+	}
+	return nil
+}
+
+// Numeric-suffix `err1` LOCAL — exercises the `err\d*` branch.
+func bugNumericSuffixLocal(err error) error {
+	// ruleid: shadowed-err-check
+	if err1 := someFunc(); err != nil {
+		return err1
+	}
+	return nil
+}
+
+// Err-prefix CamelCase `errFoo` LOCAL — exercises the
+// `err[A-Z][a-zA-Z0-9]*` branch.
+func bugErrPrefixLocal(err error) error {
+	// ruleid: shadowed-err-check
+	if errFoo := someFunc(); err != nil {
+		return errFoo
+	}
+	return nil
+}
+
+// Error-suffix `parseError` LOCAL — exercises the
+// `[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*` branch.
+func bugErrorSuffixLocal(err error) error {
+	// ruleid: shadowed-err-check
+	if parseError := someFunc(); err != nil {
+		return parseError
+	}
+	return nil
+}
+
+// Cross-name typo: both LOCAL and CHECK are err-like, but distinct
+// identifiers. Canonical shadowed-check shape — declared `xErr` is
+// silently ignored while the outer `yErr` is checked.
+func bugCrossNameTypo(yErr error) error {
+	// ruleid: shadowed-err-check
+	if xErr := someFunc(); yErr != nil {
+		return xErr
+	}
+	return nil
+}
+
+// Err in non-final tuple position (`if err, ok := f(); ok`). The
+// rule's `..., $LOCAL := $EXPR` pattern only binds $LOCAL to the
+// LAST element, so $LOCAL here would be `ok` (not err-like) and the
+// rule does not fire — no shadowed-err shape to flag.
+func okErrInFirstTuplePos() {
+	tupleFn := func() (error, bool) { return nil, true }
+	// ok: shadowed-err-check
+	if err, ok := tupleFn(); ok {
+		_ = err
+	}
+}
+
+// Compound `&&` check is a known FN: the rule's pattern matches
+// `$CHECK != nil` directly, not `$CHECK != nil && ...`. Documented
+// here so a future change extending the pattern can update this
+// marker.
+func okCompoundCheckKnownFN(err error, retries int) {
+	// ok: shadowed-err-check
+	if xErr := someFunc(); err != nil && retries < 3 {
+		_ = xErr
+	}
+}

@@ -116,6 +116,9 @@ func handlerNestedReturn(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("ok"))
 }
 
+// The if-block is the LAST statement of the function — there is no
+// `$NEXT` after it, so Case A's pattern-inside requirement (a trailing
+// statement after the if-chain) is not met and the rule does not fire.
 func handlerEndOfFunction(w http.ResponseWriter, r *http.Request) {
 	if err := doSomething(r); err != nil {
 		// ok: http-error-missing-return
@@ -245,6 +248,9 @@ func handlerElseIfNextTerm(w http.ResponseWriter, r *http.Request) {
 	log.Fatal("downstream did not run")
 }
 
+// Trailing `return` after the inner if-else satisfies Case A's
+// terminator subtraction at the outer scope, so neither inner
+// `http.Error` is flagged.
 func handlerNestedNoInnerReturn(w http.ResponseWriter, r *http.Request) {
 	if err := doSomething(r); err != nil {
 		if errors.Is(err, errSentinel) {
@@ -273,9 +279,11 @@ func handlerForLoopContinue(w http.ResponseWriter, r *http.Request, items []stri
 	}
 }
 
-// `break` exits the loop entirely — handler then continues, but the call
-// site after the break is the user's choice; the http.Error itself is
-// followed by an explicit control-flow terminator.
+// `break` is treated as a terminator by the rule even though it exits
+// the loop, not the handler. Conservative choice: legitimate retry-style
+// loops commonly write a single error and `break`, and flagging them
+// produces noise. Real fall-through bugs after `break` (loop is followed
+// by code that double-writes) are accepted as a known FN.
 func handlerForLoopBreak(w http.ResponseWriter, r *http.Request) {
 	for {
 		if r.Method != "POST" {
@@ -424,4 +432,87 @@ func handlerSwitchDefault(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "bad method", http.StatusMethodNotAllowed)
 	}
 	w.Write([]byte("leaked"))
+}
+
+// Multi-case switch — fall-through bug in a middle case body, with
+// other case bodies present alongside.
+func handlerSwitchMultiCase(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		w.Write([]byte("g"))
+	case "POST":
+		// ruleid: http-error-missing-return
+		http.Error(w, "no posts", http.StatusMethodNotAllowed)
+	case "PUT":
+		w.Write([]byte("u"))
+	}
+	w.Write([]byte("done"))
+}
+
+// Switch with init clause: `switch $INIT; $X { ... }` followed by
+// trailing code — exercises the init-form `pattern-inside` branches.
+func handlerSwitchWithInit(w http.ResponseWriter, r *http.Request) {
+	switch m := r.Method; m {
+	case "POST":
+		// ruleid: http-error-missing-return
+		http.Error(w, "no", http.StatusMethodNotAllowed)
+	}
+	w.Write([]byte("done"))
+}
+
+type server struct{}
+
+// Method-receiver handler — same fall-through bug, different signature.
+func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if err := doSomething(r); err != nil {
+		// ruleid: http-error-missing-return
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	w.Write([]byte("ok"))
+}
+
+// Method-receiver handler with `return` — fine.
+func (s *server) Get(w http.ResponseWriter, r *http.Request) {
+	if err := doSomething(r); err != nil {
+		// ok: http-error-missing-return
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	w.Write([]byte("ok"))
+}
+
+// Anonymous handler passed to http.HandleFunc — bug fires inside the closure.
+func registerHandlerBug() {
+	http.HandleFunc("/x", func(w http.ResponseWriter, r *http.Request) {
+		if err := doSomething(r); err != nil {
+			// ruleid: http-error-missing-return
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		w.Write([]byte("ok"))
+	})
+}
+
+// Anonymous handler with `return` inside the closure — fine.
+func registerHandlerOK() {
+	http.HandleFunc("/x", func(w http.ResponseWriter, r *http.Request) {
+		if err := doSomething(r); err != nil {
+			// ok: http-error-missing-return
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Write([]byte("ok"))
+	})
+}
+
+// `select` cases are caught by the existing switch-shaped patterns
+// (Semgrep's Go AST treats `select` similarly to `switch`), so a
+// fall-through bug inside a `select` case is flagged the same way.
+func handlerSelectFallThrough(w http.ResponseWriter, r *http.Request) {
+	ctx := r.Context()
+	select {
+	case <-ctx.Done():
+		// ruleid: http-error-missing-return
+		http.Error(w, "timeout", http.StatusGatewayTimeout)
+	}
+	w.Write([]byte("done"))
 }

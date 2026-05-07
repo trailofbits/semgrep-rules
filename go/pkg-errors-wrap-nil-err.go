@@ -918,3 +918,129 @@ func tn29(cond bool) error {
 	return nil
 }
 
+type repo struct{}
+
+func (r *repo) load() (string, error) { return "", nil }
+func (r *repo) check() error          { return nil }
+
+// TP30: receiver method call (single-LHS) returning error — proven-nil
+// reasoning applies the same way as for package-level functions.
+func tp30() error {
+	r := &repo{}
+	err := r.check()
+	if err != nil {
+		return err
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after method-call guard")
+	}
+	return nil
+}
+
+// TP31: tuple-form receiver method call.
+func tp31() error {
+	r := &repo{}
+	id, err := r.load()
+	if err != nil {
+		return err
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "tuple method call: %s", id)
+	}
+	return nil
+}
+
+// TP32: named return value with naked `return` inside the guard.
+// After `if err != nil { return }`, `err` is still provably nil at the
+// trailing wrap.
+func tp32() (err error) {
+	err = anotherCall()
+	if err != nil {
+		return
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "naked return guard")
+	}
+	return nil
+}
+
+// TP33: nested `else { else { wrap } }` chain (with explicit braces,
+// not else-if). Wrap inside the inner else still runs on the
+// proven-nil-err path.
+func tp33(cond1, cond2 bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if cond1 {
+		return nil
+	} else {
+		if cond2 {
+			return nil
+		} else {
+			// ruleid: pkg-errors-wrap-nil-err
+			return errors.Wrap(err, "else of else")
+		}
+	}
+}
+
+// TN30: single-LHS `:=` shadow (not tuple) inside a nested scope before
+// the wrap. The fresh `err :=` declares a new variable distinct from
+// the proven-nil outer one.
+func tn30(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if cond {
+		err := anotherCall()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "single-LHS := shadow")
+	}
+	return nil
+}
+
+// Wrap inside a `switch`-case after a guard is a known FN: Case A's
+// `pattern-inside` enumerates `if`-blocks but not `case` bodies, so
+// the wrap is not recognized as being inside a non-err conditional.
+func tnSwitchCaseKnownFN(cond int) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	switch cond {
+	case 1:
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "switch-case wrap (known FN)")
+	}
+	return nil
+}
+
+// Wrap inside a goroutine launched after the guard. Captured `err` may
+// be mutated by the outer function before the goroutine runs, so the
+// proven-nil reasoning is unsound across goroutine boundaries —
+// documented here for awareness. The rule fires syntactically.
+func tpGoroutineWrap() error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	go func() {
+		if someCondition() {
+			// ruleid: pkg-errors-wrap-nil-err
+			_ = errors.Wrap(err, "goroutine wrap")
+		}
+	}()
+	return nil
+}
+
