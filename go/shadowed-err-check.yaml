@@ -1,0 +1,70 @@
+rules:
+  - id: shadowed-err-check
+    languages: [go]
+    severity: ERROR
+    message: >-
+      The `if` statement declares an error-like variable but then checks a
+      different variable against `nil`. This is almost always a copy-paste /
+      typo bug: the error returned by the function call in the init clause is
+      silently ignored, while a stale variable from an outer scope is checked
+      instead.
+    metadata:
+      category: security
+      cwe: "CWE-754: Improper Check for Unusual or Exceptional Conditions"
+      subcategory: [audit]
+      confidence: MEDIUM
+      likelihood: HIGH
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "Shadowed error variable: declared `err` is not the one checked against `nil`"
+      references:
+        - https://temporal.io/blog/go-shadowing-bad-choices#the-bug
+    patterns:
+      - pattern-either:
+          - pattern: |
+              if $LOCAL := $EXPR; $CHECK != nil {
+                ...
+              }
+          - pattern: |
+              if $LOCAL := $EXPR; $CHECK == nil {
+                ...
+              }
+          - pattern: |
+              if ..., $LOCAL := $EXPR; $CHECK != nil {
+                ...
+              }
+          - pattern: |
+              if ..., $LOCAL := $EXPR; $CHECK == nil {
+                ...
+              }
+      # Both declared and checked variables must be err-like. Matches
+      # `e`, `err`, `err\d*`, `errFoo`, `xErr`, `parseError`. Rejects
+      # accidental substring matches like `terraform`. Also avoids
+      # legit non-err shapes like `if v, ok := m[k]; ok { ... }`.
+      - metavariable-regex:
+          metavariable: $LOCAL
+          regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
+      - metavariable-regex:
+          metavariable: $CHECK
+          regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
+      # Subtract the correct case: declared var IS the var being checked.
+      # `$SAME` is a fresh metavariable (distinct from $LOCAL/$CHECK) so
+      # Semgrep unifies its two occurrences within this `pattern-not`.
+      # Reusing $LOCAL/$CHECK wouldn't work — Semgrep doesn't unify
+      # metavariables across the `pattern-not` boundary.
+      - pattern-not: |
+          if $SAME := $E; $SAME != nil {
+            ...
+          }
+      - pattern-not: |
+          if $SAME := $E; $SAME == nil {
+            ...
+          }
+      - pattern-not: |
+          if ..., $SAME := $E; $SAME != nil {
+            ...
+          }
+      - pattern-not: |
+          if ..., $SAME := $E; $SAME == nil {
+            ...
+          }
