@@ -1,29 +1,13 @@
 rules:
-  # The rule has two cases combined under one user-facing id:
-  #
-  #   Case A — `http.Error` is the tail of its containing block, and the
-  #     enclosing if-chain or switch is followed by another statement.
-  #   Case B — `http.Error` is immediately followed by a statement in the
-  #     same block (regardless of nesting context).
-  #
-  # The two cases are joined under a top-level `pattern-either`, then
-  # two top-level `pattern-not-inside` subtractions drop matches where
-  # the trailing statement is a control-flow terminator. The two
-  # subtractions are kept separate because they need different scoping:
-  #
-  #   - The Case B subtraction (`http.Error(...)\n$TERM`) is shape-safe
-  #     at the top level: the shape only matches Case B-style instances
-  #     (where http.Error has a directly-following stmt), so it cannot
-  #     wrongly subtract Case A matches.
-  #   - The Case A subtraction (enclosing if/switch followed by $TERM)
-  #     would over-subtract Case B matches whose enclosing structure
-  #     also happens to be followed by a terminator. It is scoped to
-  #     Case A by an extra `pattern-not http.Error(...)\n$ANY`
-  #     conjunction (i.e., http.Error must be the tail of its block).
-  #
-  # Top-level placement of both subtractions is required because
-  # Semgrep silently ignores `pattern-not` / `pattern-not-inside` /
-  # `metavariable-regex` when nested under `pattern-either > patterns`.
+  # Two cases under one id:
+  #   Case A — http.Error is the tail of its block, and the enclosing
+  #     if-chain or switch is followed by another statement.
+  #   Case B — http.Error is directly followed by a statement.
+  # Subtractions for terminator-after-error are kept at top level because
+  # Semgrep silently ignores `pattern-not` / `metavariable-regex` when
+  # nested under `pattern-either > patterns`. The Case A subtraction also
+  # carries an extra `pattern-not http.Error(...)\n$ANY` so it doesn't
+  # over-subtract Case B matches.
   - id: http-error-missing-return
     languages: [go]
     severity: ERROR
@@ -47,18 +31,15 @@ rules:
       references:
         - https://pkg.go.dev/net/http#Error
     patterns:
-      # Anchor: the file imports `net/http`, so `http.Error` resolves to
-      # the stdlib symbol rather than a local identifier shadowing it.
+      # Anchor to files importing net/http so `http.Error` resolves to stdlib.
       - pattern-inside: |
           import "net/http"
           ...
       - pattern: http.Error(...)
       - pattern-either:
-          # Case A — http.Error is the tail of its containing block, and
-          # the enclosing if-chain or switch is followed by $NEXT. With
-          # nested chains $NEXT naturally binds to the trailing stmt of
-          # the outermost containing structure, so deep else-if chains
-          # work without explicit case enumeration.
+          # Case A. With nested chains, $NEXT binds to the trailing stmt of
+          # the outermost containing structure, so deep else-if chains work
+          # without explicit case enumeration.
           - patterns:
               - pattern-not-inside: |
                   http.Error(...)
@@ -104,14 +85,11 @@ rules:
                           ...
                       }
                       $NEXT
-          # Case B — http.Error is directly followed by another stmt in
-          # the same block.
+          # Case B.
           - pattern-inside: |
               http.Error(...)
               $STMT
-      # Subtract Case B: http.Error directly followed by a control-flow
-      # terminator (return / panic / log.Fatal* / os.Exit /
-      # runtime.Goexit / continue / break / goto).
+      # Subtract Case B: http.Error directly followed by a terminator.
       - pattern-not-inside:
           patterns:
             - pattern: |
@@ -121,10 +99,9 @@ rules:
                 metavariable: $TERM
                 regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\(|runtime\.Goexit\(|continue\b|break\b|goto\b)'
       # Subtract Case A: enclosing if-chain or switch is followed by a
-      # control-flow terminator AND http.Error is the tail of its block.
-      # The tail-of-block conjunction prevents this subtraction from
-      # firing on Case B matches whose enclosing structure happens to
-      # also be followed by a terminator.
+      # terminator AND http.Error is the tail of its block. The tail-of-block
+      # conjunction prevents subtracting Case B matches whose enclosing
+      # structure also happens to be followed by a terminator.
       - pattern-not-inside:
           patterns:
             - pattern-either:

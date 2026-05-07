@@ -20,8 +20,6 @@ rules:
       references:
         - https://temporal.io/blog/go-shadowing-bad-choices#the-bug
     patterns:
-      # Match any `if <decl> := <expr>; <check> <op> nil { ... }` where the
-      # declared variable and the variable in the check are both error-like.
       - pattern-either:
           - pattern: |
               if $LOCAL := $EXPR; $CHECK != nil {
@@ -39,27 +37,21 @@ rules:
               if ..., $LOCAL := $EXPR; $CHECK == nil {
                 ...
               }
-      # Both the declared variable and the variable being checked must look
-      # like error variables. This focuses the rule on the real bug class
-      # (shadowed/typo'd error checks) and avoids false positives from
-      # legitimate uses such as `if v, ok := m[k]; ok { ... }`. The regex
-      # matches `e`, `err`, `err\d*`, `errFoo` (err prefix + CamelCase),
-      # and `xErr` / `parseError` style names while rejecting accidental
-      # substring matches like `terraform`.
+      # Both declared and checked variables must be err-like. Matches
+      # `e`, `err`, `err\d*`, `errFoo`, `xErr`, `parseError`. Rejects
+      # accidental substring matches like `terraform`. Also avoids
+      # legit non-err shapes like `if v, ok := m[k]; ok { ... }`.
       - metavariable-regex:
           metavariable: $LOCAL
           regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
       - metavariable-regex:
           metavariable: $CHECK
           regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
-      # Subtract the correct case: when the declared variable IS the
-      # variable being checked. `$SAME` is a fresh metavariable
-      # (intentionally distinct from `$LOCAL`/`$CHECK` above) so that
-      # within this single `pattern-not`, Semgrep unifies the two
-      # occurrences of `$SAME` and matches only when the same identifier
-      # appears on both sides. Reusing `$LOCAL`/`$CHECK` here would not
-      # work — Semgrep does not unify metavariables across the
-      # `pattern-not` boundary back to the outer patterns.
+      # Subtract the correct case: declared var IS the var being checked.
+      # `$SAME` is a fresh metavariable (distinct from $LOCAL/$CHECK) so
+      # Semgrep unifies its two occurrences within this `pattern-not`.
+      # Reusing $LOCAL/$CHECK wouldn't work — Semgrep doesn't unify
+      # metavariables across the `pattern-not` boundary.
       - pattern-not: |
           if $SAME := $E; $SAME != nil {
             ...
