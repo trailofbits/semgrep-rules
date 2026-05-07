@@ -44,7 +44,27 @@ func tp2() error {
 
 	return nil
 }
+// TP3: branchy reassignment — `err` is reassigned only inside an inner
+// `if branch { ... return }`, so along the wrap path `err` is still
+// proven-nil from the outer guard. The reassignment lives in a sibling
+// block, not the wrap's enclosing block.
+func tp3(branch bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
 
+	if someCondition() {
+		if branch {
+			_, err = mayFail()
+			return err
+		}
+
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "branchy reassign")
+	}
+	return nil
+}
 
 // TP4: bug nested inside a for loop body.
 func tp4(items []string) error {
@@ -880,3 +900,21 @@ func tn28(cond bool) error {
 	}
 	return nil
 }
+
+// TN29: `:=` shadow inside the wrap branch. `_, err := mayFail()` in a
+// nested scope declares a fresh `err` distinct from the proven-nil
+// outer one, so the wrap is on the fresh, possibly non-nil shadow.
+func tn29(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if cond {
+		_, err := mayFail()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "shadowed via :=")
+	}
+	return nil
+}
+

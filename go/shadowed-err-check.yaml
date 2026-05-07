@@ -52,9 +52,14 @@ rules:
       - metavariable-regex:
           metavariable: $CHECK
           regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
-      # Subtract the correct case: when the declared variable IS the variable
-      # being checked. `pattern-not` enforces this via metavariable
-      # unification — `$SAME` must be identical on both sides.
+      # Subtract the correct case: when the declared variable IS the
+      # variable being checked. `$SAME` is a fresh metavariable
+      # (intentionally distinct from `$LOCAL`/`$CHECK` above) so that
+      # within this single `pattern-not`, Semgrep unifies the two
+      # occurrences of `$SAME` and matches only when the same identifier
+      # appears on both sides. Reusing `$LOCAL`/`$CHECK` here would not
+      # work — Semgrep does not unify metavariables across the
+      # `pattern-not` boundary back to the outer patterns.
       - pattern-not: |
           if $SAME := $E; $SAME != nil {
             ...

@@ -3,10 +3,11 @@ rules:
     languages: [go]
     severity: ERROR
     message: >-
-      $FN is being called with an error variable that is provably `nil`.
-      This method returns `nil` when their input is `nil`, so this
-      silently swallows the error path: callers see success when the
-      surrounding condition was meant to surface a failure.
+      `errors.$FN` is being called with an error variable that is likely
+      `nil` at this point. These functions return `nil` when their error
+      input is `nil`, so this silently swallows the error path: callers
+      see success when the surrounding condition was meant to surface a
+      failure.
     metadata:
       category: security
       cwe: "CWE-754: Improper Check for Unusual or Exceptional Conditions"
@@ -15,12 +16,19 @@ rules:
       likelihood: MEDIUM
       impact: MEDIUM
       technology: [--no-technology--]
-      description: "`pkg/errors.Wrap`/`Wrapf`/`WithMessage`/`WithMessagef`/`WithStack` called where the error argument is provably nil — wraps to nil, swallowing the failure path"
+      description: "`pkg/errors` wrap-family call where the error argument is likely nil — wraps to nil, swallowing the failure path"
       references:
         - https://pkg.go.dev/github.com/pkg/errors#Wrap
         - https://pkg.go.dev/github.com/pkg/errors#WithMessage
         - https://pkg.go.dev/github.com/pkg/errors#WithStack
     patterns:
+      # Anchor to files that import github.com/pkg/errors. Without this
+      # anchor the rule would also fire on calls to other packages
+      # aliased as `errors` (e.g. cockroachdb/errors, emperror.dev/errors)
+      # whose `Wrap` may have different nil-input semantics.
+      - pattern-inside: |
+          import "github.com/pkg/errors"
+          ...
       # Restrict $FN to the pkg/errors helpers that return nil when their
       # error input is nil.
       - metavariable-regex:
@@ -35,13 +43,21 @@ rules:
           metavariable: $ERR
           regex: ^(e|err\d*|error|err[A-Z][a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Err[a-zA-Z0-9]*|[a-z][a-zA-Z0-9]*Error[a-zA-Z0-9]*)$
       - pattern-either:
-          # Case A: wrap inside an `if $COND { ... }` block, after a
-          # preceding `if $ERR != nil { return ... }` guard. The wrap is
-          # excluded if the surrounding `if` is itself an err-check
-          # (compound `&&` allowed) or if $ERR is reassigned right
-          # before the wrap return.
+          # Case A: wrap inside an `if $COND { ... }` block (structural
+          # constraint enforced via `pattern-inside: if $COND { ... }`
+          # below), after a preceding `if $ERR != nil { return ... }`
+          # guard. The wrap is excluded if the surrounding `if` is
+          # itself an err-check (compound `&&` allowed) or if $ERR is
+          # reassigned (or shadowed via `:=`) before the wrap return.
           - patterns:
               - pattern: errors.$FN($ERR, ...)
+              # Structural constraint: wrap must sit inside an
+              # `if $COND { ... }` block. Co-located with Case A's
+              # comment so the requirement is visible up-front.
+              - pattern-inside: |
+                  if $COND {
+                      ...
+                  }
               # Accept any guard whose body ends in a control-flow
               # terminator that prevents reaching the code below the
               # `if`: `return`, `panic`, `log.Fatal*`, `os.Exit`,
@@ -90,10 +106,6 @@ rules:
                           runtime.Goexit()
                       }
                       ...
-              - pattern-inside: |
-                  if $COND {
-                      ...
-                  }
               # The wrap is intentional when the surrounding `if`
               # already constrains $ERR (directly or as one conjunct of
               # an `&&` chain).
@@ -162,16 +174,28 @@ rules:
                       runtime.Goexit()
                   }
                   ...
-              # $ERR reassigned IMMEDIATELY before the wrap return — we
-              # can no longer prove $ERR is nil at the wrap. Tight
-              # adjacent shape only, so a reassignment followed by a
-              # fresh `if $ERR != nil { return ... }` guard (which DOES
-              # restore nil-ness at the wrap) still flags.
+              # $ERR reassigned (or shadowed via `:=`) IMMEDIATELY before
+              # the wrap return — we can no longer prove $ERR is nil
+              # at the wrap. Tight adjacent shape only: a multi-stmt
+              # `pattern-not-inside` with `...` between would traverse
+              # nested blocks and over-subtract any outer `err = ...`
+              # against an inner wrap. So a reassignment separated
+              # from the wrap by other stmts in the same block remains
+              # a known FP.
               - pattern-not-inside: |
                   $ERR = ...
                   return errors.$FN($ERR, ...)
               - pattern-not-inside: |
                   ..., $ERR = ...
+                  return errors.$FN($ERR, ...)
+              # `:=` shadow: in a nested scope, `_, err := mayFail()`
+              # introduces a fresh `err` distinct from the proven-nil
+              # outer one. Same tight-adjacent constraint as above.
+              - pattern-not-inside: |
+                  $ERR := ...
+                  return errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  ..., $ERR := ...
                   return errors.$FN($ERR, ...)
           # Case B: wrap inside the ELSE body of `if $ERR != nil { ... } else { ... }`.
           # Matches both `return errors.Wrap(err, ...)` and the
@@ -200,8 +224,11 @@ rules:
               - metavariable-regex:
                   metavariable: $RET
                   regex: '^(return |[a-zA-Z_][a-zA-Z0-9_]*\s*=[^=])'
-              # $ERR reassigned IMMEDIATELY before the wrap (return-form)
-              # inside the else body.
+              # $ERR reassigned (or shadowed via `:=`) IMMEDIATELY before
+              # the wrap (return-form) inside the else body. Tight
+              # adjacent shape only — `...` between would traverse
+              # nested blocks (e.g. `if ... { err = X }` inside the
+              # else body) and over-subtract.
               - pattern-not: |
                   if $ERR != nil {
                       ...
@@ -216,6 +243,22 @@ rules:
                   } else {
                       ...
                       ..., $ERR = ...
+                      return errors.$FN($ERR, ...)
+                  }
+              - pattern-not: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      $ERR := ...
+                      return errors.$FN($ERR, ...)
+                  }
+              - pattern-not: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      ..., $ERR := ...
                       return errors.$FN($ERR, ...)
                   }
               # Same FP shape for the assignment-form wrap.
@@ -233,6 +276,22 @@ rules:
                   } else {
                       ...
                       ..., $ERR = ...
+                      $ERR = errors.$FN($ERR, ...)
+                  }
+              - pattern-not: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      $ERR := ...
+                      $ERR = errors.$FN($ERR, ...)
+                  }
+              - pattern-not: |
+                  if $ERR != nil {
+                      ...
+                  } else {
+                      ...
+                      ..., $ERR := ...
                       $ERR = errors.$FN($ERR, ...)
                   }
               - focus-metavariable: $RET
@@ -279,18 +338,31 @@ rules:
                       } else if $INIT; $COND {
                           ...
                       }
-              # FP: $ERR reassigned immediately before the wrap inside the
-              # else-if arm — wrap is on a freshly-assigned err, not the
-              # proven-nil one.
+              # FP: $ERR reassigned (or shadowed via `:=`) IMMEDIATELY
+              # before the wrap inside the else-if arm — wrap is on a
+              # fresh err, not the proven-nil one. Tight adjacent shape
+              # only (same caveat as Case A).
               - pattern-not-inside: |
                   $ERR = ...
                   return errors.$FN($ERR, ...)
               - pattern-not-inside: |
                   ..., $ERR = ...
+                  return errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  $ERR := ...
+                  return errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  ..., $ERR := ...
                   return errors.$FN($ERR, ...)
               - pattern-not-inside: |
                   $ERR = ...
                   $ERR = errors.$FN($ERR, ...)
               - pattern-not-inside: |
                   ..., $ERR = ...
+                  $ERR = errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  $ERR := ...
+                  $ERR = errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  ..., $ERR := ...
                   $ERR = errors.$FN($ERR, ...)
