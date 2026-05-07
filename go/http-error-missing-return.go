@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 )
 
 
@@ -48,7 +49,7 @@ func handlerLogThenContinue(w http.ResponseWriter, r *http.Request) {
 
 // http.Error followed by another statement in the same block — Case B.
 func handlerErrorFollowedByWrite(w http.ResponseWriter, r *http.Request) {
-	// ruleid: http-error-missing-return
+	// ruleid: http-error-missing-return-followed-by-stmt
 	http.Error(w, "boom", http.StatusInternalServerError)
 	w.Write([]byte("leaked body"))
 }
@@ -195,7 +196,7 @@ func handlerCaseBOsExit(w http.ResponseWriter, r *http.Request) {
 // mistaken for a return statement by the terminator regex.
 func handlerReturnPrefixIsNotTerminator(w http.ResponseWriter, r *http.Request) {
 	if err := doSomething(r); err != nil {
-		// ruleid: http-error-missing-return
+		// ruleid: http-error-missing-return-followed-by-stmt
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		returnedSomething()
 	}
@@ -258,4 +259,169 @@ func handlerNestedNoInnerReturn(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte("ok"))
+}
+
+// `continue` legitimately ends an iteration; the response was written for
+// this request item, so the loop just moves on.
+func handlerForLoopContinue(w http.ResponseWriter, r *http.Request, items []string) {
+	for range items {
+		if err := doSomething(r); err != nil {
+			// ok: http-error-missing-return
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			continue
+		}
+	}
+}
+
+// `break` exits the loop entirely — handler then continues, but the call
+// site after the break is the user's choice; the http.Error itself is
+// followed by an explicit control-flow terminator.
+func handlerForLoopBreak(w http.ResponseWriter, r *http.Request) {
+	for {
+		if r.Method != "POST" {
+			// ok: http-error-missing-return
+			http.Error(w, "no", http.StatusMethodNotAllowed)
+			break
+		}
+	}
+}
+
+// `goto` to a cleanup label is also a control-flow terminator for the
+// purpose of this rule.
+func handlerGoto(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		// ok: http-error-missing-return
+		http.Error(w, "no", http.StatusMethodNotAllowed)
+		goto cleanup
+	}
+	w.Write([]byte("ok"))
+cleanup:
+}
+
+// `runtime.Goexit` terminates the current goroutine — also a terminator.
+func handlerRuntimeGoexit(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		// ok: http-error-missing-return
+		http.Error(w, "no", http.StatusMethodNotAllowed)
+		runtime.Goexit()
+	}
+	w.Write([]byte("ok"))
+}
+
+// 3-way else-if chain: http.Error in the deepest branch, no return, and
+// code follows the entire chain. Should be flagged. (Previously a FN.)
+func handlerThreeWayElseIf(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("g"))
+	} else if r.Method == "POST" {
+		w.Write([]byte("p"))
+	} else if r.Method == "DELETE" {
+		// ruleid: http-error-missing-return
+		http.Error(w, "no del", http.StatusMethodNotAllowed)
+	}
+	w.Write([]byte("done"))
+}
+
+// 4-way else-if: still a bug, exercises arbitrary depth.
+func handlerFourWayElseIf(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("g"))
+	} else if r.Method == "POST" {
+		w.Write([]byte("p"))
+	} else if r.Method == "PUT" {
+		w.Write([]byte("u"))
+	} else if r.Method == "DELETE" {
+		// ruleid: http-error-missing-return
+		http.Error(w, "no del", http.StatusMethodNotAllowed)
+	}
+	w.Write([]byte("done"))
+}
+
+// 4-way else-if where the trailing chain is followed by a terminator —
+// no fall-through, so no bug.
+func handlerFourWayElseIfNextTerm(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("g"))
+	} else if r.Method == "POST" {
+		w.Write([]byte("p"))
+	} else if r.Method == "PUT" {
+		w.Write([]byte("u"))
+	} else if r.Method == "DELETE" {
+		// ok: http-error-missing-return
+		http.Error(w, "no del", http.StatusMethodNotAllowed)
+	}
+	log.Fatal("downstream did not run")
+}
+
+// 4-way else-if where the deepest branch terminates with `return` — no
+// bug. Verifies the inner-block-tail check correctly excludes calls that
+// have a terminator after them in their own block.
+func handlerFourWayElseIfWithReturn(w http.ResponseWriter, r *http.Request) {
+	if r.Method == "GET" {
+		w.Write([]byte("g"))
+	} else if r.Method == "POST" {
+		w.Write([]byte("p"))
+	} else if r.Method == "PUT" {
+		w.Write([]byte("u"))
+	} else if r.Method == "DELETE" {
+		// ok: http-error-missing-return
+		http.Error(w, "no del", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Write([]byte("done"))
+}
+
+// Switch case where http.Error is the tail of a case body and the
+// switch is followed by non-terminating code. Switch cases don't
+// fall through in Go, but the function continues past the switch.
+func handlerSwitchCase(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		// ruleid: http-error-missing-return
+		http.Error(w, "no posts", http.StatusMethodNotAllowed)
+	}
+	w.Write([]byte("leaked"))
+}
+
+// Switch case with `return` after http.Error — fine.
+func handlerSwitchCaseReturn(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		// ok: http-error-missing-return
+		http.Error(w, "no posts", http.StatusMethodNotAllowed)
+		return
+	}
+	w.Write([]byte("ok"))
+}
+
+// Switch is the LAST stmt of the function — handler returns naturally,
+// so missing terminator inside a case is harmless.
+func handlerSwitchCaseEndOfFunc(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		// ok: http-error-missing-return
+		http.Error(w, "no posts", http.StatusMethodNotAllowed)
+	}
+}
+
+// Switch is followed by a terminator — no fall-through past the switch.
+func handlerSwitchCaseNextTerm(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "POST":
+		// ok: http-error-missing-return
+		http.Error(w, "no posts", http.StatusMethodNotAllowed)
+	}
+	log.Fatal("downstream did not run")
+}
+
+// Switch with default clause — same fall-through bug.
+func handlerSwitchDefault(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case "GET":
+		w.Write([]byte("g"))
+	default:
+		// ruleid: http-error-missing-return
+		http.Error(w, "bad method", http.StatusMethodNotAllowed)
+	}
+	w.Write([]byte("leaked"))
 }

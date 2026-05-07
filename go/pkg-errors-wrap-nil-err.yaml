@@ -42,12 +42,54 @@ rules:
           # before the wrap return.
           - patterns:
               - pattern: errors.$FN($ERR, ...)
-              - pattern-inside: |
-                  if $ERR != nil {
+              # Accept any guard whose body ends in a control-flow
+              # terminator that prevents reaching the code below the
+              # `if`: `return`, `panic`, `log.Fatal*`, `os.Exit`,
+              # `runtime.Goexit`. After such a guard, $ERR is provably
+              # nil at the wrap site.
+              - pattern-either:
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          return ...
+                      }
                       ...
-                      return ...
-                  }
-                  ...
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          panic(...)
+                      }
+                      ...
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          log.Fatal(...)
+                      }
+                      ...
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          log.Fatalf(...)
+                      }
+                      ...
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          log.Fatalln(...)
+                      }
+                      ...
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          os.Exit(...)
+                      }
+                      ...
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                          runtime.Goexit()
+                      }
+                      ...
               - pattern-inside: |
                   if $COND {
                       ...
@@ -75,12 +117,49 @@ rules:
                   if $ERR == nil {
                       ...
                   }
-              # Reverse guard: an earlier `if $ERR == nil { return ... }`
-              # establishes that $ERR is NON-nil at the wrap site.
+              # Reverse guard: an earlier `if $ERR == nil { <terminator> }`
+              # establishes that $ERR is NON-nil at the wrap site. Same
+              # terminator set as the forward guard above.
               - pattern-not-inside: |
                   if $ERR == nil {
                       ...
                       return ...
+                  }
+                  ...
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                      panic(...)
+                  }
+                  ...
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                      log.Fatal(...)
+                  }
+                  ...
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                      log.Fatalf(...)
+                  }
+                  ...
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                      log.Fatalln(...)
+                  }
+                  ...
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                      os.Exit(...)
+                  }
+                  ...
+              - pattern-not-inside: |
+                  if $ERR == nil {
+                      ...
+                      runtime.Goexit()
                   }
                   ...
               # $ERR reassigned IMMEDIATELY before the wrap return — we
@@ -113,6 +192,14 @@ rules:
                     - pattern-either:
                         - pattern: return errors.$FN($ERR, ...)
                         - pattern: $ERR = errors.$FN($ERR, ...)
+              # The `... $RET ...` shape lets Semgrep bind $RET to any
+              # statement-level node in the else-body — including an
+              # enclosing if-stmt or block whose body happens to contain
+              # the wrap. Anchor $RET's text to the actual return- or
+              # assignment-shape so we don't fire on the broader span.
+              - metavariable-regex:
+                  metavariable: $RET
+                  regex: '^(return |[a-zA-Z_][a-zA-Z0-9_]*\s*=[^=])'
               # $ERR reassigned IMMEDIATELY before the wrap (return-form)
               # inside the else body.
               - pattern-not: |
@@ -149,3 +236,61 @@ rules:
                       $ERR = errors.$FN($ERR, ...)
                   }
               - focus-metavariable: $RET
+
+          # Case C: wrap inside an `else if` arm after `if $ERR != nil`.
+          # Go parses `else if $COND { ... }` as `else { if $COND { ... } }`,
+          # where the else-body is the inner if-stmt directly (not wrapped
+          # in an extra block). Semgrep's `... $RET ...` requires a
+          # multi-stmt block, so the basic Case B pattern doesn't bind
+          # $RET to the inner if-stmt — hence this separate case for the
+          # single-statement else-body shape.
+          #
+          # The wrap is reached only when `$ERR != nil` was FALSE (i.e.
+          # err is provably nil) AND the inner condition is TRUE — so the
+          # wrap swallows the error path the same way Case B does. No
+          # terminator in the if-body is needed: the else branch runs iff
+          # err is nil, regardless of what the if-body does.
+          - patterns:
+              - pattern: errors.$FN($ERR, ...)
+              - pattern-either:
+                  # Plain `else if $COND` — the parser produces an
+                  # else-body with a single if-stmt (no init). Semgrep
+                  # binds $INNER to that inner if-stmt via `else { $INNER }`.
+                  - patterns:
+                      - pattern-inside: |
+                          if $ERR != nil {
+                              ...
+                          } else {
+                              $INNER
+                          }
+                      - metavariable-pattern:
+                          metavariable: $INNER
+                          pattern: |
+                            if $COND {
+                                ...
+                            }
+                  # `else if $INIT; $COND` — Semgrep doesn't bind $INNER
+                  # via `else { $INNER }` for init-form else-ifs, so the
+                  # init form needs an explicit `else if $INIT; $COND`
+                  # pattern.
+                  - pattern-inside: |
+                      if $ERR != nil {
+                          ...
+                      } else if $INIT; $COND {
+                          ...
+                      }
+              # FP: $ERR reassigned immediately before the wrap inside the
+              # else-if arm — wrap is on a freshly-assigned err, not the
+              # proven-nil one.
+              - pattern-not-inside: |
+                  $ERR = ...
+                  return errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  ..., $ERR = ...
+                  return errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  $ERR = ...
+                  $ERR = errors.$FN($ERR, ...)
+              - pattern-not-inside: |
+                  ..., $ERR = ...
+                  $ERR = errors.$FN($ERR, ...)

@@ -1,4 +1,14 @@
 rules:
+  # Case A — http.Error is the last statement of a containing block,
+  # and the surrounding if-chain or switch is followed by a non-terminator.
+  # Because Go parses `else if` as `else { if ... }`, the pattern-inside
+  # constraint naturally covers else-if chains of arbitrary depth.
+  #
+  # NOTE: this rule and `http-error-missing-return-followed-by-stmt` are
+  # split because Semgrep's `pattern-not-inside` does not subtract
+  # correctly when nested under `pattern-either > patterns`. Splitting
+  # keeps each rule's subtractions at the top level (where they work)
+  # while still emitting a single user-facing finding type.
   - id: http-error-missing-return
     languages: [go]
     severity: ERROR
@@ -21,238 +31,152 @@ rules:
       description: "Missing `return` after `http.Error` lets the handler continue executing"
       references:
         - https://pkg.go.dev/net/http#Error
-    pattern-either:
-      # Case A — http.Error is the last statement of an `if`-body, and the
-      # if-block is followed by more work in the enclosing scope.
-      - patterns:
-          - pattern-either:
-              - pattern: |
-                  if $COND {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-              - pattern: |
-                  if $INIT; $COND {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-          - metavariable-regex:
-              metavariable: $ERR
-              regex: '^http\.Error\('
-          - pattern-not:
-              patterns:
-                - pattern-either:
-                    - pattern: |
-                        if $COND {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                    - pattern: |
-                        if $INIT; $COND {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                - metavariable-regex:
-                    metavariable: $TERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - pattern-not:
-              patterns:
-                - pattern-either:
-                    - pattern: |
-                        if $COND {
-                            ...
-                        }
-                        $NEXTTERM
-                    - pattern: |
-                        if $INIT; $COND {
-                            ...
-                        }
-                        $NEXTTERM
-                - metavariable-regex:
-                    metavariable: $NEXTTERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - focus-metavariable: $ERR
-
-      # Case A' — http.Error is the last statement of an `else`-body.
-      - patterns:
-          - pattern-either:
-              - pattern: |
-                  if $COND {
-                      ...
-                  } else {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-              - pattern: |
-                  if $INIT; $COND {
-                      ...
-                  } else {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-          - metavariable-regex:
-              metavariable: $ERR
-              regex: '^http\.Error\('
-          - pattern-not:
-              patterns:
-                - pattern-either:
-                    - pattern: |
-                        if $COND {
-                            ...
-                        } else {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                    - pattern: |
-                        if $INIT; $COND {
-                            ...
-                        } else {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                - metavariable-regex:
-                    metavariable: $TERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - pattern-not:
-              patterns:
-                - pattern-either:
-                    - pattern: |
-                        if $COND {
-                            ...
-                        }
-                        $NEXTTERM
-                    - pattern: |
-                        if $INIT; $COND {
-                            ...
-                        }
-                        $NEXTTERM
-                - metavariable-regex:
-                    metavariable: $NEXTTERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - focus-metavariable: $ERR
-
-      # Case A'' — http.Error is the last stmt of an `else if` branch.
-      # `else if` parses as `else { if ... }`, so the inner if's
-      # surrounding-scope `$NEXT` must be at the level of the outer
-      # if-stmt (after the whole chain), not within the else block.
-      - patterns:
-          - pattern-either:
-              - pattern: |
-                  if $COND1 {
-                      ...
-                  } else if $COND2 {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-              - pattern: |
-                  if $INIT; $COND1 {
-                      ...
-                  } else if $COND2 {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-              - pattern: |
-                  if $COND1 {
-                      ...
-                  } else if $INIT2; $COND2 {
-                      ...
-                      $ERR
-                  }
-                  $NEXT
-          - metavariable-regex:
-              metavariable: $ERR
-              regex: '^http\.Error\('
-          - pattern-not:
-              patterns:
-                - pattern-either:
-                    - pattern: |
-                        if $COND1 {
-                            ...
-                        } else if $COND2 {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                    - pattern: |
-                        if $INIT; $COND1 {
-                            ...
-                        } else if $COND2 {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                    - pattern: |
-                        if $COND1 {
-                            ...
-                        } else if $INIT2; $COND2 {
-                            ...
-                            $TERM
-                            ...
-                        }
-                        $NEXT
-                - metavariable-regex:
-                    metavariable: $TERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - pattern-not:
-              patterns:
-                - pattern-either:
-                    - pattern: |
-                        if $COND1 {
-                            ...
-                        } else if $COND2 {
-                            ...
-                        }
-                        $NEXTTERM
-                    - pattern: |
-                        if $INIT; $COND1 {
-                            ...
-                        } else if $COND2 {
-                            ...
-                        }
-                        $NEXTTERM
-                    - pattern: |
-                        if $COND1 {
-                            ...
-                        } else if $INIT2; $COND2 {
-                            ...
-                        }
-                        $NEXTTERM
-                - metavariable-regex:
-                    metavariable: $NEXTTERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - focus-metavariable: $ERR
-
-      # Case B — http.Error is immediately followed by a non-terminator
-      # statement in the same block.
-      - patterns:
-          - pattern: |
-              $ERR
-              $STMT
-          - metavariable-regex:
-              metavariable: $ERR
-              regex: '^http\.Error\('
-          - pattern-not:
-              patterns:
+    patterns:
+      # Anchor: the file imports `net/http`, so `http.Error` resolves to
+      # the stdlib symbol rather than a local identifier shadowing the name.
+      - pattern-inside: |
+          import "net/http"
+          ...
+      # Focus on the http.Error call.
+      - pattern: http.Error(...)
+      # http.Error is the tail of its containing block (no statement
+      # directly follows it inside the same block).
+      - pattern-not-inside: |
+          http.Error(...)
+          $ANY
+      # The focus is inside an if-chain or switch followed by $NEXT.
+      # With nested chains this naturally binds to the outermost
+      # containing structure with a $NEXT, so deep else-if chains work
+      # without case enumeration.
+      - pattern-either:
+          - pattern-inside: |
+              if $C1 {
+                  ...
+              }
+              $NEXT
+          - pattern-inside: |
+              if $I1; $C1 {
+                  ...
+              }
+              $NEXT
+          - pattern-inside: |
+              switch $X1 {
+              case $L1:
+                  ...
+              }
+              $NEXT
+          - pattern-inside: |
+              switch $I1; $X1 {
+              case $L1:
+                  ...
+              }
+              $NEXT
+          - pattern-inside: |
+              switch {
+              case $L1:
+                  ...
+              }
+              $NEXT
+          - pattern-inside: |
+              switch $X1 {
+              default:
+                  ...
+              }
+              $NEXT
+          - pattern-inside: |
+              switch {
+              default:
+                  ...
+              }
+              $NEXT
+      # Subtract: $NEXT after some containing if-chain or switch is
+      # itself a terminator (return / panic / log.Fatal* / os.Exit /
+      # runtime.Goexit / continue / break / goto). With nesting, a
+      # terminator after ANY containing structure means control flow
+      # doesn't actually fall past http.Error.
+      - pattern-not-inside:
+          patterns:
+            - pattern-either:
                 - pattern: |
-                    $ERR
+                    if $C2 {
+                        ...
+                    }
                     $TERM
-                - metavariable-regex:
-                    metavariable: $TERM
-                    regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\()'
-          - focus-metavariable: $ERR
+                - pattern: |
+                    if $I2; $C2 {
+                        ...
+                    }
+                    $TERM
+                - pattern: |
+                    switch $X2 {
+                    case $L2:
+                        ...
+                    }
+                    $TERM
+                - pattern: |
+                    switch $I2; $X2 {
+                    case $L2:
+                        ...
+                    }
+                    $TERM
+                - pattern: |
+                    switch {
+                    case $L2:
+                        ...
+                    }
+                    $TERM
+                - pattern: |
+                    switch $X2 {
+                    default:
+                        ...
+                    }
+                    $TERM
+                - pattern: |
+                    switch {
+                    default:
+                        ...
+                    }
+                    $TERM
+            - metavariable-regex:
+                metavariable: $TERM
+                regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\(|runtime\.Goexit\(|continue\b|break\b|goto\b)'
+
+  # Case B — http.Error is immediately followed by a non-terminator
+  # statement in the same block (regardless of nesting context).
+  - id: http-error-missing-return-followed-by-stmt
+    languages: [go]
+    severity: ERROR
+    message: >-
+      `http.Error` writes a complete response but does not stop handler
+      execution. When the call is not followed by `return` (or another
+      terminating statement), the handler keeps running, potentially writing
+      additional response bytes, performing actions that should have been
+      gated by the response, or producing a malformed/duplicated response.
+      Add a `return` immediately after the call, or otherwise terminate the
+      control flow.
+    metadata:
+      category: security
+      cwe: "CWE-754: Improper Check for Unusual or Exceptional Conditions"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: MEDIUM
+      technology: [--no-technology--]
+      description: "Missing `return` after `http.Error` lets the handler continue executing"
+      references:
+        - https://pkg.go.dev/net/http#Error
+    patterns:
+      - pattern-inside: |
+          import "net/http"
+          ...
+      - pattern: |
+          http.Error(...)
+          $STMT
+      - pattern-not:
+          patterns:
+            - pattern: |
+                http.Error(...)
+                $TERM
+            - metavariable-regex:
+                metavariable: $TERM
+                regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\(|runtime\.Goexit\(|continue\b|break\b|goto\b)'

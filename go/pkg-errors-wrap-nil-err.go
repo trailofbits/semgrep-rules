@@ -3,6 +3,8 @@ package testdata
 import (
 	"fmt"
 	"log"
+	"os"
+	"runtime"
 
 	"github.com/pkg/errors"
 )
@@ -686,5 +688,195 @@ func tn23() (err error) {
 		}
 	}()
 
+	return nil
+}
+
+// TP20: panic-based guard. After `if err != nil { panic(err) }`, `err`
+// is provably nil, so wrapping it inside the trailing non-err `if`
+// swallows the failure path.
+func tp20() error {
+	err := anotherCall()
+	if err != nil {
+		panic(err)
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after panic guard")
+	}
+	return nil
+}
+
+// TP21: log.Fatal-based guard.
+func tp21() error {
+	err := anotherCall()
+	if err != nil {
+		log.Fatal("init: ", err)
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after log.Fatal guard")
+	}
+	return nil
+}
+
+// TP22: log.Fatalf-based guard.
+func tp22() error {
+	err := anotherCall()
+	if err != nil {
+		log.Fatalf("init: %v", err)
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "after log.Fatalf guard")
+	}
+	return nil
+}
+
+// TP23: log.Fatalln-based guard.
+func tp23() error {
+	err := anotherCall()
+	if err != nil {
+		log.Fatalln("init failed", err)
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.WithMessage(err, "after log.Fatalln guard")
+	}
+	return nil
+}
+
+// TP24: os.Exit-based guard.
+func tp24() error {
+	err := anotherCall()
+	if err != nil {
+		os.Exit(1)
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// TP25: runtime.Goexit-based guard.
+func tp25() error {
+	err := anotherCall()
+	if err != nil {
+		runtime.Goexit()
+	}
+
+	if someCondition() {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.WithMessagef(err, "after runtime.Goexit guard")
+	}
+	return nil
+}
+
+// TN26: reverse guard with panic — `err` is non-nil after.
+func tn26(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if err == nil {
+		panic("unreachable: err already non-nil")
+	}
+
+	if cond {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after err==nil panic guard")
+	}
+	return nil
+}
+
+// TN27: reverse guard with log.Fatal — `err` is non-nil after.
+func tn27(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	}
+
+	if err == nil {
+		log.Fatal("unreachable")
+	}
+
+	if cond {
+		// ok: pkg-errors-wrap-nil-err
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// TP26: wrap inside `else if` arm — Go parses this as
+// `if err != nil { return err } else { if cond { return errors.Wrap(...) } }`,
+// and inside the inner if (which runs only when err is nil) the wrap
+// swallows the error path.
+func tp26(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else if cond {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "else-if arm")
+	}
+	return nil
+}
+
+// TP27: wrap inside a nested `else if` (depth 2).
+func tp27(cond1, cond2 bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else if cond1 {
+		return nil
+	} else if cond2 {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.WithStack(err)
+	}
+	return nil
+}
+
+// TP28: assignment-form wrap inside an `else if` arm.
+func tp28(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else if cond {
+		// ruleid: pkg-errors-wrap-nil-err
+		err = errors.Wrap(err, "assignment-form in else-if")
+		return err
+	}
+	return nil
+}
+
+// TP29: `else if` arm with init clause.
+func tp29() error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else if x := 1; x > 0 {
+		// ruleid: pkg-errors-wrap-nil-err
+		return errors.Wrapf(err, "init else-if: %d", x)
+	}
+	return nil
+}
+
+// TN28: `else if` arm where err is reassigned before the wrap — wrap
+// is on a freshly-assigned (potentially non-nil) err.
+func tn28(cond bool) error {
+	err := anotherCall()
+	if err != nil {
+		return err
+	} else if cond {
+		_, err = mayFail()
+		// ok: pkg-errors-wrap-nil-err
+		return errors.Wrap(err, "after reassign in else-if")
+	}
 	return nil
 }
