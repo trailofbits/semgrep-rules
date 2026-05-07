@@ -1,14 +1,29 @@
 rules:
-  # Case A — http.Error is the last statement of a containing block,
-  # and the surrounding if-chain or switch is followed by a non-terminator.
-  # Because Go parses `else if` as `else { if ... }`, the pattern-inside
-  # constraint naturally covers else-if chains of arbitrary depth.
+  # The rule has two cases combined under one user-facing id:
   #
-  # NOTE: this rule and `http-error-missing-return-followed-by-stmt` are
-  # split because Semgrep's `pattern-not-inside` does not subtract
-  # correctly when nested under `pattern-either > patterns`. Splitting
-  # keeps each rule's subtractions at the top level (where they work)
-  # while still emitting a single user-facing finding type.
+  #   Case A — `http.Error` is the tail of its containing block, and the
+  #     enclosing if-chain or switch is followed by another statement.
+  #   Case B — `http.Error` is immediately followed by a statement in the
+  #     same block (regardless of nesting context).
+  #
+  # The two cases are joined under a top-level `pattern-either`, then
+  # two top-level `pattern-not-inside` subtractions drop matches where
+  # the trailing statement is a control-flow terminator. The two
+  # subtractions are kept separate because they need different scoping:
+  #
+  #   - The Case B subtraction (`http.Error(...)\n$TERM`) is shape-safe
+  #     at the top level: the shape only matches Case B-style instances
+  #     (where http.Error has a directly-following stmt), so it cannot
+  #     wrongly subtract Case A matches.
+  #   - The Case A subtraction (enclosing if/switch followed by $TERM)
+  #     would over-subtract Case B matches whose enclosing structure
+  #     also happens to be followed by a terminator. It is scoped to
+  #     Case A by an extra `pattern-not http.Error(...)\n$ANY`
+  #     conjunction (i.e., http.Error must be the tail of its block).
+  #
+  # Top-level placement of both subtractions is required because
+  # Semgrep silently ignores `pattern-not` / `pattern-not-inside` /
+  # `metavariable-regex` when nested under `pattern-either > patterns`.
   - id: http-error-missing-return
     languages: [go]
     severity: ERROR
@@ -33,67 +48,83 @@ rules:
         - https://pkg.go.dev/net/http#Error
     patterns:
       # Anchor: the file imports `net/http`, so `http.Error` resolves to
-      # the stdlib symbol rather than a local identifier shadowing the name.
+      # the stdlib symbol rather than a local identifier shadowing it.
       - pattern-inside: |
           import "net/http"
           ...
-      # Focus on the http.Error call.
       - pattern: http.Error(...)
-      # http.Error is the tail of its containing block (no statement
-      # directly follows it inside the same block).
-      - pattern-not-inside: |
-          http.Error(...)
-          $ANY
-      # The focus is inside an if-chain or switch followed by $NEXT.
-      # With nested chains this naturally binds to the outermost
-      # containing structure with a $NEXT, so deep else-if chains work
-      # without case enumeration.
       - pattern-either:
+          # Case A — http.Error is the tail of its containing block, and
+          # the enclosing if-chain or switch is followed by $NEXT. With
+          # nested chains $NEXT naturally binds to the trailing stmt of
+          # the outermost containing structure, so deep else-if chains
+          # work without explicit case enumeration.
+          - patterns:
+              - pattern-not-inside: |
+                  http.Error(...)
+                  $ANY
+              - pattern-either:
+                  - pattern-inside: |
+                      if $C1 {
+                          ...
+                      }
+                      $NEXT
+                  - pattern-inside: |
+                      if $I1; $C1 {
+                          ...
+                      }
+                      $NEXT
+                  - pattern-inside: |
+                      switch $X1 {
+                      case $L1:
+                          ...
+                      }
+                      $NEXT
+                  - pattern-inside: |
+                      switch $I1; $X1 {
+                      case $L1:
+                          ...
+                      }
+                      $NEXT
+                  - pattern-inside: |
+                      switch {
+                      case $L1:
+                          ...
+                      }
+                      $NEXT
+                  - pattern-inside: |
+                      switch $X1 {
+                      default:
+                          ...
+                      }
+                      $NEXT
+                  - pattern-inside: |
+                      switch {
+                      default:
+                          ...
+                      }
+                      $NEXT
+          # Case B — http.Error is directly followed by another stmt in
+          # the same block.
           - pattern-inside: |
-              if $C1 {
-                  ...
-              }
-              $NEXT
-          - pattern-inside: |
-              if $I1; $C1 {
-                  ...
-              }
-              $NEXT
-          - pattern-inside: |
-              switch $X1 {
-              case $L1:
-                  ...
-              }
-              $NEXT
-          - pattern-inside: |
-              switch $I1; $X1 {
-              case $L1:
-                  ...
-              }
-              $NEXT
-          - pattern-inside: |
-              switch {
-              case $L1:
-                  ...
-              }
-              $NEXT
-          - pattern-inside: |
-              switch $X1 {
-              default:
-                  ...
-              }
-              $NEXT
-          - pattern-inside: |
-              switch {
-              default:
-                  ...
-              }
-              $NEXT
-      # Subtract: $NEXT after some containing if-chain or switch is
-      # itself a terminator (return / panic / log.Fatal* / os.Exit /
-      # runtime.Goexit / continue / break / goto). With nesting, a
-      # terminator after ANY containing structure means control flow
-      # doesn't actually fall past http.Error.
+              http.Error(...)
+              $STMT
+      # Subtract Case B: http.Error directly followed by a control-flow
+      # terminator (return / panic / log.Fatal* / os.Exit /
+      # runtime.Goexit / continue / break / goto).
+      - pattern-not-inside:
+          patterns:
+            - pattern: |
+                http.Error(...)
+                $TERM
+            - metavariable-regex:
+                metavariable: $TERM
+                regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\(|runtime\.Goexit\(|continue\b|break\b|goto\b)'
+      # Subtract Case A: enclosing if-chain or switch is followed by a
+      # control-flow terminator AND http.Error is the tail of its block.
+      # The tail-of-block conjunction prevents this subtraction from
+      # firing on Case B matches whose enclosing structure happens to
+      # also be followed by a terminator.
       - pattern-not-inside:
           patterns:
             - pattern-either:
@@ -140,43 +171,6 @@ rules:
             - metavariable-regex:
                 metavariable: $TERM
                 regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\(|runtime\.Goexit\(|continue\b|break\b|goto\b)'
-
-  # Case B — http.Error is immediately followed by a non-terminator
-  # statement in the same block (regardless of nesting context).
-  - id: http-error-missing-return-followed-by-stmt
-    languages: [go]
-    severity: ERROR
-    message: >-
-      `http.Error` writes a complete response but does not stop handler
-      execution. When the call is not followed by `return` (or another
-      terminating statement), the handler keeps running, potentially writing
-      additional response bytes, performing actions that should have been
-      gated by the response, or producing a malformed/duplicated response.
-      Add a `return` immediately after the call, or otherwise terminate the
-      control flow.
-    metadata:
-      category: security
-      cwe: "CWE-754: Improper Check for Unusual or Exceptional Conditions"
-      subcategory: [vuln]
-      confidence: MEDIUM
-      likelihood: MEDIUM
-      impact: MEDIUM
-      technology: [--no-technology--]
-      description: "Missing `return` after `http.Error` lets the handler continue executing"
-      references:
-        - https://pkg.go.dev/net/http#Error
-    patterns:
-      - pattern-inside: |
-          import "net/http"
-          ...
-      - pattern: |
-          http.Error(...)
-          $STMT
-      - pattern-not:
-          patterns:
-            - pattern: |
+            - pattern-not: |
                 http.Error(...)
-                $TERM
-            - metavariable-regex:
-                metavariable: $TERM
-                regex: '^(return\b|panic\(|log\.Fatal(ln|f)?\(|os\.Exit\(|runtime\.Goexit\(|continue\b|break\b|goto\b)'
+                $ANY

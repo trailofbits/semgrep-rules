@@ -49,7 +49,7 @@ func handlerLogThenContinue(w http.ResponseWriter, r *http.Request) {
 
 // http.Error followed by another statement in the same block — Case B.
 func handlerErrorFollowedByWrite(w http.ResponseWriter, r *http.Request) {
-	// ruleid: http-error-missing-return-followed-by-stmt
+	// ruleid: http-error-missing-return
 	http.Error(w, "boom", http.StatusInternalServerError)
 	w.Write([]byte("leaked body"))
 }
@@ -199,7 +199,7 @@ func handlerCaseBOsExit(w http.ResponseWriter, r *http.Request) {
 // mistaken for a return statement by the terminator regex.
 func handlerReturnPrefixIsNotTerminator(w http.ResponseWriter, r *http.Request) {
 	if err := doSomething(r); err != nil {
-		// ruleid: http-error-missing-return-followed-by-stmt
+		// ruleid: http-error-missing-return
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		returnedSomething()
 	}
