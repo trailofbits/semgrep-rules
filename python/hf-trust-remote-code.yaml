@@ -1,0 +1,37 @@
+rules:
+  - id: hf-trust-remote-code
+    message: >-
+      Loading a Hugging Face model, tokenizer, config, pipeline, or dataset with
+      `trust_remote_code=True` executes arbitrary Python (`modeling_*.py`,
+      `configuration_*.py`, or dataset loading scripts) shipped in the remote
+      repository. A malicious or compromised repository achieves remote code
+      execution on the loading host. Prefer `trust_remote_code=False`, pin the
+      load to a reviewed `revision`, or vendor and audit the custom code before
+      loading.
+    languages: [python]
+    severity: ERROR
+    metadata:
+      category: security
+      cwe: "CWE-94: Improper Control of Generation of Code ('Code Injection')"
+      subcategory: [vuln]
+      confidence: MEDIUM
+      likelihood: MEDIUM
+      impact: HIGH
+      technology: [transformers, huggingface]
+      description: "Potential arbitrary code execution from loading Hugging Face assets with `trust_remote_code=True`"
+      references:
+        - https://huggingface.co/docs/transformers/en/models#custom-models
+        - https://blog.trailofbits.com/2025/09/24/supply-chain-attacks-are-exploiting-our-assumptions/
+
+    patterns:
+      - pattern-either:
+          - pattern: $OBJ.from_pretrained(..., trust_remote_code=True, ...)
+          - pattern: transformers.pipeline(..., trust_remote_code=True, ...)
+          - pattern: pipeline(..., trust_remote_code=True, ...)
+          - pattern: datasets.load_dataset(..., trust_remote_code=True, ...)
+          - pattern: load_dataset(..., trust_remote_code=True, ...)
+      - pattern-not: $OBJ.from_pretrained(..., trust_remote_code=False, ...)
+      - pattern-not: transformers.pipeline(..., trust_remote_code=False, ...)
+      - pattern-not: pipeline(..., trust_remote_code=False, ...)
+      - pattern-not: datasets.load_dataset(..., trust_remote_code=False, ...)
+      - pattern-not: load_dataset(..., trust_remote_code=False, ...)
